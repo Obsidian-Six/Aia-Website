@@ -858,6 +858,7 @@ const PAGES = [
   { key: "events", name: "Events" },
   { key: "contact-us", name: "Contact Us" },
   { key: "iafsm", name: "IAFSM" },
+  { key: "campus-connect", name: "Campus-Connect" },
 ];
 
 const INITIAL_HERO = {

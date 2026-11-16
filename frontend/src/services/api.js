@@ -1631,3 +1631,14 @@ export const deleteMember = async (id) => {
 
   return res.data;
 };
+
+
+// =======================
+// GENERAL INQUIRY API
+// =======================
+
+export const submitGeneralInquiry = async (formData) => {
+  const res = await api.post("/inquiries", formData);
+
+  return res.data.data || res.data;
+};

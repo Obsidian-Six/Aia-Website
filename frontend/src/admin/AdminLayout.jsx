@@ -2096,7 +2096,7 @@ const handleExitAdmin = async () => {
                     <span>About Sticky Stack CMS</span>
                   </button>
 
-                  <div className="pt-1.5 pb-1 border-t border-white/10">
+                  {/* <div className="pt-1.5 pb-1 border-t border-white/10">
                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pl-1">
                       Aims & Objectives
                     </span>
@@ -2110,7 +2110,7 @@ const handleExitAdmin = async () => {
                     }`}
                   >
                     <span>Aims & Objectives Slider</span>
-                  </button>
+                  </button> */}
 
                   <div className="pt-1.5 pb-1 border-t border-white/10">
                     <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pl-1">
@@ -2635,13 +2635,13 @@ const handleExitAdmin = async () => {
                 defaultSectionKey="about-slider"
               />
             )}
-            {currentTab === "aims-objectives-slider-cms" && (
+            {/* {currentTab === "aims-objectives-slider-cms" && (
               <ManageSliderCMS
                 key="aims-objectives-slider-cms"
                 defaultPageKey="aims-objectives"
                 defaultSectionKey="aims-slider"
               />
-            )}
+            )} */}
             {currentTab === "about-aia-slider-2-cms" && (
               <ManageSliderCMS
                 key="about-aia-slider-2-cms"

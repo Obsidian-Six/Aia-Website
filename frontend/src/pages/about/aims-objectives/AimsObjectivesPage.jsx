@@ -3,6 +3,7 @@ import SplitFeatureCard from "../../../components/learn-more/SplitFeatureCard";
 import CmsSliderSection from "../../../components/sliders/CmsSliderSection";
 import BlendedLearning from "../../../components/BlendedLearning";
 import BrochureButton from "../../../components/common/BrochureButton";
+import PillarsSection from "../../../components/PillarsSection";
 
 const AimsObjectivesPage = () => {
   return (
@@ -18,14 +19,15 @@ const AimsObjectivesPage = () => {
         background="dark"
       />
 
-      <CmsSliderSection pageKey="aims-objectives" sectionKey="aims-slider" />
+      {/* <CmsSliderSection pageKey="aims-objectives" sectionKey="aims-slider" /> */}
+      <PillarsSection/>
       <div className="flex  items-center justify-center w-full">
 
-      <BrochureButton
+      {/* <BrochureButton
     href="/aims-objectives/campus+connect+brochure.pdf"
     label="View Brochure"
     fileName="AIA-Brochure.pdf"
-  />
+  /> */}
       </div>
 
        <BlendedLearning sampleUrl="/documents/blended-learning.pdf" />

@@ -99,22 +99,22 @@ export default function SliderContentCard({
       {hasTextContent && (
         <div className="flex flex-col px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5 lg:px-7 lg:pb-7 lg:pt-6 xl:px-8">
 
-          {hasTitle && (
-            <h3 className="text-xl font-semibold leading-tight tracking-tight text-[#17202B] sm:text-[22px] lg:text-2xl">
-              {title}
-            </h3>
-          )}
+         {hasTitle && (
+  <h3 className="line-clamp-2 text-xl font-semibold leading-tight tracking-tight text-[#17202B] md:text-[18px] lg:text-[18px]">
+    {title}
+  </h3>
+)}
 
           {hasDescription && (
-            <p className="mt-4 max-w-[390px] text-sm leading-relaxed text-[#17202B] sm:mt-5 sm:text-[13px] lg:mt-6">
-              {description}
-            </p>
-          )}
+  <p className="mt-4 line-clamp-2 max-w-[390px] text-sm leading-relaxed text-[#17202B] sm:mt-5 sm:text-[13px] lg:mt-6">
+    {description}
+  </p>
+)}
 
           {hasLink && (
             <a
               href={link}
-              className="mt-auto w-fit pt-5 text-[11px] font-medium text-[#E96F62] underline underline-offset-2 transition-opacity hover:opacity-60"
+              className="mt-auto w-fit pt-5 text-[13px] font-medium text-[#E96F62] underline underline-offset-2 transition-opacity hover:opacity-60"
             >
               {linkText}
             </a>

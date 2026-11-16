@@ -13,6 +13,7 @@ const ALLOWED_PAGES = {
   events: "Events",
   "contact-us": "Contact Us",
   iafsm: "IAFSM",
+  "campus-connect": "Campus Connect"
 };
 
 // Get Cloudinary public ID from existing Cloudinary URL

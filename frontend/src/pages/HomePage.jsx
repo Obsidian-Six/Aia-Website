@@ -75,7 +75,7 @@ export default function HomePage() {
   // ];
   return (
     <main>
-      <Hero onBecomeMemberClick={() => setIsRequestOpen(true)}/>
+      <Hero onBecomeMemberClick={() => setIsRequestOpen(true)} />
       <AIASection />
       <GovernmentInitiative />
       {/* <ReusableCardSlider
@@ -90,7 +90,12 @@ export default function HomePage() {
         accentColor="#E96F62"
         className="py-12 lg:py-16"
       /> */}
-      <CmsSliderSection pageKey="home" sectionKey="home-slider"  includeEvents={true} />
+      <CmsSliderSection
+        pageKey="home"
+        sectionKey="home-slider"
+        // includeEvents={true}
+        includePublications={true}
+      />
       <WhyJoinCmsSection pageKey="home" sectionKey="why-join" />
       <IndustrySectors />
       <HomeFeatureSection page="home" />

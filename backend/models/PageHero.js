@@ -14,6 +14,7 @@ const pageHeroSchema = new mongoose.Schema(
         "events",
         "contact-us",
         "iafsm",
+        "campus-connect"
       ],
     },
 

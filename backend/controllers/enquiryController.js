@@ -493,17 +493,18 @@ const categoryOptions = {
 
 export const createEnquiry = async (req, res) => {
   try {
-    const {
-      category,
-      selectedOption,
-      customOption,
-      fullName,
-      email,
-      companyName,
-      website,
-      phoneNumber,
-      message,
-    } = req.body;
+const {
+  category,
+  selectedOption,
+  customOption,
+  fullName,
+  email,
+  companyName,
+  website,
+  phoneNumber,
+  message,
+  sourcePage,
+} = req.body;
 
     // =================================================
     // REQUIRED FIELD VALIDATION
@@ -740,39 +741,34 @@ export const createEnquiry = async (req, res) => {
     // SAVE FORM SUBMISSION
     // =================================================
 
-    await FormSubmission.create({
-      formType: "general-inquiry",
+await FormSubmission.create({
+  formType: "general-inquiry",
 
-      sourcePage: req.headers.referer || "",
+  sourcePage:
+    typeof sourcePage === "string" && sourcePage.trim()
+      ? sourcePage.trim()
+      : req.headers.referer || "",
 
-      data: {
-        category: category.trim(),
+  data: {
+    category: category.trim(),
+    selectedOption: selectedOption.trim(),
+    customOption: normalizedCustomOption,
 
-        selectedOption: selectedOption.trim(),
+    // Existing admin compatibility
+    ecosystem: category.trim(),
 
-        customOption: normalizedCustomOption,
+    manufacturingSector: isCustomOption
+      ? normalizedCustomOption
+      : selectedOption.trim(),
 
-        // Legacy fields for existing admin UI compatibility
-        ecosystem: category.trim(),
-
-        manufacturingSector: isCustomOption
-          ? normalizedCustomOption
-          : selectedOption.trim(),
-
-        fullName: normalizedName,
-
-        email: normalizedEmail,
-
-        companyName: normalizedCompanyName,
-
-        website: normalizedWebsite,
-
-        phoneNumber: normalizedPhone,
-
-        message: normalizedMessage,
-      },
-    });
-
+    fullName: normalizedName,
+    email: normalizedEmail,
+    companyName: normalizedCompanyName,
+    website: normalizedWebsite,
+    phoneNumber: normalizedPhone,
+    message: normalizedMessage,
+  },
+});
     // =================================================
     // SUCCESS RESPONSE
     // =================================================

@@ -49,7 +49,40 @@ export default function LearnMorePage() {
         ]}
       />
 
-      {/* MESSAGE FROM PRESIDENT */}
+      
+
+      {/* What We Do + Our Objectives */}
+      <AboutObjectivesSection />
+
+      {/* WHY AIA */}
+      {/* <TextContentSection
+        eyebrow="Our Commitment"
+        title="Building a Connected Industrial Ecosystem"
+        description="AIA brings together the stakeholders who are shaping the future of Indian manufacturing."
+        points={[
+          "Encouraging adoption of smart manufacturing technologies.",
+          "Creating opportunities for industry collaboration.",
+          "Supporting skill development and workforce readiness.",
+          "Promoting knowledge sharing and industry best practices.",
+          "Representing the collective interests of the automation industry.",
+        ]}
+      /> */}
+
+            {/* <CurrentExecutiveCouncil /> */}
+
+                  {/* <PastPresidents /> */}
+
+                   <MembersCarousel
+                          title="Our Members"
+                          members={membersData}
+                          slidesPerView={5}
+                          autoplay
+                          autoplayDelay={3500}
+                          pauseOnHover
+                          indicatorCount={3}
+                        />
+
+                        {/* MESSAGE FROM PRESIDENT */}
       <SplitFeatureCard
         eyebrow=""
         title="Message from President"
@@ -70,37 +103,6 @@ export default function LearnMorePage() {
       <div id="enquiry-form" className="scroll-mt-24">
   <GeneralInquiryForm />
 </div>
-
-      {/* What We Do + Our Objectives */}
-      <AboutObjectivesSection />
-
-      {/* WHY AIA */}
-      {/* <TextContentSection
-        eyebrow="Our Commitment"
-        title="Building a Connected Industrial Ecosystem"
-        description="AIA brings together the stakeholders who are shaping the future of Indian manufacturing."
-        points={[
-          "Encouraging adoption of smart manufacturing technologies.",
-          "Creating opportunities for industry collaboration.",
-          "Supporting skill development and workforce readiness.",
-          "Promoting knowledge sharing and industry best practices.",
-          "Representing the collective interests of the automation industry.",
-        ]}
-      /> */}
-
-            <CurrentExecutiveCouncil />
-
-                  <PastPresidents />
-
-                   <MembersCarousel
-                          title="Our Members"
-                          members={membersData}
-                          slidesPerView={5}
-                          autoplay
-                          autoplayDelay={3500}
-                          pauseOnHover
-                          indicatorCount={3}
-                        />
 
       {/* CONTACT CTA */}
       {/* <section className="bg-[#244665] px-5 py-12 sm:px-8 lg:px-12">
