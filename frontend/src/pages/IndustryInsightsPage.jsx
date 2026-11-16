@@ -1,4 +1,3 @@
-
 import IndustryInsightHero from "../components/industry-insight/IndustryInsightHero";
 // import ReusableCardSlider from "../components/ReusableCardSlider";
 import ContentIntroSection from "../components/ContentIntroSection";
@@ -11,23 +10,21 @@ import CmsSliderSection from "../components/sliders/CmsSliderSection";
 import StickyStackCmsSection from "../components/StickyStackCmsSection";
 import DynamicPageHero from "../components/common/DynamicPageHero";
 
-
-
 export default function IndustryInsightPage() {
   return (
     <div className="w-full font-sans bg-white">
       {/* 1. Full-Bleed Membership Hero */}
       {/* <IndustryInsightHero /> */}
       <DynamicPageHero
-  pageKey="industry-insight"
-  fallbackImage="/industry-insightassets/industry-hero.png"
-  fallbackHeading="Industry Insights"
-  scrollTarget="#industry-content"
-/>
-       <CmsSliderSection
-  pageKey="industry-insight"
-  sectionKey="industry-insight"
-/>
+        pageKey="industry-insight"
+        fallbackImage="/industry-insightassets/industry-hero.png"
+        fallbackHeading="Industry Insights"
+        scrollTarget="#industry-content"
+      />
+      <CmsSliderSection
+        pageKey="industry-insight"
+        sectionKey="industry-insight"
+      />
       {/* <ContentIntroSection
         id="industry-insight"
         title="Industry Insight"
@@ -49,20 +46,20 @@ export default function IndustryInsightPage() {
       <section className="w-full">
         {/* <StickyStackCards items={editorialItems} /> */}
         <StickyStackCmsSection
-  pageKey="industry-insight"
-  sectionKey="articles-perspectives"
-  fallbackHeading="Articles & Perspectives"
-/>
+          pageKey="industry-insight"
+          sectionKey="articles-perspectives"
+          fallbackHeading="Articles & Perspectives"
+        />
       </section>
-        <MembersCarousel
-      title="Our Members"
-      members={membersData}
-      slidesPerView={5}
-      autoplay
-      autoplayDelay={3500}
-      pauseOnHover
-      indicatorCount={3}
-    />
+      <MembersCarousel
+        title="Our Members"
+        members={membersData}
+        slidesPerView={5}
+        autoplay
+        autoplayDelay={3500}
+        pauseOnHover
+        indicatorCount={3}
+      />
       {/* 2. Dynamic 3-Card Membership Overview */}
       {/* <MemberShipPara />
       <WhyJoinSlider/>
