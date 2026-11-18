@@ -436,16 +436,15 @@ const PORT = process.env.PORT || 5000;
 
 app.set("trust proxy", 1);
 
-// ==========================================
-// CORS CONFIGURATION
-// ==========================================
 
 const allowedOrigins = [
   ...(process.env.FRONTEND_URL || "")
     .split(",")
     .map((url) => url.trim().replace(/\/$/, "")),
+
   "http://localhost:3000",
   "http://localhost:5173",
+  "https://aia-website-rose.vercel.app",
 ].filter(Boolean);
 
 app.use(
@@ -454,6 +453,8 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
+
+      console.error("[CORS] Blocked origin:", origin);
 
       return callback(
         new Error(`Origin not allowed by CORS: ${origin}`)
@@ -474,9 +475,11 @@ app.use(
     allowedHeaders: [
       "Content-Type",
       "Authorization",
+      "Accept",
     ],
   })
 );
+
 
 // ==========================================
 // GLOBAL MIDDLEWARES
