@@ -183,7 +183,7 @@ export default function NewsDetailsPage() {
   }
 
   if (notFound || !news) {
-    return <Navigate to="/publication/news" replace />;
+    return <Navigate to="/industry-insight/news" replace />;
   }
 
   const sortedNews = [...allNews].sort(
@@ -212,9 +212,9 @@ export default function NewsDetailsPage() {
       publication={news}
       previousArticle={previousNews}
       nextArticle={nextNews}
-      backLink="/publication/news"
+     backLink="/industry-insight/news"
       backLabel="Back to all news"
-      basePath="/publication/news"
+      basePath="/industry-insight/news"
     />
   );
 }

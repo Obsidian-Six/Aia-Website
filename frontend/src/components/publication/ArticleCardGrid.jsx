@@ -32,7 +32,7 @@ export default function ArticleCardGrid({
             category={item.category}
             categoryLink={item.categoryLink}
             slug={item.slug}
-            detailBasePath="/publication/articles"
+            detailBasePath="/industry-insight/articles"
           />
         ))}
       </div>

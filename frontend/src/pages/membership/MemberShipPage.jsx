@@ -14,6 +14,7 @@ import WhyJoinCmsSection from "../../components/why-join/WhyJoinCmsSection";
 import DynamicPageHero from "../../components/common/DynamicPageHero";
 import MemberDirectory from "../../components/membership/MemberDirectory";
 import { Link } from "react-router-dom";
+import QuickNavigationCards from "../../components/common/QuickNavigationCards";
 
 // import AboutHero from '../components/AboutHero.jsx'
 // import AboutAIAOverview from '../components/AboutAIAOverview.jsx'
@@ -47,6 +48,7 @@ export default function MemberShipPage() {
 
       {/* <MemberShipObjectives /> */}
       <MemberDirectory />
+      <QuickNavigationCards />
 
         <div className="flex flex-col relative w-full justify-center items-center py-10 md:py-8">
               <h1 className="capitalize font-bold text-xl md:text-2xl">

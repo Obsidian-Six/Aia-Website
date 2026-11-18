@@ -45,7 +45,7 @@ export default function EventsMetrics() {
     <section className="py-16 bg-white font-sans relative z-20">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
          <div className="bg-white px-5 py-5 text-center sm:py-6 mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-12">
-          <h2 className="mb-8 text-4xl font-black leading-[1.05] tracking-[-0.035em] text-[#1F2937] sm:mb-12 sm:text-5xl lg:mb-6 lg:text-[54px]">
+          <h2 className="mb-8 text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-[#1F2937] sm:mb-12 sm:text-5xl lg:mb-6 lg:text-[54px]">
             Events
           </h2>
             <p className="text-sm font-normal leading-[1.7] text-gray-600 sm:text-base sm:leading-[1.7] lg:text-lg lg:leading-[1.75] mb-5">
@@ -68,10 +68,10 @@ export default function EventsMetrics() {
 
                 {/* Number & Label matching Image 1 */}
                 <div className="space-y-1 mt-4">
-                  <div className="text-2xl sm:text-3xl font-black text-[#E25238] tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-semibold text-[#E25238] tracking-tight">
                     {item.number}
                   </div>
-                  <div className="text-xs sm:text-sm font-bold text-[#1E293B] tracking-tight">
+                  <div className="text-xs sm:text-sm font-semibold text-[#1E293B] tracking-tight">
                     {item.label}
                   </div>
                 </div>

@@ -4,6 +4,7 @@ import CmsSliderSection from "../../../components/sliders/CmsSliderSection";
 import BlendedLearning from "../../../components/BlendedLearning";
 import BrochureButton from "../../../components/common/BrochureButton";
 import PillarsSection from "../../../components/PillarsSection";
+import ThreePillarsFootprint from "../../../components/ThreePillarsFootprint";
 
 const AimsObjectivesPage = () => {
   return (
@@ -20,7 +21,9 @@ const AimsObjectivesPage = () => {
       />
 
       {/* <CmsSliderSection pageKey="aims-objectives" sectionKey="aims-slider" /> */}
-      <PillarsSection/>
+      {/* <PillarsSection/> */}
+       {/* 2. Our 3 Pillars Footprint matching Image 1 */}
+            <ThreePillarsFootprint />
       <div className="flex  items-center justify-center w-full">
 
       {/* <BrochureButton

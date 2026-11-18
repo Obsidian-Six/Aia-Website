@@ -10,7 +10,7 @@ export default function ArticleCard({
   categoryLink,
   slug,
   link,
-  detailBasePath = "/publication/articles",
+  detailBasePath = "/industry-insight/articles",
   className = "",
 }) {
   const content = (

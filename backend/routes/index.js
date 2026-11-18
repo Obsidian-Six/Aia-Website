@@ -24,6 +24,10 @@ import { formSubmissionRouter } from './formSubmissionRoutes.js';
 import { adminAuthRouter } from './adminAuthRoutes.js';
 import memberRoutes from "./memberRoutes.js";
 import searchRouter from './searchRoutes.js';
+import conversationRoutes from "./conversationRoutes.js";
+import brochureEnquiryRoutes from "./brochureEnquiryRoutes.js";
+import sampleRouter from './sampleRoutes.js';
+
 
 
 const apiRouter = Router();
@@ -54,5 +58,8 @@ apiRouter.use("/form-submissions", formSubmissionRouter);
 apiRouter.use("/admin-auth", adminAuthRouter);
 apiRouter.use("/members", memberRoutes);
 apiRouter.use("/search", searchRouter);
+apiRouter.use("/conversations", conversationRoutes);
+apiRouter.use("/brochure-enquiries", brochureEnquiryRoutes);
+apiRouter.use("/samples", sampleRouter);
 
 export default apiRouter;

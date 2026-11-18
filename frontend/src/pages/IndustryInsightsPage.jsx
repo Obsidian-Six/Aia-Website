@@ -9,6 +9,7 @@ import { insightSlides } from "../data/industryInsightData";
 import CmsSliderSection from "../components/sliders/CmsSliderSection";
 import StickyStackCmsSection from "../components/StickyStackCmsSection";
 import DynamicPageHero from "../components/common/DynamicPageHero";
+import PodcastsSection from "../components/industry-insight/PodcastsSection";
 
 export default function IndustryInsightPage() {
   return (
@@ -51,6 +52,8 @@ export default function IndustryInsightPage() {
           fallbackHeading="Articles & Perspectives"
         />
       </section>
+       {/* Podcasts Section */}
+      <PodcastsSection />
       <MembersCarousel
         title="Our Members"
         members={membersData}

@@ -32,7 +32,7 @@ export default function NewsCardGrid({
             category={item.category}
             categoryLink={item.categoryLink}
             slug={item.slug}
-            detailBasePath="/publication/news"
+            detailBasePath="/industry-insight/news"
           />
         ))}
       </div>

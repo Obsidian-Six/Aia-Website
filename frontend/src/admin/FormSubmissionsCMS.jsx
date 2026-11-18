@@ -27,6 +27,7 @@ const FORM_TYPES = [
   { value: "aia-membership", label: "AIA Membership" },
   { value: "system-integrator", label: "System Integrator" },
   { value: "technology-provider", label: "Technology Provider" },
+  { value: "brochure-enquiry", label: "Brochure Enquiry" },
 ];
 
 const STATUSES = [
@@ -271,7 +272,9 @@ export default function FormSubmissionsCMS() {
 
         <div className="bg-white border border-slate-200 rounded-2xl p-5">
           <p className="text-sm text-slate-500">Forms Supported</p>
-          <p className="text-3xl font-black text-slate-800 mt-2">5</p>
+          <p className="text-3xl font-black text-slate-800 mt-2">
+  {FORM_TYPES.length}
+</p>
         </div>
       </div>
 

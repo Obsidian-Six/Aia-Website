@@ -72,14 +72,134 @@
 
 
 
+// import mongoose from "mongoose";
+
+// const FORM_TYPES = [
+//   "contact-us",
+//   "general-inquiry",
+//   "aia-membership",
+//   "system-integrator",
+//   "technology-provider",
+// ];
+
+// const formSubmissionSchema = new mongoose.Schema(
+//   {
+//     formType: {
+//       type: String,
+//       required: true,
+//       enum: FORM_TYPES,
+//       index: true,
+//     },
+
+//     // URL/page from which the form was submitted
+//     sourcePage: {
+//       type: String,
+//       trim: true,
+//       default: "",
+//     },
+
+//     // Stores the complete original form payload
+//     // so no form-specific fields are lost.
+//     data: {
+//       type: mongoose.Schema.Types.Mixed,
+//       required: true,
+//     },
+
+//     status: {
+//       type: String,
+//       enum: ["new", "contacted", "closed"],
+//       default: "new",
+//       index: true,
+//     },
+
+//     isRead: {
+//       type: Boolean,
+//       default: false,
+//     },
+//   },
+//   {
+//     timestamps: true,
+//     minimize: false,
+//   }
+// );
+
+// formSubmissionSchema.index({ formType: 1, createdAt: -1 });
+
+// const FormSubmission = mongoose.model(
+//   "FormSubmission",
+//   formSubmissionSchema
+// );
+
+// export { FORM_TYPES };
+// export default FormSubmission;
+
+
+
+// import mongoose from "mongoose";
+
+// export const FORM_TYPES = [
+//   "contact-us",
+//   "general-inquiry",
+//   "aia-membership",
+//   "system-integrator",
+//   "technology-provider",
+//   "brochure-enquiry",
+// ];
+
+// const formSubmissionSchema = new mongoose.Schema(
+//   {
+//     formType: {
+//       type: String,
+//       required: true,
+//       enum: FORM_TYPES,
+//       index: true,
+//     },
+
+//     sourcePage: {
+//       type: String,
+//       default: "",
+//     },
+
+//     data: {
+//       type: mongoose.Schema.Types.Mixed,
+//       default: {},
+//     },
+
+//     status: {
+//       type: String,
+//       enum: ["new", "contacted", "closed"],
+//       default: "new",
+//     },
+
+//     isRead: {
+//       type: Boolean,
+//       default: false,
+//     },
+//   },
+//   {
+//     timestamps: true,
+//     minimize: false,
+//   }
+// );
+
+//  const FormSubmission = mongoose.model(
+//   "FormSubmission",
+//   formSubmissionSchema
+// );
+
+//  export { FORM_TYPES };
+//  export default FormSubmission;
+
+
 import mongoose from "mongoose";
 
-const FORM_TYPES = [
+export const FORM_TYPES = [
   "contact-us",
   "general-inquiry",
   "aia-membership",
   "system-integrator",
   "technology-provider",
+  "brochure-enquiry",
 ];
 
 const formSubmissionSchema = new mongoose.Schema(
@@ -91,25 +211,20 @@ const formSubmissionSchema = new mongoose.Schema(
       index: true,
     },
 
-    // URL/page from which the form was submitted
     sourcePage: {
       type: String,
-      trim: true,
       default: "",
     },
 
-    // Stores the complete original form payload
-    // so no form-specific fields are lost.
     data: {
       type: mongoose.Schema.Types.Mixed,
-      required: true,
+      default: {},
     },
 
     status: {
       type: String,
       enum: ["new", "contacted", "closed"],
       default: "new",
-      index: true,
     },
 
     isRead: {
@@ -123,12 +238,8 @@ const formSubmissionSchema = new mongoose.Schema(
   }
 );
 
-formSubmissionSchema.index({ formType: 1, createdAt: -1 });
+const FormSubmission =
+  mongoose.models.FormSubmission ||
+  mongoose.model("FormSubmission", formSubmissionSchema);
 
-const FormSubmission = mongoose.model(
-  "FormSubmission",
-  formSubmissionSchema
-);
-
-export { FORM_TYPES };
 export default FormSubmission;

@@ -140,7 +140,107 @@
 
 
 
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
+// import { Navigate, useParams } from "react-router-dom";
+
+// import {
+//   getArticleBySlug,
+//   getArticles,
+// } from "../../services/api";
+
+// import PublicationDetailLayout from "../../components/PublicationDetailLayout";
+
+// export default function ArticleDetailsPage() {
+//   const { slug } = useParams();
+
+//   const [article, setArticle] = useState(null);
+//   const [articles, setArticles] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [notFound, setNotFound] = useState(false);
+
+//   useEffect(() => {
+//     let mounted = true;
+
+//     const loadArticle = async () => {
+//       setLoading(true);
+//       setNotFound(false);
+
+//       try {
+//         const [articleData, allArticles] = await Promise.all([
+//           getArticleBySlug(slug),
+//           getArticles(),
+//         ]);
+
+//         if (!mounted) return;
+
+//         setArticle(articleData);
+//         setArticles(allArticles || []);
+//         setNotFound(!articleData);
+//       } catch (error) {
+//         console.error("Article detail error:", error);
+
+//         if (mounted) {
+//           setNotFound(true);
+//         }
+//       } finally {
+//         if (mounted) setLoading(false);
+//       }
+//     };
+
+//     loadArticle();
+
+//     return () => {
+//       mounted = false;
+//     };
+//   }, [slug]);
+
+//   if (loading) {
+//     return (
+//       <div className="flex min-h-screen items-center justify-center">
+//         Loading article...
+//       </div>
+//     );
+//   }
+
+//   if (notFound || !article) {
+//     return <Navigate to="/publication/articles" replace />;
+//   }
+
+//   const sortedArticles = [...articles].sort(
+//     (a, b) => (a.order || 0) - (b.order || 0)
+//   );
+
+//   const currentIndex = sortedArticles.findIndex(
+//     (item) =>
+//       item._id === article._id ||
+//       item.slug === article.slug
+//   );
+
+//   const previousArticle =
+//     currentIndex > 0
+//       ? sortedArticles[currentIndex - 1]
+//       : null;
+
+//   const nextArticle =
+//     currentIndex >= 0 &&
+//     currentIndex < sortedArticles.length - 1
+//       ? sortedArticles[currentIndex + 1]
+//       : null;
+
+//   return (
+//     <PublicationDetailLayout
+//       publication={article}
+//       previousArticle={previousArticle}
+//       nextArticle={nextArticle}
+//       backLink="/publication/articles"
+//       backLabel="Back to all articles"
+//       basePath="/publication/articles"
+//     />
+//   );
+// }
+
+
+import React, { useEffect, useRef, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 
 import {
@@ -149,9 +249,12 @@ import {
 } from "../../services/api";
 
 import PublicationDetailLayout from "../../components/PublicationDetailLayout";
+import TextToSpeech from "../../components/common/TextToSpeech";
 
 export default function ArticleDetailsPage() {
   const { slug } = useParams();
+
+  const contentRef = useRef(null);
 
   const [article, setArticle] = useState(null);
   const [articles, setArticles] = useState([]);
@@ -203,7 +306,7 @@ export default function ArticleDetailsPage() {
   }
 
   if (notFound || !article) {
-    return <Navigate to="/publication/articles" replace />;
+    return <Navigate to="/industry-insight/articles" replace />;
   }
 
   const sortedArticles = [...articles].sort(
@@ -228,13 +331,20 @@ export default function ArticleDetailsPage() {
       : null;
 
   return (
-    <PublicationDetailLayout
-      publication={article}
-      previousArticle={previousArticle}
-      nextArticle={nextArticle}
-      backLink="/publication/articles"
+    <div ref={contentRef}>
+      <TextToSpeech
+        contentRef={contentRef}
+        title="Listen to this article"
+      />
+
+      <PublicationDetailLayout
+        publication={article}
+        previousArticle={previousArticle}
+        nextArticle={nextArticle}
+        backLink="/industry-insight/articles"
       backLabel="Back to all articles"
-      basePath="/publication/articles"
-    />
+      basePath="/industry-insight/articles"
+      />
+    </div>
   );
 }

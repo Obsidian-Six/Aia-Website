@@ -46,6 +46,43 @@ const faqData = [
     answer:
       "Yes, membership categories can be reviewed when the company's business activities or eligibility criteria change. The membership team can help determine the appropriate category.",
   },
+  {
+    id: 7,
+    question:
+      "What's the difference between Technology Provider and System Integrator membership?",
+    answer:
+      "echnology Provider covers companies building automation hardware, software, and control systems. System Integrator covers firms that implement and commission automation solutions on the factory floor. If your company does both, your membership category is determined by your dominant area Of business.",
+  },
+  {
+    id: 8,
+    question:
+      "I'm a manufacturer — can I join AIA?",
+    answer:"AIA membership is limited to technology providers and system integrators. Manufacturers and other automation users connect through Samarth Community instead — start with the self-assessment on the SME Resource Center.",
+  },
+  {
+    id: 9,
+    question:
+      "Is membership open to outside India?",
+    answer:"NO — membership is for companies based in India.",
+  },
+  {
+    id: 10,
+    question:
+      "Is there a minimum size or years-in-business requirement to apply?",
+    answer:"NO minimum requirement.",
+  },
+  {
+    id: 11,
+    question:
+      "How is renewed?",
+    answer:"Annually",
+  },
+  {
+    id: 12,
+    question:
+      "As a member, do I get access to Talent Connect's Find Talent pool?",
+    answer:"Yes — this is a stated member benefit. Members get first access to candidates before they're opened up more broadly.",
+  },
 ];
 
 export default function FAQSections() {

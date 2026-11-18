@@ -16,7 +16,7 @@ export default function SplitFeatureCard({
   buttonLink,
   name,
 }) {
-    console.log(buttonText)
+    // console.log(buttonText)
   const isDark = background === "dark";
 
   return (

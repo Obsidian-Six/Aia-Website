@@ -21,8 +21,9 @@ const BlendedLearning = ({ sampleUrl = "#" }) => {
             View Sample
           </a> */}
           <ViewSampleButton
-           href="/aims-objectives/campus+connect+sampler.pdf"
-          label="View Sample" />
+  href="/samples/campus-connect/download"
+  label="View Sample"
+/>
         </div>
 
         {/* Content */}

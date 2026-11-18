@@ -24,12 +24,12 @@ export default function SliderIntroCard({
       />
 
       {eyebrow && (
-        <p className="relative z-10 text-sm font-medium sm:text-base lg:text-[17px]">
+        <p className="relative z-10 text-sm font-medium sm:text-base lg:text-[16px]">
           {eyebrow}
         </p>
       )}
 
-      <h2 className="relative z-10 max-w-[300px] text-[23px] font-medium leading-[1.18] tracking-[-0.025em] sm:text-[26px] md:text-[20px] lg:text-[24px] xl:text-[24px]">
+      <h2 className="relative z-10 max-w-[300px] text-[23px] font-medium leading-[1.18] tracking-[-0.025em] sm:text-[26px] md:text-[16px] lg:text-[20px] xl:text-[20px]">
         {title}
       </h2>
     </article>

@@ -1025,52 +1025,19 @@ export const deleteInitiative = async (id) => {
   return res.data;
 };
 
+
 // =======================
 // PILLAR FOOTPRINTS APIS
 // CAMPUS CONNECT
 // =======================
 
 export const getPillarFootprints = async () => {
-  try {
-    const res = await api.get('/pillar-footprints');
-    return res.data.data || [];
-  } catch (err) {
-    console.warn('Fallback pillar footprints:', err.message);
-
-    return [
-      {
-        _id: 'fp-1',
-        title: 'Knowledge infrastructure',
-        description:
-          'Comprising curriculum, exercises and teaching learning material.',
-        imageUrl: '/Campusconnect/Knowledge Infrastructure.png',
-        brochureUrl: '#',
-        isHighlighted: false,
-      },
-      {
-        _id: 'fp-2',
-        title: 'Physical infrastructure',
-        description:
-          'Comprising custom-fit workstation hardware and modern software toolkits.',
-        imageUrl: '/Campusconnect/Physical Infrastructure.png',
-        brochureUrl: '#',
-        isHighlighted: true,
-      },
-      {
-        _id: 'fp-3',
-        title: 'Management infrastructure',
-        description:
-          'Comprising project management and evaluations for continuous improvement.',
-        imageUrl: '/Campusconnect/Management Infrastructure.png',
-        brochureUrl: '#',
-        isHighlighted: false,
-      },
-    ];
-  }
+  const res = await api.get("/pillar-footprints");
+  return res.data.data || [];
 };
 
 export const createPillarFootprint = async (data) => {
-  const res = await api.post('/pillar-footprints', data);
+  const res = await api.post("/pillar-footprints", data);
   return res.data.data || res.data;
 };
 
@@ -1083,6 +1050,7 @@ export const deletePillarFootprint = async (id) => {
   const res = await api.delete(`/pillar-footprints/${id}`);
   return res.data;
 };
+
 
 // =======================
 // CAMPUS EVENTS APIS
@@ -1641,4 +1609,18 @@ export const submitGeneralInquiry = async (formData) => {
   const res = await api.post("/inquiries", formData);
 
   return res.data.data || res.data;
+};
+
+
+// =======================
+// CONVERSATIONS API
+// =======================
+
+// Public - Published conversations
+export const getPublishedConversations = async () => {
+  const response = await api.get("/conversations/published");
+
+  console.log("Published Conversations API Response:", response.data);
+
+  return response.data;
 };

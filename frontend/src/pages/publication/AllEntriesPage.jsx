@@ -245,8 +245,8 @@ export default function AllEntriesPage() {
                   slug={item.slug}
                   detailBasePath={
                     item.entryType === "article"
-                      ? "/publication/articles"
-                      : "/publication/news"
+                      ? "/industry-insight/articles"
+                      : "/industry-insight/news"
                   }
                 />
               </div>
@@ -279,14 +279,14 @@ export default function AllEntriesPage() {
       <section className="border-t border-gray-100 bg-[#F8FAFC] px-5 py-8 sm:px-8 lg:px-12">
         <div className="mx-auto flex max-w-[1250px] flex-wrap items-center justify-center gap-6 text-sm">
           <Link
-            to="/publication/articles"
+            to="/industry-insight/articles"
             className="font-medium text-[#20466C] transition hover:underline"
           >
             Browse All Articles
           </Link>
 
           <Link
-            to="/publication/news"
+            to="/industry-insight/news"
             className="font-medium text-[#20466C] transition hover:underline"
           >
             Browse All News

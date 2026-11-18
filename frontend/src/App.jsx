@@ -276,7 +276,7 @@ export default function App() {
           }
         /> */}
         <Route
-  path="/publication/all-entries"
+  path="/industry-insight/all-entries"
   element={
     <PublicLayout>
       <AllEntriesPage />
@@ -285,7 +285,7 @@ export default function App() {
 />
 
         <Route
-          path="/publication/articles"
+          path="/industry-insight/articles"
           element={
             <PublicLayout>
               <ArticlesPage />
@@ -294,7 +294,7 @@ export default function App() {
         />
 
         <Route
-          path="/publication/articles/:slug"
+          path="/industry-insight/articles/:slug"
           element={
             <PublicLayout>
               <ArticleDetailsPage />
@@ -304,7 +304,7 @@ export default function App() {
         {/* News */}
 
         <Route
-          path="/publication/news"
+          path="/industry-insight/news"
           element={
             <PublicLayout>
               <NewsPage />
@@ -313,7 +313,7 @@ export default function App() {
         />
 
         <Route
-          path="/publication/news/:slug"
+          path="/industry-insight/news/:slug"
           element={
             <PublicLayout>
               <NewsDetailsPage />

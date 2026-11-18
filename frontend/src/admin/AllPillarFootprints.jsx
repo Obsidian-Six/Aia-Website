@@ -1,357 +1,938 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { Edit, Trash2, CheckCircle2, Loader2, RefreshCw, Plus, ExternalLink, UploadCloud, Image as ImageIcon } from 'lucide-react'
-import { getPillarFootprints, deletePillarFootprint, updatePillarFootprint } from '../services/api'
 
-export default function AllPillarFootprints({ onNavigate }) {
-  const [footprints, setFootprints] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState('')
-  const [msg, setMsg] = useState('')
+import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Plus,
+  Search,
+  Pencil,
+  Trash2,
+  X,
+  Upload,
+  Image as ImageIcon,
+  FileText,
+  Loader2,
+  RefreshCw,
+  Eye,
+  EyeOff,
+  Star,
+  GripVertical,
+  AlertCircle,
+  CheckCircle2,
+} from "lucide-react";
 
-  // Edit modal state
-  const [editingItem, setEditingItem] = useState(null)
-  const [editTitle, setEditTitle] = useState('')
-  const [editDescription, setEditDescription] = useState('')
-  const [editBrochureUrl, setEditBrochureUrl] = useState('')
-  const [editIsHighlighted, setEditIsHighlighted] = useState(false)
-  const [editImagePreview, setEditImagePreview] = useState('')
-  const [editImageFile, setEditImageFile] = useState(null)
-  const [isSaving, setIsSaving] = useState(false)
-  const editFileInputRef = useRef(null)
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+).replace(/\/$/, "");
 
-  const MAX_TITLE_LEN = 60
-  const MAX_DESC_LEN = 220
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 30000,
+});
 
-  const fetchFootprints = async () => {
-    setLoading(true)
-    try {
-      const data = await getPillarFootprints()
-      setFootprints(data)
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setLoading(false)
-    }
+api.interceptors.request.use((config) => {
+  const token =
+    typeof window !== "undefined"
+      ? sessionStorage.getItem("aia_admin_token")
+      : null;
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+
+  return config;
+});
+
+const EMPTY_FORM = {
+  title: "",
+  description: "",
+  isHighlighted: false,
+  order: 0,
+  isActive: true,
+};
+
+const getErrorMessage = (error) =>
+  error?.response?.data?.message ||
+  error?.message ||
+  "Something went wrong. Please try again.";
+
+const getResponseData = (response) => {
+  const data = response?.data?.data;
+  return Array.isArray(data) ? data : [];
+};
+
+export default function AllPillarFootprints() {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
+
+  const [showForm, setShowForm] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+
+  const [formData, setFormData] = useState(EMPTY_FORM);
+
+  const [imageFile, setImageFile] = useState(null);
+  const [brochureFile, setBrochureFile] = useState(null);
+
+  const [imagePreview, setImagePreview] = useState("");
+  const [existingBrochure, setExistingBrochure] = useState(false);
+  const [existingBrochureName, setExistingBrochureName] = useState("");
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  // -----------------------------------------
+  // FETCH ALL PILLAR FOOTPRINTS
+  // -----------------------------------------
+  const fetchItems = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await api.get("/pillar-footprints");
+
+      setItems(getResponseData(response));
+    } catch (err) {
+      console.error("Fetch pillar footprints error:", err);
+      setError(getErrorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    fetchFootprints()
-  }, [])
+    fetchItems();
+  }, [fetchItems]);
 
-  const handleDelete = async (id, title) => {
-    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) return
-    setActionLoading(id)
+  // -----------------------------------------
+  // CLEANUP IMAGE PREVIEW URL
+  // -----------------------------------------
+  useEffect(() => {
+    return () => {
+      if (imagePreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
+  // -----------------------------------------
+  // RESET FORM
+  // -----------------------------------------
+  const resetForm = () => {
+    setFormData({
+      ...EMPTY_FORM,
+      order: items.length,
+    });
+
+    setImageFile(null);
+    setBrochureFile(null);
+    setImagePreview("");
+    setExistingBrochure(false);
+    setExistingBrochureName("");
+    setEditingId(null);
+    setError("");
+  };
+
+  const closeForm = () => {
+    if (saving) return;
+
+    setShowForm(false);
+    resetForm();
+  };
+
+  // -----------------------------------------
+  // OPEN ADD FORM
+  // -----------------------------------------
+  const handleAddNew = () => {
+    resetForm();
+    setShowForm(true);
+  };
+
+  // -----------------------------------------
+  // INPUT CHANGE
+  // -----------------------------------------
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  // -----------------------------------------
+  // IMAGE SELECT
+  // -----------------------------------------
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setError("Please select a valid image file.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must be less than 5MB.");
+      e.target.value = "";
+      return;
+    }
+
+    setError("");
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  // -----------------------------------------
+  // BROCHURE PDF SELECT
+  // -----------------------------------------
+  const handleBrochureChange = (e) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    const isPdf =
+      file.type === "application/pdf" ||
+      file.name.toLowerCase().endsWith(".pdf");
+
+    if (!isPdf) {
+      setError("Only PDF files are allowed.");
+      e.target.value = "";
+      return;
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      setError("PDF size must be less than 20MB.");
+      e.target.value = "";
+      return;
+    }
+
+    setError("");
+    setBrochureFile(file);
+  };
+
+  // -----------------------------------------
+  // EDIT PILLAR
+  // -----------------------------------------
+  const handleEdit = (item) => {
+    setEditingId(item._id);
+
+    setFormData({
+      title: item.title || "",
+      description: item.description || "",
+      isHighlighted: Boolean(item.isHighlighted),
+      order: item.order ?? 0,
+      isActive: item.isActive !== false,
+    });
+
+    setImageFile(null);
+    setBrochureFile(null);
+    setImagePreview(item.imageUrl || "");
+
+    setExistingBrochure(Boolean(item.hasBrochure));
+    setExistingBrochureName(item.brochureFileName || "");
+
+    setError("");
+    setSuccess("");
+    setShowForm(true);
+  };
+
+  // -----------------------------------------
+  // SAVE / UPDATE PILLAR
+  // -----------------------------------------
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setSuccess("");
+
+    if (!formData.title.trim()) {
+      setError("Please enter pillar title.");
+      return;
+    }
+
+    if (formData.title.trim().length > 60) {
+      setError("Title cannot exceed 60 characters.");
+      return;
+    }
+
+    if (!formData.description.trim()) {
+      setError("Please enter pillar description.");
+      return;
+    }
+
+    if (formData.description.trim().length > 300) {
+      setError("Description cannot exceed 300 characters.");
+      return;
+    }
+
+    if (!editingId && !imageFile) {
+      setError("Please upload a pillar image.");
+      return;
+    }
+
     try {
-      await deletePillarFootprint(id)
-      setFootprints(prev => prev.filter(f => f._id !== id))
-      setMsg(`Pillar Footprint "${title}" deleted!`)
-      setTimeout(() => setMsg(''), 3000)
-    } catch (err) {
-      console.error(err)
-      alert(`Failed to delete: ${err.response?.data?.message || err.message}`)
-    } finally {
-      setActionLoading('')
-    }
-  }
+      setSaving(true);
 
-  const openEditModal = (item) => {
-    setEditingItem(item)
-    setEditTitle(item.title)
-    setEditDescription(item.description)
-    setEditBrochureUrl(item.brochureUrl || '#')
-    setEditIsHighlighted(Boolean(item.isHighlighted))
-    setEditImagePreview(item.imageUrl)
-    setEditImageFile(null)
-  }
+      const payload = new FormData();
 
-  const handleEditFileChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      setEditImageFile(file)
-      setEditImagePreview(URL.createObjectURL(file))
-    }
-  }
+      payload.append("title", formData.title.trim());
+      payload.append("description", formData.description.trim());
+      payload.append(
+        "isHighlighted",
+        String(formData.isHighlighted)
+      );
+      payload.append("order", String(Number(formData.order) || 0));
+      payload.append("isActive", String(formData.isActive));
 
-  const handleSaveEdit = async (e) => {
-    e.preventDefault()
-    if (!editingItem) return
-
-    if (editTitle.trim().length > MAX_TITLE_LEN) {
-      alert(`Title exceeds ${MAX_TITLE_LEN} characters.`)
-      return
-    }
-    if (editDescription.trim().length > MAX_DESC_LEN) {
-      alert(`Description exceeds ${MAX_DESC_LEN} characters.`)
-      return
-    }
-
-    setIsSaving(true)
-    try {
-      let finalImageUrl = editImagePreview
-      if (editImageFile) {
-        finalImageUrl = await new Promise((resolve, reject) => {
-          const reader = new FileReader()
-          reader.readAsDataURL(editImageFile)
-          reader.onload = () => resolve(reader.result)
-          reader.onerror = err => reject(err)
-        })
+      if (imageFile) {
+        payload.append("image", imageFile);
       }
 
-      const updated = await updatePillarFootprint(editingItem._id, {
-        title: editTitle.trim(),
-        description: editDescription.trim(),
-        brochureUrl: editBrochureUrl.trim(),
-        isHighlighted: editIsHighlighted,
-        imageUrl: finalImageUrl,
-      })
-
-      const finalItem = updated?._id ? updated : {
-        ...editingItem,
-        title: editTitle.trim(),
-        description: editDescription.trim(),
-        brochureUrl: editBrochureUrl.trim(),
-        isHighlighted: editIsHighlighted,
-        imageUrl: finalImageUrl,
+      if (brochureFile) {
+        payload.append("brochurePdf", brochureFile);
       }
 
-      setFootprints(prev => prev.map(f => f._id === editingItem._id ? finalItem : f))
-      setEditingItem(null)
-      setMsg('Pillar footprint updated successfully!')
-      setTimeout(() => setMsg(''), 3000)
-    } catch (err) {
-      console.error(err)
-      alert(`Failed to save: ${err.response?.data?.message || err.message}`)
-    } finally {
-      setIsSaving(false)
-    }
-  }
+      if (editingId) {
+        await api.put(`/pillar-footprints/${editingId}`, payload);
+        setSuccess("Pillar footprint updated successfully.");
+      } else {
+        await api.post("/pillar-footprints", payload);
+        setSuccess("Pillar footprint created successfully.");
+      }
 
+      setShowForm(false);
+      resetForm();
+
+      await fetchItems();
+    } catch (err) {
+      console.error("Save pillar footprint error:", err);
+      setError(getErrorMessage(err));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // -----------------------------------------
+  // DELETE PILLAR
+  // -----------------------------------------
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this pillar footprint? Its uploaded image and brochure will also be removed from Cloudinary."
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setDeletingId(id);
+      setError("");
+      setSuccess("");
+
+      await api.delete(`/pillar-footprints/${id}`);
+
+      setSuccess("Pillar footprint deleted successfully.");
+
+      await fetchItems();
+    } catch (err) {
+      console.error("Delete pillar footprint error:", err);
+      setError(getErrorMessage(err));
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  // -----------------------------------------
+  // FILTER ITEMS
+  // -----------------------------------------
+  const filteredItems = items.filter((item) => {
+    const matchesSearch =
+      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.description?.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesStatus =
+      filterStatus === "all" ||
+      (filterStatus === "active" && item.isActive !== false) ||
+      (filterStatus === "inactive" && item.isActive === false);
+
+    return matchesSearch && matchesStatus;
+  });
+
+  // -----------------------------------------
+  // UI
+  // -----------------------------------------
   return (
-    <div className="w-full text-left space-y-6">
-      
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-gray-200 shadow-xs">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-black text-[#1E293B] tracking-tight">
-            All Pillar Footprints
-          </h2>
-          <p className="text-xs sm:text-sm text-gray-500 mt-1">
-            Manage cards displayed under "Our 3 Pillars Footprint" on the Campus Connect page
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#F5F6F8] p-4 sm:p-6 lg:p-8">
+      <div className="mx-auto max-w-[1500px]">
 
-        <div className="flex items-center gap-3">
-          <button
-            onClick={fetchFootprints}
-            className="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 text-gray-600 transition"
-            title="Refresh"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          </button>
-          
-          <button
-            onClick={() => onNavigate('add-pillar-footprint')}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2563EB] hover:bg-blue-700 text-white font-bold text-xs shadow-md transition"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add Footprint</span>
-          </button>
-        </div>
-      </div>
+        {/* HEADER */}
+        <div className="mb-7 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+          <div>
+            <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#E52B18]">
+              AIA Website CMS
+            </p>
 
-      {msg && (
-        <div className="p-4 rounded-xl bg-green-50 border border-green-200 text-green-800 text-sm flex items-center gap-2 shadow-xs">
-          <CheckCircle2 className="w-4 h-4 text-green-600" />
-          <span>{msg}</span>
-        </div>
-      )}
+            <h1 className="text-2xl font-bold text-[#17202B] sm:text-3xl">
+              All Pillar Footprints
+            </h1>
 
-      {/* Grid */}
-      {loading ? (
-        <div className="p-16 text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-blue-600 mx-auto mb-3" />
-          <p className="text-sm text-gray-500">Loading pillar footprints...</p>
-        </div>
-      ) : footprints.length === 0 ? (
-        <div className="bg-white rounded-2xl p-12 text-center border border-gray-200">
-          <h3 className="text-base font-bold text-gray-700">No Footprints Found</h3>
-          <button
-            onClick={() => onNavigate('add-pillar-footprint')}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#2563EB] text-white font-bold text-xs shadow mt-4"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Add First Footprint</span>
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {footprints.map((item, idx) => (
-            <div
-              key={item._id || idx}
-              className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-xs hover:shadow-lg transition flex flex-col justify-between"
+            <p className="mt-2 text-sm text-gray-500">
+              Manage pillar content, images and brochure PDFs.
+            </p>
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={fetchItems}
+              disabled={loading}
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:opacity-50"
             >
-              {/* Image Frame */}
-              <div className="relative h-52 bg-slate-100 overflow-hidden">
-                <img 
-                  src={item.imageUrl} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover" 
-                />
-                {item.isHighlighted && (
-                  <span className="absolute top-3 right-3 bg-[#E25238] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-sm">
-                    Highlighted
-                  </span>
-                )}
-              </div>
+              <RefreshCw
+                size={17}
+                className={loading ? "animate-spin" : ""}
+              />
+              Refresh
+            </button>
 
-              {/* Details */}
-              <div className="p-5 space-y-3">
-                <h3 className="text-lg font-black text-[#1E293B]">
-                  {item.title}
-                </h3>
-
-                <p className="text-xs text-gray-600 line-clamp-3 leading-relaxed">
-                  {item.description}
-                </p>
-
-                {/* Actions */}
-                <div className="pt-3 border-t border-gray-100 flex items-center justify-between">
-                  <button
-                    onClick={() => openEditModal(item)}
-                    className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                    title="Edit"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={() => handleDelete(item._id, item.title)}
-                    disabled={actionLoading === item._id}
-                    className="p-2 text-red-500 hover:text-red-700 hover:bg-red-50 rounded-lg transition"
-                    title="Delete"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
+            <button
+              type="button"
+              onClick={handleAddNew}
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#E52B18] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#C92313]"
+            >
+              <Plus size={18} />
+              Add New Pillar
+            </button>
+          </div>
         </div>
-      )}
 
-      {/* Edit Modal */}
-      {editingItem && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-gray-200 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-xl font-black text-[#1E293B] mb-5">
-              Edit Pillar Footprint
+        {/* ALERTS */}
+        {error && !showForm && (
+          <div className="mb-5 flex items-start gap-3 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+            <AlertCircle size={19} className="mt-0.5 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {success && !showForm && (
+          <div className="mb-5 flex items-start gap-3 rounded-md border border-green-200 bg-green-50 p-4 text-sm text-green-700">
+            <CheckCircle2 size={19} className="mt-0.5 shrink-0" />
+            <span>{success}</span>
+            <button
+              type="button"
+              onClick={() => setSuccess("")}
+              className="ml-auto"
+            >
+              <X size={17} />
+            </button>
+          </div>
+        )}
+
+        {/* STATS */}
+        <div className="mb-7 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-md border border-gray-200 bg-white p-5">
+            <p className="text-sm text-gray-500">Total Pillars</p>
+            <h3 className="mt-2 text-3xl font-bold text-[#17202B]">
+              {items.length}
             </h3>
+          </div>
 
-            <form onSubmit={handleSaveEdit} className="space-y-4">
-              
-              {/* Image Change */}
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1.5">
-                  Footprint Image
-                </label>
-                <div className="flex items-center gap-4">
-                  <div className="w-24 h-24 rounded-xl overflow-hidden bg-slate-100 border border-gray-300 shrink-0">
-                    <img src={editImagePreview} alt="Preview" className="w-full h-full object-cover" />
+          <div className="rounded-md border border-gray-200 bg-white p-5">
+            <p className="text-sm text-gray-500">Active Pillars</p>
+            <h3 className="mt-2 text-3xl font-bold text-green-600">
+              {items.filter((item) => item.isActive !== false).length}
+            </h3>
+          </div>
+
+          <div className="rounded-md border border-gray-200 bg-white p-5">
+            <p className="text-sm text-gray-500">Brochures Uploaded</p>
+            <h3 className="mt-2 text-3xl font-bold text-[#E52B18]">
+              {items.filter((item) => item.hasBrochure).length}
+            </h3>
+          </div>
+        </div>
+
+        {/* SEARCH + FILTER */}
+        <div className="mb-6 flex flex-col gap-3 rounded-md border border-gray-200 bg-white p-4 sm:flex-row">
+          <div className="relative flex-1">
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search pillar by title or description..."
+              className="w-full rounded-md border border-gray-200 py-3 pl-10 pr-4 text-sm outline-none focus:border-[#E52B18]"
+            />
+          </div>
+
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="rounded-md border border-gray-200 bg-white px-4 py-3 text-sm outline-none focus:border-[#E52B18]"
+          >
+            <option value="all">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+          </select>
+        </div>
+
+        {/* PILLAR LIST */}
+        <div className="overflow-hidden rounded-md border border-gray-200 bg-white">
+          <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+            <h2 className="font-bold text-[#17202B]">
+              Pillar Footprints
+            </h2>
+
+            <span className="text-xs text-gray-500">
+              {filteredItems.length} records
+            </span>
+          </div>
+
+          {loading ? (
+            <div className="flex min-h-[250px] items-center justify-center">
+              <Loader2 className="h-8 w-8 animate-spin text-[#E52B18]" />
+            </div>
+          ) : filteredItems.length === 0 ? (
+            <div className="flex min-h-[250px] flex-col items-center justify-center px-5 text-center">
+              <ImageIcon size={42} className="mb-4 text-gray-300" />
+
+              <h3 className="font-semibold text-gray-700">
+                No pillar footprints found
+              </h3>
+
+              <p className="mt-2 text-sm text-gray-500">
+                Add a new pillar or change your search filters.
+              </p>
+
+              {items.length === 0 && (
+                <button
+                  type="button"
+                  onClick={handleAddNew}
+                  className="mt-5 rounded-md bg-[#E52B18] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#C92313]"
+                >
+                  Add First Pillar
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="divide-y divide-gray-100">
+              {filteredItems.map((item, index) => (
+                <div
+                  key={item._id}
+                  className="flex flex-col gap-5 p-5 transition hover:bg-gray-50/70 lg:flex-row lg:items-center"
+                >
+                  {/* IMAGE */}
+                  <div className="relative h-[150px] w-full shrink-0 overflow-hidden rounded-md bg-gray-100 sm:w-[190px]">
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-full items-center justify-center">
+                        <ImageIcon
+                          size={35}
+                          className="text-gray-300"
+                        />
+                      </div>
+                    )}
+
+                    <span className="absolute left-2 top-2 rounded bg-black/70 px-2 py-1 text-[10px] font-bold text-white">
+                      ORDER: {item.order ?? index}
+                    </span>
                   </div>
-                  <div>
-                    <input
-                      type="file"
-                      ref={editFileInputRef}
-                      onChange={handleEditFileChange}
-                      accept="image/*"
-                      className="hidden"
-                    />
+
+                  {/* CONTENT */}
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <h3 className="text-lg font-bold text-[#17202B]">
+                        {item.title}
+                      </h3>
+
+                      {item.isHighlighted && (
+                        <span className="inline-flex items-center gap-1 rounded bg-orange-50 px-2 py-1 text-[10px] font-bold uppercase text-orange-600">
+                          <Star size={11} />
+                          Featured
+                        </span>
+                      )}
+
+                      {item.isActive === false ? (
+                        <span className="rounded bg-gray-100 px-2 py-1 text-[10px] font-bold uppercase text-gray-500">
+                          Inactive
+                        </span>
+                      ) : (
+                        <span className="rounded bg-green-50 px-2 py-1 text-[10px] font-bold uppercase text-green-600">
+                          Active
+                        </span>
+                      )}
+                    </div>
+
+                    <p className="max-w-3xl text-sm leading-6 text-gray-500">
+                      {item.description}
+                    </p>
+
+                    <div className="mt-4 flex flex-wrap items-center gap-4">
+                      <span className="inline-flex items-center gap-2 text-xs font-medium text-gray-500">
+                        <ImageIcon size={15} />
+                        Image uploaded
+                      </span>
+
+                      {item.hasBrochure ? (
+                        <span className="inline-flex items-center gap-2 text-xs font-medium text-green-600">
+                          <FileText size={15} />
+                          {item.brochureFileName || "PDF uploaded"}
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-2 text-xs font-medium text-gray-400">
+                          <FileText size={15} />
+                          No brochure
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* ACTIONS */}
+                  <div className="flex shrink-0 items-center gap-2 lg:justify-end">
                     <button
                       type="button"
-                      onClick={() => editFileInputRef.current?.click()}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs border border-gray-300 transition"
+                      onClick={() => handleEdit(item)}
+                      title="Edit pillar"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-600"
                     >
-                      <UploadCloud className="w-4 h-4 text-blue-600" />
-                      <span>Change Image</span>
+                      <Pencil size={17} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(item._id)}
+                      disabled={deletingId === item._id}
+                      title="Delete pillar"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-gray-200 bg-white text-gray-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+                    >
+                      {deletingId === item._id ? (
+                        <Loader2 size={17} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={17} />
+                      )}
                     </button>
                   </div>
                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* ========================================= */}
+      {/* ADD / EDIT MODAL */}
+      {/* ========================================= */}
+      {showForm && (
+        <div className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/60 p-3 backdrop-blur-sm sm:items-center sm:p-5">
+          <div className="my-auto w-full max-w-[750px] overflow-hidden rounded-md bg-white shadow-2xl">
+
+            {/* MODAL HEADER */}
+            <div className="flex items-center justify-between border-b border-gray-200 px-5 py-5 sm:px-7">
+              <div>
+                <h2 className="text-xl font-bold text-[#17202B]">
+                  {editingId ? "Edit Pillar Footprint" : "Add New Pillar"}
+                </h2>
+
+                <p className="mt-1 text-xs text-gray-500">
+                  Manage pillar details, image and brochure PDF.
+                </p>
               </div>
 
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-bold text-gray-700">Title</label>
-                  <span className="text-[10px] text-gray-400">{editTitle.length}/{MAX_TITLE_LEN}</span>
+              <button
+                type="button"
+                onClick={closeForm}
+                disabled={saving}
+                className="flex h-9 w-9 items-center justify-center rounded-md text-gray-500 hover:bg-gray-100 hover:text-black disabled:opacity-50"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* FORM */}
+            <form onSubmit={handleSubmit}>
+              <div className="max-h-[calc(100vh-180px)] space-y-6 overflow-y-auto p-5 sm:p-7">
+
+                {error && (
+                  <div className="flex items-start gap-2 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+                    <AlertCircle size={18} className="mt-0.5 shrink-0" />
+                    {error}
+                  </div>
+                )}
+
+                {/* TITLE */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-[#17202B]">
+                    Pillar Title <span className="text-red-500">*</span>
+                  </label>
+
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    maxLength={60}
+                    required
+                    placeholder="Enter pillar title"
+                    className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#E52B18] focus:ring-1 focus:ring-[#E52B18]"
+                  />
+
+                  <p className="mt-1 text-right text-xs text-gray-400">
+                    {formData.title.length}/60
+                  </p>
                 </div>
-                <input 
-                  type="text" 
-                  maxLength={MAX_TITLE_LEN}
-                  value={editTitle}
-                  onChange={(e) => setEditTitle(e.target.value)}
-                  required
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                />
-              </div>
 
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <label className="block text-xs font-bold text-gray-700">Description</label>
-                  <span className="text-[10px] text-gray-400">{editDescription.length}/{MAX_DESC_LEN}</span>
+                {/* DESCRIPTION */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-[#17202B]">
+                    Description <span className="text-red-500">*</span>
+                  </label>
+
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    maxLength={300}
+                    rows={4}
+                    required
+                    placeholder="Enter pillar description"
+                    className="w-full resize-none rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#E52B18] focus:ring-1 focus:ring-[#E52B18]"
+                  />
+
+                  <p className="mt-1 text-right text-xs text-gray-400">
+                    {formData.description.length}/300
+                  </p>
                 </div>
-                <textarea 
-                  rows={4}
-                  maxLength={MAX_DESC_LEN}
-                  value={editDescription}
-                  onChange={(e) => setEditDescription(e.target.value)}
-                  required
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                ></textarea>
+
+                {/* IMAGE UPLOAD */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-[#17202B]">
+                    Pillar Image{" "}
+                    {!editingId && (
+                      <span className="text-red-500">*</span>
+                    )}
+                  </label>
+
+                  <label className="flex min-h-[190px] cursor-pointer flex-col items-center justify-center overflow-hidden rounded-md border-2 border-dashed border-gray-300 bg-gray-50 transition hover:border-[#E52B18] hover:bg-red-50/30">
+                    {imagePreview ? (
+                      <div className="relative h-[190px] w-full">
+                        <img
+                          src={imagePreview}
+                          alt="Pillar preview"
+                          className="h-full w-full object-contain"
+                        />
+
+                        <span className="absolute bottom-2 right-2 rounded bg-black/70 px-3 py-1.5 text-xs font-semibold text-white">
+                          Change Image
+                        </span>
+                      </div>
+                    ) : (
+                      <>
+                        <Upload size={30} className="mb-3 text-gray-400" />
+
+                        <span className="text-sm font-semibold text-gray-700">
+                          Click to upload image
+                        </span>
+
+                        <span className="mt-2 text-xs text-gray-400">
+                          JPG, PNG, WEBP (Maximum 5MB)
+                        </span>
+                      </>
+                    )}
+
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/*"
+                      onChange={handleImageChange}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {imageFile && (
+                    <p className="mt-2 text-xs text-green-600">
+                      Selected: {imageFile.name}
+                    </p>
+                  )}
+
+                  {editingId && !imageFile && (
+                    <p className="mt-2 text-xs text-gray-400">
+                      Leave unchanged to keep the existing image.
+                    </p>
+                  )}
+                </div>
+
+                {/* PDF UPLOAD */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-[#17202B]">
+                    Brochure PDF
+                  </label>
+
+                  <label className="flex cursor-pointer items-center gap-4 rounded-md border-2 border-dashed border-gray-300 bg-gray-50 p-5 transition hover:border-[#E52B18] hover:bg-red-50/30">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-red-50 text-[#E52B18]">
+                      <FileText size={25} />
+                    </div>
+
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-semibold text-gray-700">
+                        {brochureFile
+                          ? brochureFile.name
+                          : existingBrochure
+                          ? existingBrochureName || "Existing brochure PDF"
+                          : "Upload brochure PDF"}
+                      </p>
+
+                      <p className="mt-1 text-xs text-gray-400">
+                        PDF format only · Maximum 20MB
+                      </p>
+                    </div>
+
+                    <span className="shrink-0 rounded-md border border-gray-300 bg-white px-3 py-2 text-xs font-semibold text-gray-600">
+                      Browse
+                    </span>
+
+                    <input
+                      type="file"
+                      accept="application/pdf,.pdf"
+                      onChange={handleBrochureChange}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {brochureFile && (
+                    <p className="mt-2 text-xs text-green-600">
+                      New PDF selected: {brochureFile.name}
+                    </p>
+                  )}
+
+                  {editingId && existingBrochure && !brochureFile && (
+                    <p className="mt-2 text-xs text-gray-400">
+                      Existing brochure will remain unchanged unless you
+                      upload a replacement.
+                    </p>
+                  )}
+
+                  {!editingId && (
+                    <p className="mt-2 text-xs text-gray-400">
+                      Brochure is optional. You can upload it now or later.
+                    </p>
+                  )}
+                </div>
+
+                {/* ORDER */}
+                <div>
+                  <label className="mb-2 block text-sm font-semibold text-[#17202B]">
+                    Display Order
+                  </label>
+
+                  <input
+                    type="number"
+                    name="order"
+                    value={formData.order}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none focus:border-[#E52B18]"
+                  />
+
+                  <p className="mt-1 text-xs text-gray-400">
+                    Lower numbers appear first.
+                  </p>
+                </div>
+
+                {/* CHECKBOXES */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <label className="flex cursor-pointer items-center gap-3 rounded-md border border-gray-200 p-4 transition hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      name="isHighlighted"
+                      checked={formData.isHighlighted}
+                      onChange={handleChange}
+                      className="h-4 w-4 accent-[#E52B18]"
+                    />
+
+                    <div>
+                      <span className="flex items-center gap-2 text-sm font-semibold text-[#17202B]">
+                        <Star size={15} className="text-orange-500" />
+                        Featured Pillar
+                      </span>
+
+                      <p className="mt-1 text-xs text-gray-400">
+                        Highlight this pillar on the website.
+                      </p>
+                    </div>
+                  </label>
+
+                  <label className="flex cursor-pointer items-center gap-3 rounded-md border border-gray-200 p-4 transition hover:bg-gray-50">
+                    <input
+                      type="checkbox"
+                      name="isActive"
+                      checked={formData.isActive}
+                      onChange={handleChange}
+                      className="h-4 w-4 accent-[#E52B18]"
+                    />
+
+                    <div>
+                      <span className="flex items-center gap-2 text-sm font-semibold text-[#17202B]">
+                        {formData.isActive ? (
+                          <Eye size={15} className="text-green-600" />
+                        ) : (
+                          <EyeOff size={15} className="text-gray-400" />
+                        )}
+                        Active Status
+                      </span>
+
+                      <p className="mt-1 text-xs text-gray-400">
+                        Show or hide this pillar on the website.
+                      </p>
+                    </div>
+                  </label>
+                </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Brochure Link</label>
-                <input 
-                  type="text" 
-                  value={editBrochureUrl}
-                  onChange={(e) => setEditBrochureUrl(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-300 outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                />
-              </div>
-
-              <div className="flex items-center gap-2 pt-1">
-                <input
-                  type="checkbox"
-                  id="editIsHighlighted"
-                  checked={editIsHighlighted}
-                  onChange={(e) => setEditIsHighlighted(e.target.checked)}
-                  className="w-4 h-4 rounded text-red-500 border-gray-300 focus:ring-red-400"
-                />
-                <label htmlFor="editIsHighlighted" className="text-xs text-gray-700 font-semibold cursor-pointer">
-                  Highlight Card (Fills button with Coral Red)
-                </label>
-              </div>
-
-              <div className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              {/* FORM FOOTER */}
+              <div className="flex flex-col-reverse gap-3 border-t border-gray-200 bg-gray-50 px-5 py-4 sm:flex-row sm:justify-end sm:px-7">
                 <button
                   type="button"
-                  onClick={() => setEditingItem(null)}
-                  className="px-5 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-50"
+                  onClick={closeForm}
+                  disabled={saving}
+                  className="rounded-md border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-100 disabled:opacity-50"
                 >
                   Cancel
                 </button>
+
                 <button
                   type="submit"
-                  disabled={isSaving}
-                  className="px-6 py-2.5 rounded-xl bg-[#2563EB] text-white text-sm font-bold shadow hover:bg-blue-700 disabled:opacity-50"
+                  disabled={saving}
+                  className="inline-flex items-center justify-center gap-2 rounded-md bg-[#E52B18] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#C92313] disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                  {isSaving ? 'Saving...' : 'Save Changes'}
+                  {saving ? (
+                    <>
+                      <Loader2 size={17} className="animate-spin" />
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={17} />
+                      {editingId ? "Update Pillar" : "Save Pillar"}
+                    </>
+                  )}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
     </div>
-  )
+  );
 }

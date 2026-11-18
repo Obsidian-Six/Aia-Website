@@ -312,7 +312,7 @@ export default function EventsSection() {
             <div className="pointer-events-none absolute inset-0 opacity-10 [background-image:radial-gradient(#fff_1px,transparent_1px)] [background-size:20px_20px]" />
 
             <div className="relative z-10">
-              <span className="mb-3 block text-[11px] font-medium">
+              <span className="mb-3 block text-[13px] font-medium">
                 Events
               </span>
 

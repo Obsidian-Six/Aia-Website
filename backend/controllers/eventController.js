@@ -1378,12 +1378,860 @@
 // };
 
 
+// import mongoose from "mongoose";
+// import { Event } from "../models/Event.js";
+// import cloudinary from "../config/cloudinary.js";
+// import uploadToCloudinary from "../utils/uploadToCloudinary.js";
+// import { hasBrochureAccess } from "../utils/brochureAccess.js";
+
+// const EVENT_FOLDER = "AIA-Project-Assets/Events";
+
+// const allowedCategories = [
+//   "Conference",
+//   "Workshops",
+//   "Webinars",
+//   "Training Program",
+//   "Exhibitions",
+// ];
+
+// const parseJSON = (value, fallback = {}) => {
+//   if (!value) return fallback;
+//   if (typeof value === "object") return value;
+
+//   try {
+//     return JSON.parse(value);
+//   } catch {
+//     return fallback;
+//   }
+// };
+
+// const slugify = (value = "") =>
+//   value
+//     .toLowerCase()
+//     .trim()
+//     .replace(/[^a-z0-9]+/g, "-")
+//     .replace(/^-|-$/g, "");
+
+// const makeUniqueSlug = async (title, excludeId = null) => {
+//   const base = slugify(title) || `event-${Date.now()}`;
+//   let slug = base;
+//   let count = 1;
+
+//   while (
+//     await Event.exists({
+//       slug,
+//       ...(excludeId ? { _id: { $ne: excludeId } } : {}),
+//     })
+//   ) {
+//     slug = `${base}-${count++}`;
+//   }
+
+//   return slug;
+// };
+
+// const normalizeBoolean = (value, fallback = true) => {
+//   if (value === undefined) return fallback;
+//   return value === true || value === "true";
+// };
+
+// const getFilesByField = (files = []) => {
+//   const result = {};
+
+//   if (Array.isArray(files)) {
+//     files.forEach((file) => {
+//       result[file.fieldname] = file;
+//     });
+//   } else if (files && typeof files === "object") {
+//     Object.entries(files).forEach(([field, fieldFiles]) => {
+//       result[field] = Array.isArray(fieldFiles)
+//         ? fieldFiles[0]
+//         : fieldFiles;
+//     });
+//   }
+
+//   return result;
+// };
+
+// const uploadFile = async (file, folder) => {
+//   if (!file) return null;
+
+//   return uploadToCloudinary(file.path, folder);
+// };
+
+// const deleteCloudinaryImage = async (publicId) => {
+//   if (!publicId) return;
+
+//   try {
+//     await cloudinary.uploader.destroy(publicId, {
+//       resource_type: "image",
+//       invalidate: true,
+//     });
+//   } catch (error) {
+//     console.error("Cloudinary delete error:", publicId, error.message);
+//   }
+// };
+
+// const cleanDetailPage = (value = {}) => {
+//   const detail = parseJSON(value, {});
+//   const hero = detail.hero || {};
+//   const introduction = detail.introduction || {};
+//   const agenda = detail.agenda || {};
+
+//   return {
+//     hero: {
+//       ...hero,
+//       eyebrow: hero.eyebrow || "",
+//       title: hero.title || "",
+//       subtitle: hero.subtitle || "",
+//       description: hero.description || "",
+//       imageUrl: hero.imageUrl || hero.image || "",
+//       imagePublicId: hero.imagePublicId || "",
+//       imageAlt: hero.imageAlt || "",
+//       imagePosition: hero.imagePosition || "right",
+//       background: hero.background || "dark",
+//     },
+
+//     introduction: {
+//       ...introduction,
+//       eyebrow: introduction.eyebrow || "",
+//       title: introduction.title || "",
+//       description: introduction.description || "",
+//       blocks: Array.isArray(introduction.blocks)
+//         ? introduction.blocks
+//         : [],
+//       // Keep compatibility with previously saved events.
+//       sections: Array.isArray(introduction.sections)
+//         ? introduction.sections
+//         : [],
+//       eventInfo: introduction.eventInfo || {},
+//       partners: Array.isArray(introduction.partners)
+//         ? introduction.partners
+//         : [],
+//       supporters: Array.isArray(introduction.supporters)
+//         ? introduction.supporters
+//         : [],
+//       contact: introduction.contact || {},
+//     },
+
+//     agenda: {
+//       ...agenda,
+//       eyebrow: agenda.eyebrow || "",
+//       title: agenda.title || "",
+//       description: agenda.description || "",
+//       imageUrl: agenda.imageUrl || agenda.image || "",
+//       imagePublicId: agenda.imagePublicId || "",
+//       imageAlt: agenda.imageAlt || "",
+//       items: Array.isArray(agenda.items) ? agenda.items : [],
+//     },
+
+//     contentSections: Array.isArray(detail.contentSections)
+//       ? detail.contentSections
+//       : [],
+//   };
+// };
+
+// const getOldBlock = (oldBlocks, block, index) => {
+//   if (block?._key) {
+//     const match = oldBlocks.find((item) => item?._key === block._key);
+//     if (match) return match;
+//   }
+
+//   return oldBlocks[index] || {};
+// };
+
+// const uploadDetailImages = async (
+//   detailPage,
+//   files,
+//   oldDetailPage = {}
+// ) => {
+//   const uploaded = [];
+//   const oldImagesToDelete = [];
+
+//   const uploadAndReplace = async ({
+//     file,
+//     folder,
+//     currentPublicId,
+//     onSuccess,
+//   }) => {
+//     if (!file) return;
+
+//     const result = await uploadFile(file, folder);
+//     uploaded.push(result);
+
+//     if (currentPublicId && currentPublicId !== result.publicId) {
+//       oldImagesToDelete.push(currentPublicId);
+//     }
+
+//     onSuccess(result);
+//   };
+
+//   try {
+//     const oldHero = oldDetailPage?.hero || {};
+//     const oldAgenda = oldDetailPage?.agenda || {};
+
+//     await uploadAndReplace({
+//       file: files.heroImage,
+//       folder: `${EVENT_FOLDER}/Detail-Heroes`,
+//       currentPublicId: oldHero.imagePublicId,
+//       onSuccess: (result) => {
+//         detailPage.hero.imageUrl = result.url;
+//         detailPage.hero.imagePublicId = result.publicId;
+//       },
+//     });
+
+//     await uploadAndReplace({
+//       file: files.agendaImage,
+//       folder: `${EVENT_FOLDER}/Agendas`,
+//       currentPublicId: oldAgenda.imagePublicId,
+//       onSuccess: (result) => {
+//         detailPage.agenda.imageUrl = result.url;
+//         detailPage.agenda.imagePublicId = result.publicId;
+//       },
+//     });
+
+//     const oldBlocks = oldDetailPage?.introduction?.blocks || [];
+
+//     detailPage.introduction.blocks = await Promise.all(
+//       (detailPage.introduction.blocks || []).map(
+//         async (block, index) => {
+//           const oldBlock = getOldBlock(oldBlocks, block, index);
+//           const file = files[`introductionBlockImage_${index}`];
+
+//           const nextBlock = { ...block };
+
+//           await uploadAndReplace({
+//             file,
+//             folder: `${EVENT_FOLDER}/Introduction`,
+//             currentPublicId: oldBlock.imagePublicId,
+//             onSuccess: (result) => {
+//               nextBlock.imageUrl = result.url;
+//               nextBlock.image = result.url;
+//               nextBlock.imagePublicId = result.publicId;
+//             },
+//           });
+
+//           // Preserve old image when no new file is selected.
+//           if (!file) {
+//             nextBlock.imageUrl =
+//               nextBlock.imageUrl ||
+//               nextBlock.image ||
+//               oldBlock.imageUrl ||
+//               oldBlock.image ||
+//               "";
+
+//             nextBlock.imagePublicId =
+//               nextBlock.imagePublicId ||
+//               oldBlock.imagePublicId ||
+//               "";
+//           }
+
+//           return nextBlock;
+//         }
+//       )
+//     );
+
+//     const oldSections = oldDetailPage?.contentSections || [];
+
+//     detailPage.contentSections = await Promise.all(
+//       (detailPage.contentSections || []).map(
+//         async (section, index) => {
+//           const oldSection = oldSections[index] || {};
+//           const file = files[`contentSectionImage_${index}`];
+//           const nextSection = { ...section };
+
+//           await uploadAndReplace({
+//             file,
+//             folder: `${EVENT_FOLDER}/Content-Sections`,
+//             currentPublicId: oldSection.imagePublicId,
+//             onSuccess: (result) => {
+//               nextSection.imageUrl = result.url;
+//               nextSection.image = result.url;
+//               nextSection.imagePublicId = result.publicId;
+//             },
+//           });
+
+//           if (!file) {
+//             nextSection.imageUrl =
+//               nextSection.imageUrl ||
+//               nextSection.image ||
+//               oldSection.imageUrl ||
+//               oldSection.image ||
+//               "";
+
+//             nextSection.imagePublicId =
+//               nextSection.imagePublicId ||
+//               oldSection.imagePublicId ||
+//               "";
+//           }
+
+//           return nextSection;
+//         }
+//       )
+//     );
+
+
+//     // Upload Contributing Partners and Supported By logos.
+//     const uploadPartnerLogos = async ({
+//       items = [],
+//       oldItems = [],
+//       fieldPrefix,
+//       folder,
+//     }) => {
+//       const usedOldIndexes = new Set();
+
+//       const nextItems = await Promise.all(
+//         items.map(async (item, index) => {
+//           let oldIndex = -1;
+
+//           // First match by MongoDB subdocument ID.
+//           if (item?._id) {
+//             oldIndex = oldItems.findIndex(
+//               (oldItem, oldItemIndex) =>
+//                 !usedOldIndexes.has(oldItemIndex) &&
+//                 String(oldItem?._id) === String(item._id)
+//             );
+//           }
+
+//           // Fall back to the same array position.
+//           if (oldIndex === -1 && oldItems[index] && !usedOldIndexes.has(index)) {
+//             oldIndex = index;
+//           }
+
+//           const oldItem = oldIndex >= 0 ? oldItems[oldIndex] : {};
+
+//           if (oldIndex >= 0) {
+//             usedOldIndexes.add(oldIndex);
+//           }
+
+//           const file = files[`${fieldPrefix}_${index}`];
+//           const nextItem = { ...item };
+//           const oldPublicId = oldItem?.logoPublicId || "";
+
+//           if (file) {
+//             await uploadAndReplace({
+//               file,
+//               folder,
+//               currentPublicId: oldPublicId,
+//               onSuccess: (result) => {
+//                 nextItem.logo = result.url;
+//                 nextItem.logoPublicId = result.publicId;
+//               },
+//             });
+//           } else {
+//             // Preserve existing logo if the frontend did not send
+//             // a logo field. An explicitly empty logo means removal.
+//             if (nextItem.logo === undefined) {
+//               nextItem.logo = oldItem?.logo || "";
+//             }
+
+//             if (nextItem.logoPublicId === undefined) {
+//               nextItem.logoPublicId = oldPublicId;
+//             }
+
+//             // Delete the old Cloudinary image if its logo was removed.
+//             if (
+//               oldPublicId &&
+//               nextItem.logoPublicId !== oldPublicId
+//             ) {
+//               oldImagesToDelete.push(oldPublicId);
+//             }
+//           }
+
+//           return nextItem;
+//         })
+//       );
+
+//       // Delete logos belonging to partner/supporter rows removed
+//       // from the updated event.
+//       oldItems.forEach((oldItem, index) => {
+//         if (
+//           !usedOldIndexes.has(index) &&
+//           oldItem?.logoPublicId
+//         ) {
+//           oldImagesToDelete.push(oldItem.logoPublicId);
+//         }
+//       });
+
+//       return nextItems;
+//     };
+
+//     // Contributing Partners
+//     detailPage.introduction.partners = await uploadPartnerLogos({
+//       items: detailPage.introduction.partners || [],
+//       oldItems: oldDetailPage?.introduction?.partners || [],
+//       fieldPrefix: "partnerLogo",
+//       folder: `${EVENT_FOLDER}/Partners`,
+//     });
+
+//     // Supported By
+//     detailPage.introduction.supporters = await uploadPartnerLogos({
+//       items: detailPage.introduction.supporters || [],
+//       oldItems: oldDetailPage?.introduction?.supporters || [],
+//       fieldPrefix: "supporterLogo",
+//       folder: `${EVENT_FOLDER}/Supporters`,
+//     });
+
+
+//     return { uploaded, oldImagesToDelete };
+//   } catch (error) {
+//     await Promise.all(
+//       uploaded.map((item) => deleteCloudinaryImage(item.publicId))
+//     );
+
+//     throw error;
+//   }
+// };
+
+// const getAllPublicIds = (event) => {
+//   const detail = event.detailPage || {};
+//   const intro = detail.introduction || {};
+
+//   return [
+//     event.imagePublicId,
+//     detail.hero?.imagePublicId,
+//     detail.agenda?.imagePublicId,
+
+//     ...(intro.blocks || []).map((item) => item.imagePublicId),
+//     ...(detail.contentSections || []).map(
+//       (item) => item.imagePublicId
+//     ),
+
+//     ...(intro.partners || []).map((item) => item.logoPublicId),
+//     ...(intro.supporters || []).map((item) => item.logoPublicId),
+//   ].filter(Boolean);
+// };
+
+// // GET ALL PUBLIC EVENTS
+// export const getEvents = async (_req, res) => {
+//   try {
+//     const events = await Event.find({ isActive: true })
+//       .sort({ order: 1, createdAt: -1 })
+//       .lean();
+
+//     return res.json({ success: true, data: events });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // GET ALL EVENTS FOR ADMIN
+// export const getAdminEvents = async (_req, res) => {
+//   try {
+//     const events = await Event.find()
+//       .sort({ order: 1, createdAt: -1 })
+//       .lean();
+
+//     return res.json({ success: true, data: events });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // GET EVENT BY SLUG
+// export const getEventBySlug = async (req, res) => {
+//   try {
+//     const event = await Event.findOne({
+//       slug: req.params.slug,
+//       isActive: true,
+//     }).lean();
+
+//     if (!event) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Event not found.",
+//       });
+//     }
+
+//     return res.json({ success: true, data: event });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // CREATE EVENT
+// export const createEvent = async (req, res) => {
+//   let uploadedCard = null;
+//   let uploadedDetail = [];
+
+//   try {
+//     const files = getFilesByField(req.files);
+
+//     const title = String(req.body.title || req.body.heading || "").trim();
+//     const description = String(
+//       req.body.description || req.body.text || ""
+//     ).trim();
+//     const eventLink = String(
+//       req.body.eventLink || req.body.link || ""
+//     ).trim();
+//     const category = String(
+//       req.body.category || "Conference"
+//     ).trim();
+
+//     if (!title || title.length > 70) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Event heading is required and must be under 70 characters.",
+//       });
+//     }
+
+//     if (description.length > 220) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Event description cannot exceed 220 characters.",
+//       });
+//     }
+
+//     if (!eventLink) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Event redirect link is required.",
+//       });
+//     }
+
+//     if (!allowedCategories.includes(category)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid event category.",
+//       });
+//     }
+
+//     if (!files.image) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Event card image is required.",
+//       });
+//     }
+
+//     const detailPage = cleanDetailPage(req.body.detailPage);
+
+//     uploadedCard = await uploadFile(
+//       files.image,
+//       `${EVENT_FOLDER}/Event-Posters`
+//     );
+
+//     const detailResult = await uploadDetailImages(
+//       detailPage,
+//       files
+//     );
+//     uploadedDetail = detailResult.uploaded;
+
+//     const slug = await makeUniqueSlug(title);
+
+//     const event = await Event.create({
+//       title,
+//       slug,
+//       description,
+//       eventLink,
+//       date: String(req.body.date || "").trim(),
+//       category,
+//       imageUrl: uploadedCard.url,
+//       imagePublicId: uploadedCard.publicId,
+//       detailPage,
+//       order:
+//         req.body.order !== undefined && req.body.order !== ""
+//           ? Number(req.body.order)
+//           : await Event.countDocuments(),
+//       isActive: normalizeBoolean(req.body.isActive),
+//     });
+
+//     return res.status(201).json({
+//       success: true,
+//       data: event,
+//       message: "Event created successfully.",
+//     });
+//   } catch (error) {
+//     if (uploadedCard?.publicId) {
+//       await deleteCloudinaryImage(uploadedCard.publicId);
+//     }
+
+//     await Promise.all(
+//       uploadedDetail.map((item) =>
+//         deleteCloudinaryImage(item.publicId)
+//       )
+//     );
+
+//     console.error("Create event error:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // UPDATE EVENT
+// export const updateEvent = async (req, res) => {
+//   let uploadedCard = null;
+//   let uploadedDetail = [];
+
+//   try {
+//     const { id } = req.params;
+
+//     if (!mongoose.isValidObjectId(id)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid event ID.",
+//       });
+//     }
+
+//     const event = await Event.findById(id);
+
+//     if (!event) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Event not found.",
+//       });
+//     }
+
+//     const files = getFilesByField(req.files);
+
+//     const title = String(
+//       req.body.title ?? req.body.heading ?? event.title
+//     ).trim();
+
+//     const description = String(
+//       req.body.description ?? req.body.text ?? event.description
+//     ).trim();
+
+//     const eventLink = String(
+//       req.body.eventLink ?? req.body.link ?? event.eventLink
+//     ).trim();
+
+//     const category = String(
+//       req.body.category ?? event.category
+//     ).trim();
+
+//     if (!title || title.length > 70) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Event heading is required and must be under 70 characters.",
+//       });
+//     }
+
+//     if (description.length > 220) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Event description cannot exceed 220 characters.",
+//       });
+//     }
+
+//     if (!eventLink) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Event redirect link is required.",
+//       });
+//     }
+
+//     if (!allowedCategories.includes(category)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid event category.",
+//       });
+//     }
+
+//     const oldDetailPage = event.detailPage?.toObject
+//       ? event.detailPage.toObject()
+//       : event.detailPage || {};
+
+//     const detailPage =
+//       req.body.detailPage !== undefined
+//         ? cleanDetailPage(req.body.detailPage)
+//         : cleanDetailPage(oldDetailPage);
+
+//     if (files.image) {
+//       uploadedCard = await uploadFile(
+//         files.image,
+//         `${EVENT_FOLDER}/Event-Posters`
+//       );
+//     }
+
+//     const detailResult = await uploadDetailImages(
+//       detailPage,
+//       files,
+//       oldDetailPage
+//     );
+//     uploadedDetail = detailResult.uploaded;
+
+//     const oldCardPublicId = event.imagePublicId;
+
+//    const titleChanged = title !== event.title;
+
+// if (titleChanged) {
+//   event.slug = await makeUniqueSlug(title, id);
+// }
+
+// event.title = title;
+//     event.description = description;
+//     event.eventLink = eventLink;
+//     event.category = category;
+
+//     if (req.body.date !== undefined) {
+//       event.date = String(req.body.date).trim();
+//     }
+
+//     if (req.body.order !== undefined && req.body.order !== "") {
+//       event.order = Number(req.body.order);
+//     }
+
+//     if (req.body.isActive !== undefined) {
+//       event.isActive = normalizeBoolean(req.body.isActive);
+//     }
+
+//     if (uploadedCard) {
+//       event.imageUrl = uploadedCard.url;
+//       event.imagePublicId = uploadedCard.publicId;
+//     }
+
+//     event.detailPage = detailPage;
+
+//     await event.save();
+
+//     if (uploadedCard && oldCardPublicId) {
+//       await deleteCloudinaryImage(oldCardPublicId);
+//     }
+
+//     await Promise.all(
+//       detailResult.oldImagesToDelete.map(deleteCloudinaryImage)
+//     );
+
+//     return res.json({
+//       success: true,
+//       data: event,
+//       message: "Event updated successfully.",
+//     });
+//   } catch (error) {
+//     if (uploadedCard?.publicId) {
+//       await deleteCloudinaryImage(uploadedCard.publicId);
+//     }
+
+//     await Promise.all(
+//       uploadedDetail.map((item) =>
+//         deleteCloudinaryImage(item.publicId)
+//       )
+//     );
+
+//     console.error("Update event error:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// // DELETE EVENT
+// export const deleteEvent = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     if (!mongoose.isValidObjectId(id)) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid event ID.",
+//       });
+//     }
+
+//     const event = await Event.findById(id);
+
+//     if (!event) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Event not found.",
+//       });
+//     }
+
+//     const publicIds = [...new Set(getAllPublicIds(event))];
+
+//     await event.deleteOne();
+
+//     await Promise.all(publicIds.map(deleteCloudinaryImage));
+
+//     return res.json({
+//       success: true,
+//       message: "Event and its Cloudinary images deleted successfully.",
+//     });
+//   } catch (error) {
+//     return res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
+
+// export const downloadEventBrochure = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+
+//     // Check whether the user has submitted a brochure enquiry
+//     const hasAccess = hasBrochureAccess(req);
+
+//     if (!hasAccess) {
+//       return res.status(401).json({
+//         success: false,
+//         requiresEnquiry: true,
+//         message: "Please submit an enquiry to download the brochure.",
+//       });
+//     }
+
+//     // Find event and retrieve its private brochure details
+//     const event = await Event.findById(id).select("+brochurePublicId");
+
+//     if (!event) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Event not found.",
+//       });
+//     }
+
+//     if (!event.hasBrochure || !event.brochurePublicId) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "Brochure not available for this event.",
+//       });
+//     }
+
+//     // Generate authenticated Cloudinary PDF download URL
+//     const downloadUrl = cloudinary.utils.private_download_url(
+//       event.brochurePublicId,
+//       "pdf",
+//       {
+//         resource_type: "raw",
+//         type: "authenticated",
+//         attachment: true,
+//       }
+//     );
+
+//     return res.redirect(downloadUrl);
+//   } catch (error) {
+//     console.error("Download Event Brochure Error:", error);
+
+//     return res.status(500).json({
+//       success: false,
+//       message: "Unable to download event brochure.",
+//     });
+//   }
+// };
+
+
+
 import mongoose from "mongoose";
+import fs from "fs/promises";
 import { Event } from "../models/Event.js";
 import cloudinary from "../config/cloudinary.js";
 import uploadToCloudinary from "../utils/uploadToCloudinary.js";
+import { hasBrochureAccess } from "../utils/brochureAccess.js";
 
 const EVENT_FOLDER = "AIA-Project-Assets/Events";
+const MAX_BROCHURE_SIZE = 20 * 1024 * 1024;
 
 const allowedCategories = [
   "Conference",
@@ -1451,11 +2299,91 @@ const getFilesByField = (files = []) => {
   return result;
 };
 
+const removeTemporaryFile = async (file) => {
+  if (!file?.path) return;
+
+  try {
+    await fs.unlink(file.path);
+  } catch (error) {
+    if (error.code !== "ENOENT") {
+      console.error("Temporary file cleanup error:", error.message);
+    }
+  }
+};
+
+const removeTemporaryFiles = async (files = {}) => {
+  await Promise.all(
+    Object.values(files)
+      .filter(Boolean)
+      .map(removeTemporaryFile)
+  );
+};
+
 const uploadFile = async (file, folder) => {
   if (!file) return null;
-
   return uploadToCloudinary(file.path, folder);
 };
+
+// =====================================================
+// BROCHURE HELPERS
+// =====================================================
+
+const uploadEventBrochure = async (file) => {
+  if (!file) return null;
+
+  const extension = file.originalname
+    ?.split(".")
+    .pop()
+    ?.toLowerCase();
+
+  if (
+    file.mimetype !== "application/pdf" ||
+    extension !== "pdf"
+  ) {
+    throw new Error("Only PDF brochure files are allowed.");
+  }
+
+  if (file.size > MAX_BROCHURE_SIZE) {
+    throw new Error("Brochure PDF cannot exceed 20 MB.");
+  }
+
+  const result = await cloudinary.uploader.upload(file.path, {
+    resource_type: "raw",
+    type: "authenticated",
+    access_mode: "authenticated",
+    folder: `${EVENT_FOLDER}/Brochures`,
+    use_filename: true,
+    unique_filename: true,
+    overwrite: false,
+  });
+
+  return {
+    publicId: result.public_id,
+    fileName: file.originalname,
+  };
+};
+
+const deleteEventBrochure = async (publicId) => {
+  if (!publicId) return;
+
+  try {
+    await cloudinary.uploader.destroy(publicId, {
+      resource_type: "raw",
+      type: "authenticated",
+      invalidate: true,
+    });
+  } catch (error) {
+    console.error(
+      "Cloudinary brochure delete error:",
+      publicId,
+      error.message
+    );
+  }
+};
+
+// =====================================================
+// IMAGE HELPERS
+// =====================================================
 
 const deleteCloudinaryImage = async (publicId) => {
   if (!publicId) return;
@@ -1466,9 +2394,54 @@ const deleteCloudinaryImage = async (publicId) => {
       invalidate: true,
     });
   } catch (error) {
-    console.error("Cloudinary delete error:", publicId, error.message);
+    console.error(
+      "Cloudinary image delete error:",
+      publicId,
+      error.message
+    );
   }
 };
+
+// =====================================================
+// ORDER HELPERS
+// =====================================================
+
+const validateOrder = (value) => {
+  if (value === undefined || value === "") {
+    return { valid: true, value: null };
+  }
+
+  const order = Number(value);
+
+  if (!Number.isInteger(order) || order < 0) {
+    return {
+      valid: false,
+      value: null,
+    };
+  }
+
+  return {
+    valid: true,
+    value: order,
+  };
+};
+
+const getNextEventOrder = async () => {
+  const lastEvent = await Event.findOne()
+    .sort({ order: -1 })
+    .select("order")
+    .lean();
+
+  if (!lastEvent || !Number.isFinite(Number(lastEvent.order))) {
+    return 0;
+  }
+
+  return Number(lastEvent.order) + 1;
+};
+
+// =====================================================
+// DETAIL PAGE HELPERS
+// =====================================================
 
 const cleanDetailPage = (value = {}) => {
   const detail = parseJSON(value, {});
@@ -1498,7 +2471,6 @@ const cleanDetailPage = (value = {}) => {
       blocks: Array.isArray(introduction.blocks)
         ? introduction.blocks
         : [],
-      // Keep compatibility with previously saved events.
       sections: Array.isArray(introduction.sections)
         ? introduction.sections
         : [],
@@ -1531,7 +2503,10 @@ const cleanDetailPage = (value = {}) => {
 
 const getOldBlock = (oldBlocks, block, index) => {
   if (block?._key) {
-    const match = oldBlocks.find((item) => item?._key === block._key);
+    const match = oldBlocks.find(
+      (item) => item?._key === block._key
+    );
+
     if (match) return match;
   }
 
@@ -1557,7 +2532,10 @@ const uploadDetailImages = async (
     const result = await uploadFile(file, folder);
     uploaded.push(result);
 
-    if (currentPublicId && currentPublicId !== result.publicId) {
+    if (
+      currentPublicId &&
+      currentPublicId !== result.publicId
+    ) {
       oldImagesToDelete.push(currentPublicId);
     }
 
@@ -1595,7 +2573,6 @@ const uploadDetailImages = async (
         async (block, index) => {
           const oldBlock = getOldBlock(oldBlocks, block, index);
           const file = files[`introductionBlockImage_${index}`];
-
           const nextBlock = { ...block };
 
           await uploadAndReplace({
@@ -1609,7 +2586,6 @@ const uploadDetailImages = async (
             },
           });
 
-          // Preserve old image when no new file is selected.
           if (!file) {
             nextBlock.imageUrl =
               nextBlock.imageUrl ||
@@ -1668,8 +2644,6 @@ const uploadDetailImages = async (
       )
     );
 
-
-    // Upload Contributing Partners and Supported By logos.
     const uploadPartnerLogos = async ({
       items = [],
       oldItems = [],
@@ -1682,7 +2656,6 @@ const uploadDetailImages = async (
         items.map(async (item, index) => {
           let oldIndex = -1;
 
-          // First match by MongoDB subdocument ID.
           if (item?._id) {
             oldIndex = oldItems.findIndex(
               (oldItem, oldItemIndex) =>
@@ -1691,12 +2664,17 @@ const uploadDetailImages = async (
             );
           }
 
-          // Fall back to the same array position.
-          if (oldIndex === -1 && oldItems[index] && !usedOldIndexes.has(index)) {
+          if (
+            oldIndex === -1 &&
+            oldItems[index] &&
+            !usedOldIndexes.has(index)
+          ) {
             oldIndex = index;
           }
 
-          const oldItem = oldIndex >= 0 ? oldItems[oldIndex] : {};
+          const oldItem = oldIndex >= 0
+            ? oldItems[oldIndex]
+            : {};
 
           if (oldIndex >= 0) {
             usedOldIndexes.add(oldIndex);
@@ -1717,8 +2695,6 @@ const uploadDetailImages = async (
               },
             });
           } else {
-            // Preserve existing logo if the frontend did not send
-            // a logo field. An explicitly empty logo means removal.
             if (nextItem.logo === undefined) {
               nextItem.logo = oldItem?.logo || "";
             }
@@ -1727,7 +2703,6 @@ const uploadDetailImages = async (
               nextItem.logoPublicId = oldPublicId;
             }
 
-            // Delete the old Cloudinary image if its logo was removed.
             if (
               oldPublicId &&
               nextItem.logoPublicId !== oldPublicId
@@ -1740,8 +2715,6 @@ const uploadDetailImages = async (
         })
       );
 
-      // Delete logos belonging to partner/supporter rows removed
-      // from the updated event.
       oldItems.forEach((oldItem, index) => {
         if (
           !usedOldIndexes.has(index) &&
@@ -1754,27 +2727,28 @@ const uploadDetailImages = async (
       return nextItems;
     };
 
-    // Contributing Partners
-    detailPage.introduction.partners = await uploadPartnerLogos({
-      items: detailPage.introduction.partners || [],
-      oldItems: oldDetailPage?.introduction?.partners || [],
-      fieldPrefix: "partnerLogo",
-      folder: `${EVENT_FOLDER}/Partners`,
-    });
+    detailPage.introduction.partners =
+      await uploadPartnerLogos({
+        items: detailPage.introduction.partners || [],
+        oldItems: oldDetailPage?.introduction?.partners || [],
+        fieldPrefix: "partnerLogo",
+        folder: `${EVENT_FOLDER}/Partners`,
+      });
 
-    // Supported By
-    detailPage.introduction.supporters = await uploadPartnerLogos({
-      items: detailPage.introduction.supporters || [],
-      oldItems: oldDetailPage?.introduction?.supporters || [],
-      fieldPrefix: "supporterLogo",
-      folder: `${EVENT_FOLDER}/Supporters`,
-    });
-
+    detailPage.introduction.supporters =
+      await uploadPartnerLogos({
+        items: detailPage.introduction.supporters || [],
+        oldItems: oldDetailPage?.introduction?.supporters || [],
+        fieldPrefix: "supporterLogo",
+        folder: `${EVENT_FOLDER}/Supporters`,
+      });
 
     return { uploaded, oldImagesToDelete };
   } catch (error) {
     await Promise.all(
-      uploaded.map((item) => deleteCloudinaryImage(item.publicId))
+      uploaded.map((item) =>
+        deleteCloudinaryImage(item.publicId)
+      )
     );
 
     throw error;
@@ -1800,14 +2774,20 @@ const getAllPublicIds = (event) => {
   ].filter(Boolean);
 };
 
+// =====================================================
 // GET ALL PUBLIC EVENTS
+// =====================================================
+
 export const getEvents = async (_req, res) => {
   try {
     const events = await Event.find({ isActive: true })
       .sort({ order: 1, createdAt: -1 })
       .lean();
 
-    return res.json({ success: true, data: events });
+    return res.json({
+      success: true,
+      data: events,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -1816,14 +2796,21 @@ export const getEvents = async (_req, res) => {
   }
 };
 
+// =====================================================
 // GET ALL EVENTS FOR ADMIN
+// =====================================================
+
 export const getAdminEvents = async (_req, res) => {
   try {
     const events = await Event.find()
+      .select("+brochurePublicId")
       .sort({ order: 1, createdAt: -1 })
       .lean();
 
-    return res.json({ success: true, data: events });
+    return res.json({
+      success: true,
+      data: events,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -1832,7 +2819,10 @@ export const getAdminEvents = async (_req, res) => {
   }
 };
 
+// =====================================================
 // GET EVENT BY SLUG
+// =====================================================
+
 export const getEventBySlug = async (req, res) => {
   try {
     const event = await Event.findOne({
@@ -1847,7 +2837,10 @@ export const getEventBySlug = async (req, res) => {
       });
     }
 
-    return res.json({ success: true, data: event });
+    return res.json({
+      success: true,
+      data: event,
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -1856,24 +2849,42 @@ export const getEventBySlug = async (req, res) => {
   }
 };
 
+// =====================================================
 // CREATE EVENT
+// =====================================================
+
 export const createEvent = async (req, res) => {
   let uploadedCard = null;
   let uploadedDetail = [];
+  let uploadedBrochure = null;
+
+  const files = getFilesByField(req.files);
 
   try {
-    const files = getFilesByField(req.files);
+    const title = String(
+      req.body.title || req.body.heading || ""
+    ).trim();
 
-    const title = String(req.body.title || req.body.heading || "").trim();
     const description = String(
       req.body.description || req.body.text || ""
     ).trim();
+
     const eventLink = String(
       req.body.eventLink || req.body.link || ""
     ).trim();
+
     const category = String(
       req.body.category || "Conference"
     ).trim();
+
+    const orderValidation = validateOrder(req.body.order);
+
+    if (!orderValidation.valid) {
+      return res.status(400).json({
+        success: false,
+        message: "Event order must be a valid non-negative integer.",
+      });
+    }
 
     if (!title || title.length > 70) {
       return res.status(400).json({
@@ -1921,9 +2932,21 @@ export const createEvent = async (req, res) => {
       detailPage,
       files
     );
+
     uploadedDetail = detailResult.uploaded;
 
+    if (files.brochurePdf) {
+      uploadedBrochure = await uploadEventBrochure(
+        files.brochurePdf
+      );
+    }
+
     const slug = await makeUniqueSlug(title);
+
+    const eventOrder =
+      orderValidation.value !== null
+        ? orderValidation.value
+        : await getNextEventOrder();
 
     const event = await Event.create({
       title,
@@ -1932,14 +2955,18 @@ export const createEvent = async (req, res) => {
       eventLink,
       date: String(req.body.date || "").trim(),
       category,
+
       imageUrl: uploadedCard.url,
       imagePublicId: uploadedCard.publicId,
+
       detailPage,
-      order:
-        req.body.order !== undefined && req.body.order !== ""
-          ? Number(req.body.order)
-          : await Event.countDocuments(),
+
+      order: eventOrder,
       isActive: normalizeBoolean(req.body.isActive),
+
+      brochurePublicId: uploadedBrochure?.publicId || "",
+      brochureFileName: uploadedBrochure?.fileName || "",
+      hasBrochure: Boolean(uploadedBrochure),
     });
 
     return res.status(201).json({
@@ -1958,19 +2985,36 @@ export const createEvent = async (req, res) => {
       )
     );
 
+    if (uploadedBrochure?.publicId) {
+      await deleteEventBrochure(uploadedBrochure.publicId);
+    }
+
     console.error("Create event error:", error);
 
-    return res.status(500).json({
+    return res.status(
+      error.message?.includes("PDF") ||
+      error.message?.includes("20 MB")
+        ? 400
+        : 500
+    ).json({
       success: false,
       message: error.message,
     });
+  } finally {
+    await removeTemporaryFiles(files);
   }
 };
 
+// =====================================================
 // UPDATE EVENT
+// =====================================================
+
 export const updateEvent = async (req, res) => {
   let uploadedCard = null;
   let uploadedDetail = [];
+  let uploadedBrochure = null;
+
+  const files = getFilesByField(req.files);
 
   try {
     const { id } = req.params;
@@ -1982,7 +3026,9 @@ export const updateEvent = async (req, res) => {
       });
     }
 
-    const event = await Event.findById(id);
+    const event = await Event.findById(id).select(
+      "+brochurePublicId"
+    );
 
     if (!event) {
       return res.status(404).json({
@@ -1990,8 +3036,6 @@ export const updateEvent = async (req, res) => {
         message: "Event not found.",
       });
     }
-
-    const files = getFilesByField(req.files);
 
     const title = String(
       req.body.title ?? req.body.heading ?? event.title
@@ -2008,6 +3052,15 @@ export const updateEvent = async (req, res) => {
     const category = String(
       req.body.category ?? event.category
     ).trim();
+
+    const orderValidation = validateOrder(req.body.order);
+
+    if (!orderValidation.valid) {
+      return res.status(400).json({
+        success: false,
+        message: "Event order must be a valid non-negative integer.",
+      });
+    }
 
     if (!title || title.length > 70) {
       return res.status(400).json({
@@ -2058,17 +3111,26 @@ export const updateEvent = async (req, res) => {
       files,
       oldDetailPage
     );
+
     uploadedDetail = detailResult.uploaded;
 
+    // Upload a replacement brochure, if provided.
+    if (files.brochurePdf) {
+      uploadedBrochure = await uploadEventBrochure(
+        files.brochurePdf
+      );
+    }
+
     const oldCardPublicId = event.imagePublicId;
+    const oldBrochurePublicId = event.brochurePublicId;
 
-   const titleChanged = title !== event.title;
+    const titleChanged = title !== event.title;
 
-if (titleChanged) {
-  event.slug = await makeUniqueSlug(title, id);
-}
+    if (titleChanged) {
+      event.slug = await makeUniqueSlug(title, id);
+    }
 
-event.title = title;
+    event.title = title;
     event.description = description;
     event.eventLink = eventLink;
     event.category = category;
@@ -2077,8 +3139,9 @@ event.title = title;
       event.date = String(req.body.date).trim();
     }
 
-    if (req.body.order !== undefined && req.body.order !== "") {
-      event.order = Number(req.body.order);
+    // Preserve existing order unless a new order is submitted.
+    if (orderValidation.value !== null) {
+      event.order = orderValidation.value;
     }
 
     if (req.body.isActive !== undefined) {
@@ -2092,6 +3155,20 @@ event.title = title;
 
     event.detailPage = detailPage;
 
+    // Replace existing brochure.
+    if (uploadedBrochure) {
+      event.brochurePublicId = uploadedBrochure.publicId;
+      event.brochureFileName = uploadedBrochure.fileName;
+      event.hasBrochure = true;
+    }
+
+    // Remove existing brochure when explicitly requested.
+    if (req.body.removeBrochure === "true") {
+      event.brochurePublicId = "";
+      event.brochureFileName = "";
+      event.hasBrochure = false;
+    }
+
     await event.save();
 
     if (uploadedCard && oldCardPublicId) {
@@ -2099,8 +3176,17 @@ event.title = title;
     }
 
     await Promise.all(
-      detailResult.oldImagesToDelete.map(deleteCloudinaryImage)
+      detailResult.oldImagesToDelete.map(
+        deleteCloudinaryImage
+      )
     );
+
+    if (
+      (uploadedBrochure || req.body.removeBrochure === "true") &&
+      oldBrochurePublicId
+    ) {
+      await deleteEventBrochure(oldBrochurePublicId);
+    }
 
     return res.json({
       success: true,
@@ -2118,16 +3204,30 @@ event.title = title;
       )
     );
 
+    if (uploadedBrochure?.publicId) {
+      await deleteEventBrochure(uploadedBrochure.publicId);
+    }
+
     console.error("Update event error:", error);
 
-    return res.status(500).json({
+    return res.status(
+      error.message?.includes("PDF") ||
+      error.message?.includes("20 MB")
+        ? 400
+        : 500
+    ).json({
       success: false,
       message: error.message,
     });
+  } finally {
+    await removeTemporaryFiles(files);
   }
 };
 
+// =====================================================
 // DELETE EVENT
+// =====================================================
+
 export const deleteEvent = async (req, res) => {
   try {
     const { id } = req.params;
@@ -2139,7 +3239,9 @@ export const deleteEvent = async (req, res) => {
       });
     }
 
-    const event = await Event.findById(id);
+    const event = await Event.findById(id).select(
+      "+brochurePublicId"
+    );
 
     if (!event) {
       return res.status(404).json({
@@ -2148,20 +3250,134 @@ export const deleteEvent = async (req, res) => {
       });
     }
 
-    const publicIds = [...new Set(getAllPublicIds(event))];
+    const publicIds = [
+      ...new Set(getAllPublicIds(event)),
+    ];
+
+    const brochurePublicId = event.brochurePublicId;
 
     await event.deleteOne();
 
-    await Promise.all(publicIds.map(deleteCloudinaryImage));
+    await Promise.all(
+      publicIds.map(deleteCloudinaryImage)
+    );
+
+    if (brochurePublicId) {
+      await deleteEventBrochure(brochurePublicId);
+    }
 
     return res.json({
       success: true,
-      message: "Event and its Cloudinary images deleted successfully.",
+      message: "Event and its Cloudinary assets deleted successfully.",
     });
   } catch (error) {
+    console.error("Delete event error:", error);
+
     return res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+};
+
+// =====================================================
+// DOWNLOAD EVENT BROCHURE
+// =====================================================
+
+
+export const downloadEventBrochure = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid event ID.",
+      });
+    }
+
+    // Check shared brochure access cookie
+    if (!hasBrochureAccess(req)) {
+      return res.status(401).json({
+        success: false,
+        requiresEnquiry: true,
+        message: "Please submit an enquiry to download the brochure.",
+      });
+    }
+
+    // Find active event
+    const event = await Event.findOne({
+      _id: id,
+      isActive: true,
+    }).select("+brochurePublicId");
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        message: "Event not found.",
+      });
+    }
+
+    if (!event.hasBrochure || !event.brochurePublicId) {
+      return res.status(404).json({
+        success: false,
+        message: "Brochure not available for this event.",
+      });
+    }
+
+    // Generate authenticated Cloudinary download URL
+    const downloadUrl = cloudinary.utils.private_download_url(
+      event.brochurePublicId,
+      "pdf",
+      {
+        resource_type: "raw",
+        type: "authenticated",
+        attachment: true,
+      }
+    );
+
+    // Fetch PDF from Cloudinary through backend
+    const cloudinaryResponse = await fetch(downloadUrl);
+
+    if (!cloudinaryResponse.ok) {
+      console.error(
+        "Cloudinary Event PDF Error:",
+        cloudinaryResponse.status,
+        await cloudinaryResponse.text()
+      );
+
+      return res.status(502).json({
+        success: false,
+        message: "Unable to retrieve event brochure from Cloudinary.",
+      });
+    }
+
+    const pdfBuffer = Buffer.from(
+      await cloudinaryResponse.arrayBuffer()
+    );
+
+    const fileName =
+      event.brochureFileName || `event-${id}-brochure.pdf`;
+
+    const safeFileName = fileName.replace(/["\r\n]/g, "_");
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${safeFileName}"`
+    );
+
+    res.setHeader("Content-Length", pdfBuffer.length);
+
+    return res.status(200).send(pdfBuffer);
+
+  } catch (error) {
+    console.error("Download Event Brochure Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Unable to download event brochure.",
     });
   }
 };

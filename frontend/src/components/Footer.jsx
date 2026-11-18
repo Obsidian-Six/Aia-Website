@@ -185,11 +185,11 @@ const footerLinks = [
     ],
   },
   {
-    title: "Publication",
+    title: "Industry-Insights",
      links: [
-    { label: "All Entries", href: "/publication/all-entries" },
-    { label: "Articles", href: "/publication/articles" },
-    { label: "News", href: "/publication/news" },
+    { label: "All Entries", href: "/industry-insight/all-entries" },
+    { label: "Articles", href: "/industry-insight/articles" },
+    { label: "News", href: "/industry-insight/news" },
   ],
   },
   {

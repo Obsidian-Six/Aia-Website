@@ -400,6 +400,11 @@ const navigation = [
   {
     label: "Industry Insights",
     to: "/industry-insight",
+     children: [
+      { label: "All-entries", to: "/industry-insight/all-entries" },
+      { label: "Articles", to: "/industry-insight/articles" },
+      { label: "News", to: "/industry-insight/news" },
+    ],
   },
   {
     label: "Talent Connect",
