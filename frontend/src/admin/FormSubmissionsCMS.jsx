@@ -23,10 +23,7 @@ import { adminRequest } from "../services/adminAuth.js";
 
 const FORM_TYPES = [
   { value: "contact-us", label: "Contact Us" },
-  { value: "general-inquiry", label: "General Inquiry" },
   { value: "aia-membership", label: "AIA Membership" },
-  { value: "system-integrator", label: "System Integrator" },
-  { value: "technology-provider", label: "Technology Provider" },
   { value: "brochure-enquiry", label: "Brochure Enquiry" },
 ];
 

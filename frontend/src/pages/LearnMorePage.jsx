@@ -100,9 +100,9 @@ export default function LearnMorePage() {
         buttonLink="/publication"
       />
       {/* General Inquiry Form */}
-      <div id="enquiry-form" className="scroll-mt-24">
+      {/* <div id="enquiry-form" className="scroll-mt-24">
   <GeneralInquiryForm />
-</div>
+</div> */}
 
       {/* CONTACT CTA */}
       {/* <section className="bg-[#244665] px-5 py-12 sm:px-8 lg:px-12">

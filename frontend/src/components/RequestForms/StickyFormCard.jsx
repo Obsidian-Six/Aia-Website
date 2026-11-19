@@ -1,4 +1,3 @@
-
 import React from "react";
 
 export default function StickyFormCard({
@@ -10,33 +9,36 @@ export default function StickyFormCard({
   maxHeight = "calc(100svh - 110px)",
 }) {
   return (
-    <section
-      className={`
-        relative
-        flex
-        w-full
-        flex-col
-        overflow-visible
-        rounded-md
-        border
-        border-[#E4EAF0]
-        bg-white
-        shadow-sm
+ <section
+  className={`
+    relative
+    flex
+    w-full
+    flex-col
+    overflow-visible
+    rounded-md
+    border
+    border-[#E4EAF0]
+    bg-white
+    shadow-sm
 
-        lg:sticky
-        lg:overflow-hidden
+    top-0
+    z-auto
 
-        ${className}
-      `}
-      style={{
-        top: `${76 + index * 10}px`,
-        zIndex: index + 1,
-        "--card-max-height": maxHeight,
-      }}
-    >
-      {/* Header */}
+    lg:sticky
+    lg:overflow-hidden
+    lg:top-[${76 + index * 10}px]
+    lg:[z-index:var(--card-z)]
+
+    ${className}
+  `}
+  style={{
+    "--card-z": index + 1,
+    "--card-max-height": maxHeight,
+  }}
+>
       {(number || title) && (
-        <div className="shrink-0 px-5 pt-6 sm:px-7 sm:pt-7 lg:px-8">
+        <div className="shrink-0 px-5 pt-3 sm:px-7 sm:pt-3 lg:px-8">
           {number && (
             <div className="mb-2 text-[10px] font-semibold tracking-widest text-[#E87565]">
               SECTION {String(number).padStart(2, "0")}
@@ -51,7 +53,6 @@ export default function StickyFormCard({
         </div>
       )}
 
-      {/* Content */}
       <div
         className="
           min-h-0

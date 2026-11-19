@@ -193,7 +193,7 @@ export const globalSearch = async (req, res) => {
             item.introduction ||
             "",
           category: item.category,
-          url: `/publication/articles/${item.slug}`,
+          url: `/industry-insight/articles/${item.slug}`,
           date: item.publishedAt || item.createdAt,
           image: item.detailHeroImage || item.image,
         })
@@ -254,7 +254,7 @@ export const globalSearch = async (req, res) => {
           title: item.title,
           description: item.description,
           category: item.category,
-          url: item.link || "/publication/articles",
+          url: item.link || "/industry-insight/articles",
           date: item.date || item.createdAt,
           image: item.images?.[0] || "",
         })

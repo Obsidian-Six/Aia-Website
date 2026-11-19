@@ -340,7 +340,7 @@ export default function ThreePillarsFootprint() {
 
                   {/* CARD CONTENT */}
                   <div className="flex flex-1 flex-col p-6 sm:p-7">
-                    <h3 className="text-xl font-bold leading-snug text-[#17202B] sm:text-2xl">
+                    <h3 className="text-xl font-bold leading-snug text-[#17202B] sm:text-xl">
                       {pillar.title}
                     </h3>
 

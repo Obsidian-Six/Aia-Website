@@ -455,6 +455,7 @@ import MembershipPartners from "./MembershipPartners";
 import MembershipFAQ from "./MembershipFAQ";
 import { Link, useLocation } from "react-router-dom";
 import { submitFormSubmission } from "../../services/formSubmissionApi";
+import FAQSections from "./FAQSections";
 
 export default function MembershipAudiencePage({ data }) {
   const location = useLocation();
@@ -466,8 +467,8 @@ export default function MembershipAudiencePage({ data }) {
     "technology-providers-signup"
   )
     ? "technology-provider"
-    : location.pathname.includes("system-integrators-signup")
-      ? "system-integrator"
+    : location.pathname.includes("service-providers")
+      ? "system-provider"
       : null;
 
   const handleRegistration = async (payload) => {
@@ -531,22 +532,22 @@ export default function MembershipAudiencePage({ data }) {
 
           {/* Right Sidebar */}
           <aside className="space-y-5 lg:col-span-5">
-            <MembershipRegistrationForm
+            {/* <MembershipRegistrationForm
               onSubmit={handleRegistration}
-            />
+            /> */}
 
-            {/* <div className="flex flex-col">
-              <h1 className="capitalize">
+            <div className="flex flex-col">
+              {/* <h1 className="capitalize">
                 Join Our {data.slug}
-              </h1>
+              </h1> */}
 
               <Link
                 to="/request-form/membership"
-                className="mt-3 w-fit rounded-lg bg-gradient-to-r from-[#D92716] via-[#E83D2B] to-[#F17C6D] py-3 px-4 text-sm font-semibold text-white transition hover:brightness-95"
+                className="mt-3 w-fit rounded-lg bg-gradient-to-r from-[#D92716] via-[#E83D2B] to-[#F17C6D] py-3 px-4 text-lg font-semibold text-white transition hover:brightness-95"
               >
-                Explore Membership
+                Apply for Membership
               </Link>
-            </div> */}
+            </div>
 
             <MembershipPartners partners={data.partners} />
           </aside>
@@ -556,7 +557,8 @@ export default function MembershipAudiencePage({ data }) {
         
 
         {/* FAQ */}
-        <MembershipFAQ faqs={data.faqs} />
+              <FAQSections />
+        {/* <MembershipFAQ faqs={data.faqs} /> */}
 
       </div>
     </main>

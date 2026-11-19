@@ -2924,7 +2924,7 @@ export default function AdminLayout({ onExitAdmin }) {
   const [membershipDirectoryOpen, setMembershipDirectoryOpen] = useState(true);
   const [industryInsightMenuOpen, setIndustryInsightMenuOpen] = useState(true);
   const [talentConnectMenuOpen, setTalentConnectMenuOpen] = useState(true);
-  const [aimsObjectiveMenuOpen, setAimsObjectiveMenuOpen] = useState(true);
+  // const [aimsObjectiveMenuOpen, setAimsObjectiveMenuOpen] = useState(true);
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -2982,7 +2982,7 @@ export default function AdminLayout({ onExitAdmin }) {
         "about-aia-slider-2-cms",
         "about-aia-why-join-cms",
         "sticky-stack-about-cms",
-        "aims-objectives-slider-cms",
+        // "aims-objectives-slider-cms",
       ].includes(urlTab)
     ) {
       setAboutMenuOpen(true);
@@ -3116,7 +3116,7 @@ export default function AdminLayout({ onExitAdmin }) {
         "about-aia-slider-2-cms",
         "about-aia-why-join-cms",
         "sticky-stack-about-cms",
-        "aims-objectives-slider-cms",
+        // "aims-objectives-slider-cms",
       ].includes(tab)
     ) {
       setAboutMenuOpen(true);
@@ -3559,7 +3559,7 @@ export default function AdminLayout({ onExitAdmin }) {
             </div>
 
 
-             <button
+             {/* <button
                 onClick={() => setAimsObjectiveMenuOpen(!aimsObjectiveMenuOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                   [
@@ -3593,7 +3593,7 @@ export default function AdminLayout({ onExitAdmin }) {
                      Slider CMS
                    </button>
                  </div>
-               )}
+               )} */}
 
 
             {/* ==========================================

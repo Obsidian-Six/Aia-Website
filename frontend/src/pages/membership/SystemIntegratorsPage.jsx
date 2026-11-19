@@ -5,7 +5,7 @@ import { membershipAudienceData } from "../../data/membershipAudienceData";
 export default function SystemIntegratorsPage() {
   return (
     <MembershipAudiencePage
-      data={membershipAudienceData.systemIntegrators}
+      data={membershipAudienceData.systemProviders}
     />
   );
 }

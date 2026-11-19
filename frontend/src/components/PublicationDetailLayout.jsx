@@ -102,7 +102,7 @@ export default function PublicationDetailLayout({
   publication,
   previousArticle = null,
   nextArticle = null,
-  backLink = "/publication/articles",
+  backLink = "/industry-insight/articles",
   backLabel = "Back to all publications",
   basePath
 }) {

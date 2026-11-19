@@ -5,7 +5,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 export default function ArticleNavigation({
   previousArticle,
   nextArticle,
-  basePath = "/publication/article",
+  basePath = "/industry-insight/article",
 }) {
   return (
     <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">

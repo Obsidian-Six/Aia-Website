@@ -180,8 +180,8 @@ const footerLinks = [
     title: "Membership",
     links: [
       { label: "Member Directory", href: "/membership/member-directory" },
-      { label: "Technology Providers", href: "/technology-providers-signup" },
-      { label: "System Integrators", href: "/system-integrators-signup" },
+      { label: "Technology Providers", href: "/technology-providers" },
+      { label: "Service Providers", href: "/service-providers" },
     ],
   },
   {
@@ -195,10 +195,10 @@ const footerLinks = [
   {
     title: "Contact Us",
     links: [
-      { label: "Get in Touch", href: "/contact-us" },
+      { label: "Connect with AIA", href: "/contact-us" },
       // { label: "Support", href: "/contact-us#support" },
       // { label: "General Inquiries", href: "/contact-us#inquiries" },
-      { label: "General Inquiries", href: "/learn-more#enquiry-form" },
+      // { label: "General Inquiries", href: "/learn-more#enquiry-form" },
     ],
   },
 ];
@@ -236,10 +236,10 @@ export default function Footer() {
           </a>
 
           {/* Tagline */}
-          <p className="max-w-[270px] text-left text-lg font-semibold leading-snug text-white sm:text-right">
-            Building the Future of Smart
+          <p className="max-w-[300px] text-left text-lg font-semibold leading-snug text-white sm:text-right">
+            Building the Future of
             <br />
-            Manufacturing Together.
+            Smart Manufacturing Together.
           </p>
         </div>
 
@@ -284,7 +284,7 @@ export default function Footer() {
 
               <a
                 href="/request-form/membership"
-                className="text-[14px] font-semibold text-white underline underline-offset-2 transition-opacity hover:opacity-70 lg:ml-6"
+                className="items-start text-[14px] font-semibold text-white underline underline-offset-2 transition-opacity hover:opacity-70"
               >
                 Become a Member
               </a>

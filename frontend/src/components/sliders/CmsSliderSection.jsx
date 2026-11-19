@@ -378,7 +378,7 @@ function normalizePublication(item, type) {
       item.title ||
       (type === "article" ? "AIA Article" : "AIA News"),
     link: slug
-      ? `/publication/${type === "article" ? "articles" : "news"}/${slug}`
+      ? `/industry-insight/${type === "article" ? "articles" : "news"}/${slug}`
       : "",
     linkText: type === "article" ? "Read Article" : "Read News",
   };

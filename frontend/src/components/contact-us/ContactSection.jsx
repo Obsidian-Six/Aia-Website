@@ -115,7 +115,7 @@ export default function ContactSection({ onSubmit }) {
         <div className="mt-12 sm:mt-14 lg:mt-16">
           <div className="mb-7">
             <h2 className="text-2xl font-bold tracking-tight text-[#202A3A] sm:text-3xl">
-              Get in touch
+              Contact Form
             </h2>
 
             <p className="mt-2 text-[12px] text-gray-500">

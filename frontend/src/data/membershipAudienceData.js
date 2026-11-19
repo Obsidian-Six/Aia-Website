@@ -82,8 +82,8 @@ export const membershipAudienceData = {
     ],
   },
 
-  systemIntegrators: {
-    slug: "system-integrators",
+  systemProviders: {
+    slug: "system-providers",
     title: "Demonstrate Credibility to your Buyers",
 
     description: [

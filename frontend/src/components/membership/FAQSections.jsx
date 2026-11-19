@@ -94,7 +94,7 @@ export default function FAQSections() {
   };
 
   return (
-    <section className="relative w-full overflow-hidden bg-white">
+    <section className="relative w-full overflow-hidden bg-transparent">
       {/* =====================================================
           BACKGROUND GRID
       ====================================================== */}
@@ -109,7 +109,7 @@ export default function FAQSections() {
       ====================================================== */}
 
       <div
-        className="relative z-10 mx-auto w-full max-w-[1400px] px-5 py-14 sm:px-8 sm:py-16 md:px-10 md:py-20 lg:px-14 lg:py-24 xl:px-16"
+        className="relative z-10 mx-auto w-full max-w-[1400px] px-5 py-14 sm:px-8 sm:py-16 md:py-20 lg:py-24"
       >
         {/* =================================================
             HEADER
