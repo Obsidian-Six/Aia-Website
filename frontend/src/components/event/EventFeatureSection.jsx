@@ -6,27 +6,27 @@ import FeatureCard from "../ui/FeatureCard";
 const eventCards = [
   {
     id: 1,
-    image: "/eventsassets/Mask group.png",
+    image: "/eventsassets/joint-events-forums.png",
     imageAlt: "Joint Events and Forums",
     title: "Joint Events & Forums",
     description:
-      "Conferences and forums AIA co-hosts or partners on.",
+      "AIA collaborates with industry associations and partners to organise conferences, forums and networking events that encourage knowledge sharing and strengthen industry engagement",
   },
   {
     id: 2,
-    image: "/eventsassets/Mask group (1).png",
+    image: "/eventsassets/panel-discusstions.png",
     imageAlt: "Panel Discussions",
     title: "Panel Discussions",
     description:
-      "AIA leadership and members contribute to and industry events.",
+      "AIA leaders and members contribute to industry discussions, sharing their expertise and perspectives on emerging technologies, automation trends and key industry challenges.",
   },
   {
     id: 3,
-    image: "/eventsassets/Mask group (2).png",
+    image: "/eventsassets/expo-pavilions.png",
     imageAlt: "Expo Pavilions",
     title: "Expo Pavilions",
     description:
-      "Dedicated AIA presence at major trade shows.",
+      "AIA participates in major industry exhibitions and trade shows, providing a platform to showcase automation technologies, connect with industry stakeholders and strengthen collaboration across the sector.",
   },
 ];
 

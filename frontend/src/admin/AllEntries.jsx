@@ -306,7 +306,7 @@ export default function AllEntries({ onNavigate }) {
           <div className="flex items-center gap-2">
             <FileText className="h-6 w-6 text-[#E25238]" />
 
-            <h2 className="text-2xl font-extrabold text-[#1E293B]">
+            <h2 className="text-2xl font-semibold text-[#1E293B]">
               All Entries
             </h2>
           </div>

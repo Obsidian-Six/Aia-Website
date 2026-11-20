@@ -49,7 +49,7 @@ export default function EventsMetrics() {
             Events
           </h2>
             <p className="text-sm font-normal leading-[1.7] text-gray-600 sm:text-base sm:leading-[1.7] lg:text-lg lg:leading-[1.75] mb-5">
-              doesn't run a separate events calendar of its own we show up through joint events, panel discussions, and dedicated pavilions at the expos that matter to this industry, plus a growing program of campus events connecting students to real careers in automation.
+             AIA actively engages with the industrial automation ecosystem through industry events, conferences, panel discussions, exhibitions and campus initiatives. <br /> Through collaborations with industry partners and academic institutions, AIA creates opportunities for knowledge sharing, professional networking and engagement with the next generation of automation professionals.
             </p>
           
         </div>

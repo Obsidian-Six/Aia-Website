@@ -1,8 +1,6 @@
-
 // import { useEffect, useState } from "react";
 // import ReusableCardSlider from "./ReusableCardSlider";
 // // import ReusableCardSlider from "./ReusableCardSlider";
-
 
 // const API_URL = (
 //   import.meta.env.VITE_API_URL || "http://localhost:5000/api"
@@ -98,7 +96,7 @@
 //     <section className={className}>
 //       {(section.heading || section.subtitle) && (
 //         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-12">
-            
+
 //         <div className="mx-auto max-w-5xl text-center">
 //           {section.heading && (
 //             <h2 className="mb-8 text-4xl font-black leading-[1.05] tracking-[-0.035em] text-[#1F2937] sm:mb-6 sm:text-5xl lg:mb-16 lg:text-[54px] font-semibold">
@@ -124,8 +122,6 @@
 //     </section>
 //   );
 // }
-
-
 
 // import { useEffect, useMemo, useState } from "react";
 // import ReusableCardSlider from "./ReusableCardSlider";
@@ -320,8 +316,6 @@
 //   );
 // }
 
-
-
 import { useEffect, useMemo, useState } from "react";
 import ReusableCardSlider from "./ReusableCardSlider";
 import { getArticles, getNews } from "../../services/api";
@@ -345,14 +339,11 @@ function getEntryDescription(item) {
 
   if (Array.isArray(item.contentBlocks) && item.contentBlocks.length) {
     const textBlock = item.contentBlocks.find(
-      (block) => block.text || block.content || block.description
+      (block) => block.text || block.content || block.description,
     );
 
     return (
-      textBlock?.text ||
-      textBlock?.content ||
-      textBlock?.description ||
-      ""
+      textBlock?.text || textBlock?.content || textBlock?.description || ""
     );
   }
 
@@ -368,11 +359,7 @@ function normalizePublication(item, type) {
     entryType: type,
     title: item.title || "",
     description: getEntryDescription(item),
-    image:
-      item.imageUrl ||
-      item.image ||
-      item.detailHeroImage ||
-      "",
+    image: item.imageUrl || item.image || item.detailHeroImage || "",
     imageAlt:
       item.imageAlt ||
       item.title ||
@@ -407,9 +394,9 @@ export default function CmsSliderSection({
         // Load existing CMS slider configuration.
         const response = await fetch(
           `${API_URL}/sliders/${encodeURIComponent(
-            pageKey
+            pageKey,
           )}/${encodeURIComponent(sectionKey)}`,
-          { signal: controller.signal }
+          { signal: controller.signal },
         );
 
         const result = await response.json();
@@ -436,8 +423,7 @@ export default function CmsSliderSection({
               : [];
 
           const news =
-            newsResult.status === "fulfilled" &&
-            Array.isArray(newsResult.value)
+            newsResult.status === "fulfilled" && Array.isArray(newsResult.value)
               ? newsResult.value
               : [];
 
@@ -456,12 +442,12 @@ export default function CmsSliderSection({
 
           // Newest published entries first.
           allEntries.sort((a, b) => {
-            const itemA = [...articles, ...news].find(
-              (item) => a.id.endsWith(item._id || item.slug)
+            const itemA = [...articles, ...news].find((item) =>
+              a.id.endsWith(item._id || item.slug),
             );
 
-            const itemB = [...articles, ...news].find(
-              (item) => b.id.endsWith(item._id || item.slug)
+            const itemB = [...articles, ...news].find((item) =>
+              b.id.endsWith(item._id || item.slug),
             );
 
             return (
@@ -519,6 +505,7 @@ export default function CmsSliderSection({
       id: card._id,
       type: "content",
       title: card.title,
+      designation: card.designation,
       description: card.description,
       image: card.imageUrl,
       imageAlt: card.imageAlt,
@@ -527,11 +514,7 @@ export default function CmsSliderSection({
     }));
 
     // All Articles + News entries.
-    return [
-      ...introSlides,
-      ...cmsCards,
-      ...publications,
-    ];
+    return [...introSlides, ...cmsCards, ...publications];
   }, [section, publications]);
 
   if (loading) {
@@ -555,13 +538,18 @@ export default function CmsSliderSection({
         <div className="relative z-10 mx-auto w-full max-w-6xl px-5 sm:px-8 lg:px-12">
           <div className="mx-auto max-w-5xl text-center">
             {section.heading && (
-              <h2 className="mb-8 text-4xl font-black leading-[1.05] tracking-[-0.035em] text-[#1F2937] sm:mb-6 sm:text-5xl lg:mb-16 lg:text-[54px] font-semibold">
+              <h2 className="mb-8 text-4xl font-black leading-[1.05] tracking-[-0.035em] text-[#1F2937] sm:mb-6 sm:text-5xl lg:mb-4 lg:text-[54px] font-semibold">
                 {section.heading}
               </h2>
             )}
 
-            {section.subtitle && (
+            {/* {section.subtitle && (
               <p className="mb-5 text-sm font-normal leading-[1.7] text-gray-600 sm:text-base sm:leading-[1.7] lg:text-lg lg:leading-[1.75]">
+                {section.subtitle}
+              </p>
+            )} */}
+            {section.subtitle && (
+              <p className="mb-5 whitespace-pre-line text-sm font-normal leading-[1.5] text-gray-600 sm:text-base sm:leading-[1.5] lg:text-lg lg:leading-[1.5]">
                 {section.subtitle}
               </p>
             )}

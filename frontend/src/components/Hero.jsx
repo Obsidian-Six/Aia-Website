@@ -493,8 +493,8 @@
 
 
 
+
 import React, { useEffect, useRef, useState } from "react";
-import { Play, Pause } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const API_URL = (
@@ -533,6 +533,7 @@ const FALLBACK_HERO = {
   description:
     "Empowering manufacturers to build and sustain solutions based on Industrial Automation, Robotics, Industry 4.0, AI and Collaborative Innovation.",
   videoUrl: "",
+  youtubeUrl: "https://www.youtube.com/watch?v=VIDEO_ID",
   ctaPrimaryText: "Connect with us",
   ctaPrimaryUrl: "#membership",
   ctaSecondaryText: "Explore Smart Factory",
@@ -543,11 +544,10 @@ export default function Hero({ onBecomeMemberClick }) {
   const videoRef = useRef(null);
 
   const [hero, setHero] = useState(FALLBACK_HERO);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
-  // Resolve video URL for both localhost and production
+  // Resolve background video URL
   const heroVideoUrl = getMediaUrl(hero.videoUrl);
 
   // Fetch home hero data
@@ -567,11 +567,15 @@ export default function Hero({ onBecomeMemberClick }) {
         }
 
         const activeHero = result.data?.find(
-          (item) => item.isActive && item.videoUrl
+          (item) => item.isActive && (item.videoUrl || item.youtubeUrl)
         );
 
         if (activeHero) {
-          setHero(activeHero);
+          setHero({
+            ...FALLBACK_HERO,
+            ...activeHero,
+          });
+
           setVideoFailed(false);
           setVideoLoaded(false);
         }
@@ -587,7 +591,7 @@ export default function Hero({ onBecomeMemberClick }) {
     return () => controller.abort();
   }, []);
 
-  // Automatically play video when available
+  // Automatically play background video
   useEffect(() => {
     const video = videoRef.current;
 
@@ -609,7 +613,6 @@ export default function Hero({ onBecomeMemberClick }) {
           "Browser blocked automatic hero video playback:",
           error
         );
-        setIsPlaying(false);
       }
     };
 
@@ -626,25 +629,6 @@ export default function Hero({ onBecomeMemberClick }) {
     };
   }, [heroVideoUrl, videoFailed]);
 
-  // Play / Pause button
-  const togglePlayback = async () => {
-    const video = videoRef.current;
-
-    if (!video || !heroVideoUrl || videoFailed) return;
-
-    if (video.paused) {
-      try {
-        video.muted = true;
-        await video.play();
-      } catch (error) {
-        console.error("Unable to play hero video:", error);
-        setIsPlaying(false);
-      }
-    } else {
-      video.pause();
-    }
-  };
-
   // Video loaded
   const handleVideoLoaded = () => {
     setVideoLoaded(true);
@@ -655,7 +639,6 @@ export default function Hero({ onBecomeMemberClick }) {
   const handleVideoError = () => {
     setVideoFailed(true);
     setVideoLoaded(false);
-    setIsPlaying(false);
 
     console.error("Hero video could not be loaded:", heroVideoUrl);
   };
@@ -678,8 +661,6 @@ export default function Hero({ onBecomeMemberClick }) {
           preload="auto"
           controls={false}
           onLoadedData={handleVideoLoaded}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
           onError={handleVideoError}
           className="absolute inset-0 z-0 block h-full w-full object-cover"
         />
@@ -696,7 +677,7 @@ export default function Hero({ onBecomeMemberClick }) {
       <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/70 via-black/35 to-black/20" />
 
       {/* Hero content */}
-      <div className="relative z-20 mx-auto flex w-full max-w-[1440px] items-center px-5 py-14 sm:px-8 sm:py-16 lg:px-[8.5%] lg:py-20">
+      <div className="pointer-events-none relative z-20 mx-auto flex w-full max-w-[1440px] items-center px-5 py-14 sm:px-8 sm:py-16 lg:px-[8.5%] lg:py-20">
         <div className="max-w-[660px]">
           <h1 className="max-w-[650px] whitespace-pre-line text-[30px] font-semibold leading-[1.12] tracking-[-0.035em] drop-shadow-md sm:text-[38px] lg:text-[48px]">
             {hero.title || FALLBACK_HERO.title}
@@ -710,7 +691,7 @@ export default function Hero({ onBecomeMemberClick }) {
             {hero.ctaPrimaryText && (
               <Link
                 to="/membership"
-                className="inline-flex min-h-[34px] items-center justify-center rounded-[4px] bg-[#f15d4e] px-3.5 py-2 text-[10px] font-semibold text-white transition hover:bg-[#dc493b] sm:text-[11px]"
+                className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] bg-[#f15d4e] px-3.5 py-2 text-[10px] font-semibold text-white transition hover:bg-[#dc493b] sm:text-[11px]"
               >
                 {hero.ctaPrimaryText}
               </Link>
@@ -719,7 +700,7 @@ export default function Hero({ onBecomeMemberClick }) {
             {hero.ctaSecondaryText && (
               <a
                 href={hero.ctaSecondaryUrl || "#build-factory"}
-                className="inline-flex min-h-[34px] items-center justify-center rounded-[4px] border border-white/75 bg-black/10 px-3.5 py-2 text-[10px] font-medium text-white transition hover:bg-white/15 sm:text-[11px]"
+                className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] border border-white/75 bg-black/10 px-3.5 py-2 text-[10px] font-medium text-white transition hover:bg-white/15 sm:text-[11px]"
               >
                 {hero.ctaSecondaryText}
               </a>
@@ -728,26 +709,18 @@ export default function Hero({ onBecomeMemberClick }) {
         </div>
       </div>
 
-      {/* Video play / pause button */}
-      {/*
-      {heroVideoUrl && (
-        <button
-          type="button"
-          onClick={togglePlayback}
-          disabled={videoFailed}
-          className="absolute bottom-5 right-5 z-30 flex h-10 w-10 items-center justify-center rounded-full border border-white/50 bg-[#e86b5e] text-white shadow-lg transition hover:scale-110 hover:bg-[#d95649] disabled:cursor-not-allowed disabled:opacity-50 sm:bottom-7 sm:right-7"
-          aria-label={
-            isPlaying ? "Pause background video" : "Play background video"
-          }
+      {/* Watch on YouTube button */}
+      {hero.youtubeUrl && (
+        <a
+          href={hero.youtubeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="absolute bottom-5 right-5 z-30 inline-flex min-h-10 items-center justify-center rounded-[4px] border border-white/50 bg-[#e86b5e] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:scale-105 hover:bg-[#d95649] sm:bottom-7 sm:right-7"
+          aria-label="Watch video on YouTube"
         >
-          {isPlaying ? (
-            <Pause size={17} fill="currentColor" />
-          ) : (
-            <Play size={17} fill="currentColor" />
-          )}
-        </button>
+          Watch on YouTube
+        </a>
       )}
-      */}
     </section>
   );
 }

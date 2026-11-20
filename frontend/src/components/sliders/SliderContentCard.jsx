@@ -57,12 +57,17 @@ export default function SliderContentCard({
   image,
   imageAlt,
   title,
+  designation,
   description,
   link,
   linkText = "Read More",
 }) {
   const hasTitle =
     typeof title === "string" && title.trim().length > 0;
+
+  const hasDesignation =
+    typeof designation === "string" &&
+    designation.trim().length > 0;
 
   const hasDescription =
     typeof description === "string" &&
@@ -72,14 +77,13 @@ export default function SliderContentCard({
     typeof link === "string" && link.trim().length > 0;
 
   const hasTextContent =
-    hasTitle || hasDescription || hasLink;
+    hasTitle || hasDesignation || hasDescription || hasLink;
 
   return (
     <article className="group h-full w-full overflow-hidden">
-
       {/* Image */}
       {image ? (
-        <div className="w-full overflow-hidden aspect-[16/9] rounded-[5px]">
+        <div className="aspect-[16/9] w-full overflow-hidden rounded-[5px]">
           <img
             src={image}
             alt={imageAlt || title || "Card image"}
@@ -95,21 +99,27 @@ export default function SliderContentCard({
         </div>
       )}
 
-      {/* Text content only when data exists */}
+      {/* Text content */}
       {hasTextContent && (
-        <div className="flex flex-col px-5 pb-5 pt-4 sm:px-6 sm:pb-6 sm:pt-5 lg:px-7 lg:pb-7 lg:pt-6 xl:px-8">
+        <div className="flex flex-col px-4 pb-5 pt-4 sm:px-4 sm:pb-6 sm:pt-5 lg:px-4 lg:pb-7 lg:pt-6 xl:px-4">
+          {hasTitle && (
+            <h3 className="line-clamp-2 text-xl font-semibold leading-tight tracking-tight text-[#17202B] md:text-[18px] lg:text-[18px]">
+              {title}
+            </h3>
+          )}
 
-         {hasTitle && (
-  <h3 className="line-clamp-2 text-xl font-semibold leading-tight tracking-tight text-[#17202B] md:text-[18px] lg:text-[18px]">
-    {title}
-  </h3>
-)}
+          {/* Designation */}
+          {hasDesignation && (
+            <span className="mt-2 text-xs italic leading-tight text-[#17202B]/70">
+              {designation}
+            </span>
+          )}
 
           {hasDescription && (
-  <p className="mt-4 line-clamp-3 max-w-[390px] text-sm leading-relaxed text-[#17202B] sm:mt-5 sm:text-[13px] lg:mt-6">
-    {description}
-  </p>
-)}
+            <p className="mt-2 line-clamp-3 max-w-[390px] text-sm leading-relaxed text-[#17202B] sm:mt-5 sm:text-[13px] lg:mt-2">
+              {description}
+            </p>
+          )}
 
           {hasLink && (
             <a
@@ -119,7 +129,6 @@ export default function SliderContentCard({
               {linkText}
             </a>
           )}
-
         </div>
       )}
     </article>

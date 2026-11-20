@@ -4,26 +4,26 @@
 // export default function GovernmentInitiative() {
 //   return (
 //     <section id="about" className="py-20 bg-white text-center font-sans relative overflow-hidden">
-      
+
 //       {/* Subtle Micro-Grid Background */}
 //       <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#1f2937_1px,transparent_1px)] [background-size:24px_24px]"></div>
 
 //       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
-        
+
 //         {/* Main Section Heading */}
 //         <h2 className="text-4xl sm:text-5xl font-black text-[#1F2937] tracking-tight mb-16 font-semibold">
-//           National Priority 
+//           National Priority
 //         </h2>
 
 //         {/* 2-Column Content Grid */}
 //         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          
+
 //           {/* Left Column: Samarth Udyog Portal Preview Screenshot */}
 //           <div className="lg:col-span-7">
 //             <div className="rounded-xl overflow-hidden shadow-2xl border border-gray-200/80 bg-white group transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.12)]">
-//               <img 
-//                 src="/national-party.png" 
-//                 alt="SAMARTH Udyog Bharat 4.0 - A Industry 4.0 Initiative of Ministry of HI & PE, Government of India" 
+//               <img
+//                 src="/national-party.png"
+//                 alt="SAMARTH Udyog Bharat 4.0 - A Industry 4.0 Initiative of Ministry of HI & PE, Government of India"
 //                 className="w-full h-auto object-contain block"
 //               />
 //             </div>
@@ -40,11 +40,11 @@
 //               Proud contributor to the Samarth Udyog Bharat
 //  4.0 Initiative, enabling industries to adopt
 // advanced manufacturing technologies and
-// accelerate digital transformation. 
+// accelerate digital transformation.
 //             </p>
 
 //             <div className="pt-2">
-//               <Link 
+//               <Link
 //                 to="/learn-more"
 //                 className="pointer-events-none inline-flex items-center justify-center px-7 py-2.5 rounded-xl border border-[#E37263] bg-white text-[#E37263] hover:bg-[#E37263] hover:text-white font-semibold text-sm transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105 active:scale-95"
 //               >
@@ -59,8 +59,6 @@
 //     </section>
 //   )
 // }
-
-
 
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -97,7 +95,7 @@ export default function GovernmentInitiative() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 sm:px-8 lg:px-12">
         {/* Main Section Heading */}
-        <h2 className="mb-16 text-4xl font-black tracking-tight text-[#1F2937] sm:text-5xl">
+        <h2 className="mb-16 text-4xl font-semibold tracking-tight text-[#1F2937] sm:text-5xl">
           National Priority
         </h2>
 
@@ -116,7 +114,7 @@ export default function GovernmentInitiative() {
 
           {/* Right Column: Information */}
           <div className="space-y-6 text-left lg:col-span-5">
-            <h3 className="text-2xl font-extrabold leading-snug tracking-tight text-[#1F2937] sm:text-3xl">
+            <h3 className="text-2xl font-semibold leading-snug tracking-tight text-[#1F2937] sm:text-3xl">
               Driving India’s Smart
               <br />
               Manufacturing Mission
@@ -172,15 +170,39 @@ export default function GovernmentInitiative() {
 
               <h3
                 id="national-priority-title"
-                className="mb-5 text-2xl font-extrabold leading-snug tracking-tight text-[#1F2937] sm:text-3xl"
+                className="mb-5 text-2xl font-semibold leading-snug tracking-tight text-[#1F2937] sm:text-3xl"
               >
                 Driving India’s Smart Manufacturing Mission
               </h3>
 
-              <p className="text-sm leading-relaxed text-black/70 sm:text-base">
-                Proud contributor to the Samarth Udyog Bharat 4.0 Initiative,
-                enabling industries to adopt advanced manufacturing
-                technologies and accelerate digital transformation.
+              <p className="text-sm leading-relaxed text-black/70 sm:text-sm">
+                Manufacturing is a key pillar of India's economic growth, and
+                the adoption of advanced technologies is essential to building a
+                globally competitive industrial ecosystem.
+                <br />
+                The Samarth Udyog
+                Bharat 4.0 Initiative reflects India's commitment to
+                accelerating the adoption of Industry 4.0 technologies across
+                the manufacturing sector. 
+                <br />
+                As a contributor to this mission, the
+                Automation Industry Association (AIA) supports the advancement
+                of smart manufacturing through industry collaboration,
+                technology awareness, knowledge sharing and the promotion of
+                automation-led innovation.
+                <br />
+                By encouraging the adoption of
+                technologies such as Industrial Automation, Artificial
+                Intelligence, Robotics, IoT and Data Analytics, AIA aims to help
+                industries improve productivity, enhance operational efficiency
+                and embrace digital transformation.
+                <br />
+                <br />
+                <strong>
+                  Building a smarter, more
+                connected and globally competitive manufacturing ecosystem for
+                India.
+                  </strong>
               </p>
             </div>
 

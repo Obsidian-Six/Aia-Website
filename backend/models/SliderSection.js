@@ -8,6 +8,11 @@ const sliderCardSchema = new mongoose.Schema(
       default: "",
       trim: true,
     },
+    designation: {
+      type: String,
+      default: "",
+      trim: true,
+    },
     description: {
       type: String,
       default: "",

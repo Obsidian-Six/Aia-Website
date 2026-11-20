@@ -92,12 +92,12 @@ export default function PodcastsSection() {
         {/* Section Heading */}
         <div className="mb-10 flex flex-col gap-4 md:mb-14 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-orange-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] text-[#E25238]">
+            <span className="mb-4 inline-flex items-center gap-2 rounded-full bg-orange-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.15em] text-[#E25238]">
               <AudioLines size={15} />
               AIA Conversations
             </span>
 
-            <h2 className="text-3xl font-black leading-tight text-[#17202B] sm:text-4xl lg:text-5xl">
+            <h2 className="text-3xl font-semibold leading-tight text-[#17202B] sm:text-3xl lg:text-4xl">
               Podcasts & Conversations
             </h2>
 
@@ -134,7 +134,7 @@ export default function PodcastsSection() {
               size={38}
               className="mx-auto mb-4 text-slate-300"
             />
-            <h3 className="text-lg font-bold text-slate-800">
+            <h3 className="text-lg font-semibold text-slate-800">
               No podcasts available yet
             </h3>
             <p className="mt-2 text-sm text-slate-500">
@@ -260,7 +260,7 @@ function PodcastCard({ item, getAssetUrl, formatDate }) {
         </div>
 
         {item.industryVertical && (
-          <span className="absolute bottom-4 left-4 rounded-md bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-wide text-[#E25238]">
+          <span className="absolute bottom-4 left-4 rounded-md bg-white px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-[#E25238]">
             {item.industryVertical}
           </span>
         )}
@@ -273,14 +273,14 @@ function PodcastCard({ item, getAssetUrl, formatDate }) {
           {formatDate(item.publishedAt)}
         </div>
 
-        <h3 className="text-xl font-bold leading-snug text-[#17202B] transition group-hover:text-[#E25238]">
+        <h3 className="text-xl font-semibold leading-snug text-[#17202B] transition group-hover:text-[#E25238]">
           {item.title}
         </h3>
 
         {(item.expertName || item.expertDesignation) && (
           <div className="mt-3">
             {item.expertName && (
-              <p className="text-sm font-bold text-slate-800">
+              <p className="text-sm font-semibold text-slate-800">
                 {item.expertName}
               </p>
             )}
@@ -302,7 +302,7 @@ function PodcastCard({ item, getAssetUrl, formatDate }) {
         {/* Audio Player */}
         {item.audioUrl && (
           <div className="mt-5 border-t border-slate-100 pt-4">
-            <div className="mb-2 flex items-center gap-2 text-xs font-bold text-[#E25238]">
+            <div className="mb-2 flex items-center gap-2 text-xs font-semibold text-[#E25238]">
               <AudioLines size={15} />
               Listen to Conversation
             </div>

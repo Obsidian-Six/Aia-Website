@@ -693,11 +693,11 @@ export default function ReusableCardGrid({
 
           {title && (
             <div className="mb-10 text-center sm:mb-12 lg:mb-16">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#E37263]">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#E37263]">
                 AIA | Talent Connect
               </p>
 
-              <h2 className="text-4xl font-black leading-tight tracking-tight text-[#1F2937] sm:text-5xl lg:text-[54px]">
+              <h2 className="text-3xl font-semibold leading-tight tracking-tight text-[#1F2937] sm:text-4xl md:text-[42px]">
                 {title}
               </h2>
             </div>
@@ -747,7 +747,7 @@ export default function ReusableCardGrid({
                   {/* CARD CONTENT */}
 
                   <div className="flex flex-1 flex-col p-4 sm:p-5">
-                    <h3 className="font-sans text-base font-bold leading-snug text-[#1F2937] sm:text-lg">
+                    <h3 className="text-base font-semibold leading-snug text-[#1F2937] sm:text-lg">
                       {card.title}
                     </h3>
 

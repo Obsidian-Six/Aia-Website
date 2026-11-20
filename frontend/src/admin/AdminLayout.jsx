@@ -3416,6 +3416,17 @@ export default function AdminLayout({ onExitAdmin }) {
                   </button>
 
                   <button
+                     onClick={() => handleNavigate("slider-cms")}
+                     className={`w-full rounded-lg px-2.5 py-1.5 text-left text-xs transition ${
+                       currentTab === "slider-cms"
+                         ? "bg-white/10 font-bold text-[#FF6B55]"
+                         : "text-gray-400 hover:text-[#FF6B55]"
+                     }`}
+                   >
+                     Slider CMS
+                   </button>
+
+                  <button
                     onClick={() => handleNavigate("home-why-join-cms")}
                     className="w-full rounded-lg px-3 py-2 text-left text-sm text-slate-500 hover:text-rose-500"
                   >
@@ -4226,7 +4237,7 @@ export default function AdminLayout({ onExitAdmin }) {
                     onClick={() => handleNavigate("all-articles")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
                       currentTab === "all-articles"
-                        ? "text-[#FF6B55] font-bold bg-white/10"
+                        ? "text-[#FF6B55] font-semibold bg-white/10"
                         : "text-gray-400 hover:text-[#FF6B55]"
                     }`}
                   >
@@ -4235,7 +4246,7 @@ export default function AdminLayout({ onExitAdmin }) {
 
                   {/* News CMS */}
                   <div className="pt-2 mt-2 border-t border-white/10">
-                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pl-1">
+                    <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider pl-1">
                       News CMS
                     </span>
                   </div>
@@ -4370,6 +4381,13 @@ export default function AdminLayout({ onExitAdmin }) {
             {currentTab === "all-what-aia" && (
               <AllWhatAIADoes onNavigate={handleNavigate} />
             )}
+              {currentTab === "slider-cms" && (
+               <ManageSliderCMS
+                 key="home-slider-cms"
+                 defaultPageKey="home"
+                 defaultSectionKey="home-slider"
+               />
+             )}
 
             {/* Membership Directory */}
             {currentTab === "add-member" && (

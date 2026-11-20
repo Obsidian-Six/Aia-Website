@@ -263,6 +263,7 @@ export default function ReusableCardSlider({
         return (
           hasValue(slide.image || slide.imageUrl) ||
           hasValue(slide.title) ||
+          // hasValue(slide.designation) ||
           hasValue(slide.description) ||
           hasValue(slide.link)
         );
@@ -298,6 +299,7 @@ export default function ReusableCardSlider({
         slide.id || "",
         slide.type || "",
         slide.title || "",
+        slide.designation || "",
         slide.description || "",
         slide.image || slide.imageUrl || "",
         slide.link || "",
@@ -463,6 +465,7 @@ export default function ReusableCardSlider({
                       image={slide.image || slide.imageUrl}
                       imageAlt={slide.imageAlt}
                       title={slide.title}
+                      designation={slide.designation}
                       description={slide.description}
                       link={slide.link}
                       linkText={slide.linkText}
@@ -503,6 +506,7 @@ export default function ReusableCardSlider({
                     image={slide.image || slide.imageUrl}
                     imageAlt={slide.imageAlt}
                     title={slide.title}
+                    designation={slide.designation}
                     description={slide.description}
                     link={slide.link}
                     linkText={slide.linkText}

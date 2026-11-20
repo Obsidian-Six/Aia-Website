@@ -770,6 +770,7 @@ export const createSliderCard = async (req, res) => {
 
     const {
       title,
+      designation,
       description,
       imageAlt,
       link,
@@ -819,6 +820,7 @@ export const createSliderCard = async (req, res) => {
 
     section.cards.push({
       title: (title || "").trim(),
+      designation: designation || "",
       description: description || "",
       imageUrl,
       imagePublicId: uploadedImage?.publicId || "",
@@ -897,6 +899,7 @@ export const updateSliderCard = async (req, res) => {
 
     const {
       title,
+      designation,
       description,
       imageAlt,
       link,
@@ -910,6 +913,7 @@ export const updateSliderCard = async (req, res) => {
       card.title = String(title).trim();
     }
 
+    if (designation !== undefined) card.designation = designation;
     if (description !== undefined) card.description = description;
     if (imageAlt !== undefined) card.imageAlt = imageAlt;
     if (link !== undefined) card.link = link;

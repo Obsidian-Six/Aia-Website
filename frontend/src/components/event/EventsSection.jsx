@@ -388,7 +388,7 @@ const normalizeCategory = (category = "") => {
 const introContent = {
   eyebrow: "Events",
   description:
-    'Most AIA events are free to attend. Drop pricing fields from the card format entirely rather than showing "Free" everywhere. Only surface a price field on the rare occasion one applies.',
+    `Explore AIA's upcoming and past events, including conferences, workshops, webinars, training programmes and industry exhibitions. Stay informed about opportunities to learn, exchange knowledge, connect with industry professionals and engage with the wider automation ecosystem.`,
 };
 
 // =====================================================
@@ -811,7 +811,7 @@ export default function EventsSection() {
                 {introContent.eyebrow}
               </span>
 
-              <p className="relative z-10 max-w-[300px] text-[23px] font-medium leading-[1.18] tracking-[-0.025em] sm:text-[26px] md:text-[20px] lg:text-[24px] xl:text-[24px]">
+          <p className="relative z-10 max-w-[500px] text-[18px] font-medium leading-[1.18] tracking-[-0.025em] sm:text-[18px] md:text-[18px] lg:text-[20px] xl:text-[20px]">
                 {introContent.description}
               </p>
             </div>

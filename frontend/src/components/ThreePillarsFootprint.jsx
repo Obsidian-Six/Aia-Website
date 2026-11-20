@@ -277,13 +277,13 @@ export default function ThreePillarsFootprint() {
             Our Foundation
           </span>
 
-          <h2 className="text-3xl font-bold leading-tight text-[#17202B] sm:text-4xl lg:text-5xl">
+          <h2 className="text-3xl font-semibold leading-tight text-[#17202B] sm:text-4xl lg:text-5xl">
             Three Pillars of{" "}
             <span className="text-[#E52B18]">AIA</span>
           </h2>
 
           <p className="mb-5 text-sm font-normal leading-[1.7] text-gray-600 sm:text-base sm:leading-[1.7] lg:text-lg lg:leading-[1.75]">
-           Factories of the future shall draw innovations and knowledge from multiple disciplines of science and engineering thereby creating a demand of multifaceted professionals. This explains the heightened sensitivity in Industry and Academia to better educate, properly train and enrich the human capital of our country. Automation Industry has been propelling economies internationally by enabling manufacturing and infrastructure to meet the growing needs across the globe. This cross disciplinary segment is the key to enhanced productivity, reliability and quality in multiple domains. AIA Campus Connect program runs in collaboration with chosen engineering institutions. It offers two levels of engagement at undergraduate stage and one during post graduate engineering studies. The program creates Competency Development Centers at these institutions that engage students and academia for proliferation and promotion of contemporary & relevant education in Automation.
+           The future of manufacturing depends on skilled professionals, advanced infrastructure and effective industry-academia collaboration. <br /> AIA's three pillars focus on strengthening knowledge, developing practical capabilities and establishing robust management systems to advance industrial automation education and skill development across India.
           </p>
         </div>
     </div>
@@ -327,12 +327,12 @@ export default function ThreePillarsFootprint() {
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
 
-                    <span className="absolute bottom-5 left-5 text-sm font-bold tracking-[0.2em] text-white">
+                    <span className="absolute bottom-5 left-5 text-sm font-semibold tracking-[0.2em] text-white">
                       PILLAR 0{index + 1}
                     </span>
 
                     {isHighlighted && (
-                      <span className="absolute right-4 top-4 rounded-sm bg-[#E52B18] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-white">
+                      <span className="absolute right-4 top-4 rounded-sm bg-[#E52B18] px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-white">
                         Featured
                       </span>
                     )}
@@ -340,7 +340,7 @@ export default function ThreePillarsFootprint() {
 
                   {/* CARD CONTENT */}
                   <div className="flex flex-1 flex-col p-6 sm:p-7">
-                    <h3 className="text-xl font-bold leading-snug text-[#17202B] sm:text-xl">
+                    <h3 className="text-xl font-semibold leading-snug text-[#17202B] sm:text-xl">
                       {pillar.title}
                     </h3>
 

@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Link } from "react-router-dom";
 
 export default function MembershipPartners({ partners = [] }) {
   if (!partners.length) return null;
@@ -26,6 +27,9 @@ export default function MembershipPartners({ partners = [] }) {
           </div>
         ))}
       </div>
+        <button className="mt-2 group inline-flex items-center justify-center gap-2 rounded-md bg-[#E52B18] px-5 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#C92313] active:scale-95">
+          <Link to={"/membership/member-directory"}>Explore MemberDirectory</Link>
+        </button>
     </div>
   );
 }

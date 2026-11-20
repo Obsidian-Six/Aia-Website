@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const insightCards = [
   {
@@ -101,25 +102,23 @@ export default function FactoryInsight() {
 
           {/* Right Column: Heading, Subtext & CTA Button */}
           <div className="lg:col-span-5 space-y-6">
-            <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-black text-[#1F2937] leading-[1.08] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-semibold text-[#1F2937] leading-[1.08] tracking-tight">
              Resource 
               Center
             </h2>
 
             <p className="text-base sm:text-lg text-black/70 leading-relaxed max-w-md font-normal">
-              The self-assessment is part of AlA's Resource
-Center funding guidance and automation on-ramps
-live there too.
+            Explore AIA's knowledge hub featuring industry insights, articles, event updates and informative resources from across the manufacturing and automation ecosystem. Stay informed about emerging technologies, industry developments and initiatives shaping the future of smart manufacturing.
             </p>
 
             <div className="pt-2">
-              <a 
-                href="/contact-us"
+              <Link 
+                to={"/industry-insight"}
                 className="inline-flex items-center justify-center px-7 py-3 rounded-xl border border-[#1F2937] bg-white text-[#1F2937] hover:bg-[#1F2937] hover:text-white font-bold text-sm transition-all duration-200 shadow-sm hover:shadow-md hover:scale-105 active:scale-95"
               >
                 {/* Explore the Resource Center */}
-                Contact Us
-              </a>
+                Explore Insights
+              </Link>
             </div>
           </div>
 

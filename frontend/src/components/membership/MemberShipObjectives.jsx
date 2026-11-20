@@ -23,7 +23,7 @@ export default function MemberShipObjectives() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left Content */}
             <div className="lg:col-span-6 space-y-6">
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-black text-[#1F2937] tracking-tight leading-[1.1]">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-semibold text-[#1F2937] tracking-tight leading-[1.1]">
                 Technology Providers
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
@@ -35,7 +35,7 @@ export default function MemberShipObjectives() {
               <div className="flex items-center gap-3 pt-2">
                 <a
                   href=""
-                  className="inline-flex items-center justify-center px-5 py-2 rounded-xl border border-[#E25238] text-[#E25238] hover:bg-[#E25238] hover:text-white font-bold text-xs tracking-wide transition-all shadow-xs"
+                  className="inline-flex items-center justify-center px-5 py-2 rounded-xl border border-[#E25238] text-[#E25238] hover:bg-[#E25238] hover:text-white font-semibold text-xs tracking-wide transition-all shadow-xs"
                 >
                   Apply as a Technology Provider
                 </a>
@@ -92,7 +92,7 @@ export default function MemberShipObjectives() {
 
             {/* Right Content */}
             <div className="lg:col-span-6 space-y-6 order-1 lg:order-2">
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-black text-[#1F2937] tracking-tight leading-[1.1]">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-semibold text-[#1F2937] tracking-tight leading-[1.1]">
                 System Integrators
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
@@ -108,7 +108,7 @@ export default function MemberShipObjectives() {
               <div className="flex items-center gap-3 pt-2">
                 <a
                   href=""
-                  className="inline-flex items-center justify-center px-5 py-2 rounded-xl border border-[#E25238] text-[#E25238] hover:bg-[#E25238] hover:text-white font-bold text-xs tracking-wide transition-all shadow-xs"
+                  className="inline-flex items-center justify-center px-5 py-2 rounded-xl border border-[#E25238] text-[#E25238] hover:bg-[#E25238] hover:text-white font-semibold text-xs tracking-wide transition-all shadow-xs"
                 >
                   Apply as a System Integrator
                 </a>
@@ -143,7 +143,7 @@ export default function MemberShipObjectives() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
             {/* Left Content */}
             <div className="lg:col-span-6 space-y-6">
-              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-black text-[#1F2937] tracking-tight leading-[1.1]">
+              <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-semibold text-[#1F2937] tracking-tight leading-[1.1]">
                 Manufacturers & Automation Users
               </h2>
               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
@@ -157,7 +157,7 @@ export default function MemberShipObjectives() {
               <div className="flex items-center gap-3 pt-2">
                 <a
                   href=""
-                  className="inline-flex items-center justify-center px-5 py-2 rounded-xl border border-[#E25238] text-[#E25238] hover:bg-[#E25238] hover:text-white font-bold text-xs tracking-wide transition-all shadow-xs"
+                  className="inline-flex items-center justify-center px-5 py-2 rounded-xl border border-[#E25238] text-[#E25238] hover:bg-[#E25238] hover:text-white font-semibold text-xs tracking-wide transition-all shadow-xs"
                 >
                   Take the self Assessment
                 </a>

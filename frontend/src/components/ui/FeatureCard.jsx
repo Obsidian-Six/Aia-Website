@@ -9,7 +9,7 @@ export default function FeatureCard({
 }) {
   return (
     <article className="group relative flex h-full flex-col rounded-[5px] border border-rose-100 bg-white p-2 transition-all duration-300 ease-out hover:-translate-y-1 hover:border-rose-200 hover:shadow-[0_10px_30px_rgba(190,24,60,0.07)]">
-      <div className="overflow-hidden rounded-[3px] bg-slate-100">
+      <div className="overflow-hidden rounded-[3px] bg-slate-100 aspect-square">
         <img
           src={image}
           alt={imageAlt || title}
@@ -24,7 +24,7 @@ export default function FeatureCard({
           {title}
         </h3>
 
-        <p className="text-sm sm:text-base text-black/70 leading-relaxed max-w-lg font-normal">
+        <p className="mt-2 text-sm sm:text-sm text-black/70 leading-[1.1] max-w-lg font-normal">
           {description}
         </p>
         {link && ( <Link

@@ -2,8 +2,8 @@
 import jwt from "jsonwebtoken";
 
 const COOKIE_NAME = "aia_brochure_access";
-const COOKIE_MAX_AGE = 30 * 24 * 60 * 60 * 1000;
-const TOKEN_EXPIRY = "30d";
+const COOKIE_MAX_AGE = 180 * 24 * 60 * 60 * 1000;
+const TOKEN_EXPIRY = "180d";
 
 const isProduction = process.env.NODE_ENV === "production";
 

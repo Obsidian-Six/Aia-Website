@@ -16,13 +16,16 @@ export default function SliderControls({
         <span className="font-medium">
           {String(Math.min(current + 1, total)).padStart(2, "0")}
         </span>
+
         <span className="text-black/40">/</span>
+
         <span className="text-black/50">
           {String(total).padStart(2, "0")}
         </span>
       </div>
 
       <div className="flex items-center gap-2">
+        {/* Previous Button */}
         <button
           type="button"
           onClick={onPrevious}
@@ -33,11 +36,12 @@ export default function SliderControls({
           <ArrowLeft
             size={18}
             strokeWidth={1.5}
-            className="transition-colors group-hover:text-white"
-            style={{ color: accentColor }}
+            className="text-[#E96F62] transition-colors duration-300 group-hover:text-white"
+            style={{ color: undefined }}
           />
         </button>
 
+        {/* Next Button */}
         <button
           type="button"
           onClick={onNext}
@@ -45,7 +49,11 @@ export default function SliderControls({
           className="flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 hover:scale-105 active:scale-95 sm:h-11 sm:w-11 lg:h-12 lg:w-12"
           style={{ backgroundColor: accentColor }}
         >
-          <ArrowRight size={18} strokeWidth={1.5} className="text-white" />
+          <ArrowRight
+            size={18}
+            strokeWidth={1.5}
+            className="text-white"
+          />
         </button>
       </div>
     </div>
