@@ -29,7 +29,7 @@ export default function TextContentSection({
           </p>
         )}
 
-        <h2 className="mb-8 text-4xl font-black leading-[1.05] tracking-[-0.035em] text-[#1F2937] sm:mb-12 sm:text-5xl lg:mb-6 lg:text-[४२px]">
+        <h2 className="mb-8 text-4xl font-semibold leading-[1.05] tracking-[-0.035em] text-[#1F2937] sm:mb-12 sm:text-5xl lg:mb-6 lg:text-[४२px]">
           {title}
         </h2>
 

@@ -492,7 +492,7 @@ export default function MembershipAudiencePage({ data }) {
 
           {/* Left Content */}
           <div className="min-w-0 lg:col-span-7">
-            <h1 className="max-w-2xl text-3xl font-black leading-tight text-[#263247] sm:text-4xl font-semibold">
+            <h1 className="max-w-2xl text-3xl leading-tight text-[#263247] sm:text-4xl font-semibold">
               {data.title}
             </h1>
 
@@ -510,14 +510,14 @@ export default function MembershipAudiencePage({ data }) {
             </div>
             {/* Benefits */}
         <section className="mt-12 max-w-4xl sm:mt-16">
-          <h2 className="mb-7 text-xl font-black text-[#263247]">
+          <h2 className="mb-7 text-xl font-semibold text-[#263247]">
             {data.benefitsTitle}
           </h2>
 
           <div className="space-y-7">
             {data.benefits?.map((benefit, index) => (
               <div key={`${benefit.title}-${index}`}>
-                <h3 className="mb-2 text-sm font-bold text-[#315778] sm:text-base">
+                <h3 className="mb-2 text-sm font-semibold text-[#315778] sm:text-base">
                   {benefit.title}
                 </h3>
 

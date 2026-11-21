@@ -42,7 +42,7 @@ export default function SplitFeatureCard({
             </span>
           )}
 
-          <h2 className="max-w-[600px] text-2xl font-bold leading-tight tracking-tight sm:text-3xl lg:text-4xl">
+          <h2 className="max-w-[600px] text-2xl font-semibold leading-tight tracking-tight sm:text-3xl lg:text-4xl">
             {title}
           </h2>
 
