@@ -29,7 +29,7 @@ export default function SliderIntroCard({
         </p>
       )}
 
-      <h2 className="relative z-10 max-w-[300px] text-[23px] font-medium leading-[1.18] tracking-[-0.025em] sm:text-[26px] md:text-[16px] lg:text-[20px] xl:text-[20px]">
+      <h2 className="relative z-10 max-w-[500px] text-[18px] font-medium leading-[1.18] tracking-[-0.025em] sm:text-[20px] md:text-[16px] lg:text-[20px] xl:text-[20px]">
         {title}
       </h2>
     </article>

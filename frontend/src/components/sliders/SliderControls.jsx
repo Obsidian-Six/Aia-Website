@@ -11,7 +11,7 @@ export default function SliderControls({
   if (!total) return null;
 
   return (
-    <div className="mt-5 flex items-center justify-between sm:mt-6 lg:mt-7">
+    <div className="mt-5 flex items-center justify-between sm:mt-4 lg:mt-2">
       <div className="flex items-center gap-2 font-sans text-sm">
         <span className="font-medium">
           {String(Math.min(current + 1, total)).padStart(2, "0")}
