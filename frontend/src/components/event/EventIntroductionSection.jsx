@@ -586,7 +586,7 @@ function SupportedByCard({ supporters = [], contact = {} }) {
         </div>
       )}
 
-      {hasContact && (
+      {/* {hasContact && ( */}
         <>
           <p className="mb-3 mt-4 text-xs font-semibold text-[#E87565]">
             Contact us for more info
@@ -599,19 +599,23 @@ function SupportedByCard({ supporters = [], contact = {} }) {
                 aria-label={`Email ${contact.email}`}
                 className="transition hover:text-[#E87565]"
               >
-                <Mail size={17} />
+                {/* <Mail size={17} /> */}
+              <img src="/logo-gmail.webp" alt="" className="h-10 cursor-pointer" />
               </a>
             )}
 
             {contact.phone && (
-              <a
-                href={`tel:${contact.phone}`}
-                aria-label={`Call ${contact.phone}`}
-                className="transition hover:text-[#E87565]"
-              >
-                <Phone size={17} />
-              </a>
-            )}
+  <a
+    href={`https://wa.me/${contact.phone.replace(/\D/g, "")}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label={`Chat on WhatsApp with ${contact.phone}`}
+    className="transition hover:text-[#E87565]"
+    >
+    {/* <Phone size={17} /> */}
+    <img src="/WhatsApp-logo.webp" alt="" className="h-10 cursor-pointer" />
+  </a>
+)}
 
             {contact.website && (
               <a
@@ -621,12 +625,13 @@ function SupportedByCard({ supporters = [], contact = {} }) {
                 aria-label="Website"
                 className="transition hover:text-[#E87565]"
               >
-                <Globe size={17} />
+                <img src="/linkedin-logo-png.webp" alt="" className="h-10 cursor-pointer" />
+                {/* <Globe size={17} /> */}
               </a>
             )}
           </div>
         </>
-      )}
+      {/* )} */}
     </SidebarCard>
   );
 }

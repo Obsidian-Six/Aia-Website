@@ -976,6 +976,10 @@ const eventSchema = new mongoose.Schema(
             type: String,
             default: "",
           },
+          website: {
+            type: String,
+            default: "",
+          },
 
           description: {
             type: String,
