@@ -1784,7 +1784,7 @@ export default function EventDetailsPage() {
                 </p>
               )}
 
-              <h1 className="max-w-3xl text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
+              <h1 className="max-w-3xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
                 {hero.title || event.title}
               </h1>
 

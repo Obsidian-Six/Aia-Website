@@ -346,7 +346,7 @@ const defaultPartners = [
 function SidebarCard({ title, children }) {
   return (
     <div className="rounded-[9px] border border-[#F16B5C] bg-[#FFFBFA] p-5 shadow-[0_8px_25px_rgba(231,107,92,0.06)] sm:p-7">
-      <h3 className="mb-4 text-sm font-bold text-[#E87565] sm:text-base">
+      <h3 className="mb-4 text-sm font-semibold text-[#E87565] sm:text-base">
         {title}
       </h3>
       {children}
@@ -439,7 +439,7 @@ function EventInformation({ event = {} }) {
   return (
     <div className="rounded-[9px] border border-[#F16B5C] bg-[#FFFBFA] p-5 shadow-[0_8px_25px_rgba(231,107,92,0.06)] sm:p-7">
       {event.date && (
-        <h2 className="mb-6 text-xl font-bold leading-tight text-[#E87565]">
+        <h2 className="mb-6 text-xl font-semibold leading-tight text-[#E87565]">
           {event.date}
         </h2>
       )}
@@ -688,7 +688,7 @@ function IntroductionBlocks({ blocks = [] }) {
           return (
             <h2
               key={block._key || block._id || index}
-              className="text-lg font-bold leading-relaxed text-[#E87565] sm:text-xl"
+              className="text-lg font-semibold leading-relaxed text-[#E87565] sm:text-xl"
             >
               {block.text || block.heading}
             </h2>
@@ -790,13 +790,13 @@ export default function EventIntroductionSection({
       <div className="mx-auto grid max-w-[1250px] grid-cols-1 items-start gap-9 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_330px]">
         <article className="min-w-0">
           {eyebrow && (
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.18em] text-[#E87565]">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#E87565]">
               {eyebrow}
             </p>
           )}
 
           {title && (
-            <h1 className="mb-6 text-2xl font-bold tracking-tight text-[#263247] sm:text-3xl">
+            <h1 className="mb-6 text-2xl font-semibold tracking-tight text-[#263247] sm:text-3xl">
               {title}
             </h1>
           )}
