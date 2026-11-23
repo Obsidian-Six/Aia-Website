@@ -32,6 +32,7 @@ export default function NewsCardGrid({
             category={item.category}
             categoryLink={item.categoryLink}
             slug={item.slug}
+            showAccessBadge={false}
             detailBasePath="/industry-insight/news"
           />
         ))}

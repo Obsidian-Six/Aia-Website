@@ -560,6 +560,19 @@ export default function MembershipAudiencePage({ data }) {
               <FAQSections />
         {/* <MembershipFAQ faqs={data.faqs} /> */}
 
+        <div className="flex item-center justify-center">
+              {/* <h1 className="capitalize">
+                Join Our {data.slug}
+              </h1> */}
+
+              <Link
+                to="/contact-us"
+                className="mt-3 w-fit rounded-lg bg-gradient-to-r from-[#D92716] via-[#E83D2B] to-[#F17C6D] py-3 px-4 text-lg font-semibold text-white transition hover:brightness-95"
+              >
+                Contact Us
+              </Link>
+            </div>
+
       </div>
     </main>
   );
