@@ -138,6 +138,11 @@ const articleSchema = new mongoose.Schema(
       default: "",
     },
 
+    isWordRestricted: {
+      type: Boolean,
+      default: false,
+    },
+
     // Detail hero
     detailHeroTitle: {
       type: String,

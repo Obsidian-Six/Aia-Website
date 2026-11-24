@@ -959,15 +959,16 @@ export const getFormSubmissions = async (req, res) => {
       const regex = new RegExp(escapedSearch, "i");
 
       filter.$or = [
-        { "data.fullName": regex },
-        { "data.name": regex },
-        { "data.companyName": regex },
-        { "data.email": regex },
-        { "data.phone": regex },
-        { "data.phoneNumber": regex },
-        { "data.ceoName": regex },
-        { "data.submittedByName": regex },
-      ];
+  { "data.fullName": regex },
+  { "data.name": regex },
+  { "data.companyName": regex },
+  { "data.company": regex },
+  { "data.email": regex },
+  { "data.phone": regex },
+  { "data.phoneNumber": regex },
+  { "data.ceoName": regex },
+  { "data.submittedByName": regex },
+];
     }
 
     const [submissions, total] = await Promise.all([

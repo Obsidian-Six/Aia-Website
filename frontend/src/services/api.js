@@ -697,6 +697,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 25000,
+  withCredentials: true,
 });
 
 // ==========================================
@@ -1310,18 +1311,23 @@ export const getStats = async () => {
 // ARTICLES & NEWS APIS
 // ==========================================
 
-// =======================
+// ==========================================
 // ARTICLES
-// =======================
+// ==========================================
 
+// Public articles
 export const getArticles = async (admin = false) => {
-  const res = await api.get('/articles', {
-    params: admin ? { admin: 'true' } : {},
-  });
+  const endpoint = admin ? "/articles/admin" : "/articles";
+
+  const res = await api.get(endpoint);
 
   return res.data.data || [];
 };
 
+// Get article by slug
+// Response contains:
+// article, accessGranted, isWordRestricted,
+// totalWords, hasMore, currentSegment
 export const getArticleBySlug = async (slug) => {
   const res = await api.get(
     `/articles/slug/${encodeURIComponent(slug)}`
@@ -1330,14 +1336,41 @@ export const getArticleBySlug = async (slug) => {
   return res.data.data || null;
 };
 
+// Get next article segment
+export const getNextArticleSegment = async (slug) => {
+  const res = await api.get(
+    `/articles/slug/${encodeURIComponent(slug)}/next`
+  );
+
+  return res.data.data || null;
+};
+
+// Register reader and unlock restricted articles
+export const registerArticleReader = async (formData) => {
+  const res = await api.post(
+    "/articles/reader-register",
+    formData
+  );
+
+  return res.data;
+};
+
+// Submit article feedback
+export const submitArticleFeedback = async (payload) => {
+  const res = await api.post("/articles/feedback", payload);
+  return res.data.data || res.data;
+};
+
+// Create article
 export const createArticle = async (data) => {
   const formData = createPublicationFormData(data);
 
-  const res = await api.post('/articles', formData);
+  const res = await api.post("/articles", formData);
 
   return res.data.data || res.data;
 };
 
+// Update article
 export const updateArticle = async (id, data) => {
   const formData = createPublicationFormData(data);
 
@@ -1346,8 +1379,10 @@ export const updateArticle = async (id, data) => {
   return res.data.data || res.data;
 };
 
+// Delete article
 export const deleteArticle = async (id) => {
   const res = await api.delete(`/articles/${id}`);
+
   return res.data;
 };
 

@@ -5,7 +5,7 @@ import SplitFeatureCard from "../../components/learn-more/SplitFeatureCard";
 import ArticleCard from "../../components/ArticleCard";
 import { getArticles, getNews } from "../../services/api";
 
-const filters = ["All Entries", "Articles", "News","Special Article"];
+const filters = ["All Entries", "Articles", "News"];
 
 export default function AllEntriesPage() {
   const [articles, setArticles] = useState([]);

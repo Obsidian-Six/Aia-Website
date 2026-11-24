@@ -11,10 +11,11 @@ export default function SpecialArticleRegistrationModal({
     name: "",
     email: "",
     company: "",
-    designation: "",
+    phone: "",
   });
 
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
@@ -29,38 +30,69 @@ export default function SpecialArticleRegistrationModal({
     setError("");
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { name, email, company, designation } = formData;
+    const { name, email, company, phone } = formData;
 
     if (
       !name.trim() ||
       !email.trim() ||
       !company.trim() ||
-      !designation.trim()
+      !phone.trim()
     ) {
       setError("Please fill in all fields.");
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email.trim())) {
       setError("Please enter a valid email address.");
       return;
     }
 
-    onSubmit(formData);
+    const phoneDigits = phone.replace(/\D/g, "");
 
-    setFormData({
-      name: "",
-      email: "",
-      company: "",
-      designation: "",
-    });
+    if (
+      !/^\+?[0-9\s()-]{10,20}$/.test(phone.trim()) ||
+      phoneDigits.length < 10 ||
+      phoneDigits.length > 15
+    ) {
+      setError("Please enter a valid phone number.");
+      return;
+    }
 
-    setError("");
+    try {
+      setIsSubmitting(true);
+      setError("");
+
+      const result = await onSubmit({
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        company: company.trim(),
+        phone: phone.trim(),
+      });
+
+      if (result === false) return;
+
+      setFormData({
+        name: "",
+        email: "",
+        company: "",
+        phone: "",
+      });
+
+      setError("");
+    } catch (err) {
+      setError(
+        err?.response?.data?.message ||
+          err?.message ||
+          "Registration failed. Please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -71,7 +103,7 @@ export default function SpecialArticleRegistrationModal({
       <div
         role="dialog"
         aria-modal="true"
-        aria-labelledby="special-article-title"
+        aria-labelledby="article-registration-title"
         className="relative my-auto w-full max-w-[500px] rounded-xl bg-white p-6 shadow-2xl sm:p-8"
         onClick={(e) => e.stopPropagation()}
       >
@@ -79,24 +111,25 @@ export default function SpecialArticleRegistrationModal({
           type="button"
           onClick={onClose}
           aria-label="Close registration form"
-          className="absolute right-4 top-4 text-gray-500 transition hover:text-black"
+          disabled={isSubmitting}
+          className="absolute right-4 top-4 text-gray-500 transition hover:text-black disabled:opacity-50"
         >
           <X size={22} />
         </button>
 
         <p className="mb-2 text-xs font-semibold uppercase tracking-[2px] text-[#E87565]">
-          Special Article
+          Article Access
         </p>
 
         <h2
-          id="special-article-title"
+          id="article-registration-title"
           className="text-2xl font-bold text-[#263247]"
         >
           Register to Access
         </h2>
 
         <p className="mt-2 text-sm leading-6 text-gray-500">
-          Please provide your details to access this special article.
+          Please provide your details to unlock the full article.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
@@ -105,7 +138,7 @@ export default function SpecialArticleRegistrationModal({
               htmlFor="registration-name"
               className="mb-1.5 block text-sm font-medium text-[#263247]"
             >
-              Full Name
+              Full Name *
             </label>
 
             <input
@@ -115,7 +148,10 @@ export default function SpecialArticleRegistrationModal({
               value={formData.name}
               onChange={handleChange}
               placeholder="Enter your full name"
-              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778]"
+              autoComplete="name"
+              required
+              disabled={isSubmitting}
+              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778] disabled:bg-gray-100"
             />
           </div>
 
@@ -124,7 +160,7 @@ export default function SpecialArticleRegistrationModal({
               htmlFor="registration-email"
               className="mb-1.5 block text-sm font-medium text-[#263247]"
             >
-              Email Address
+              Email Address *
             </label>
 
             <input
@@ -134,7 +170,10 @@ export default function SpecialArticleRegistrationModal({
               value={formData.email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778]"
+              autoComplete="email"
+              required
+              disabled={isSubmitting}
+              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778] disabled:bg-gray-100"
             />
           </div>
 
@@ -143,7 +182,7 @@ export default function SpecialArticleRegistrationModal({
               htmlFor="registration-company"
               className="mb-1.5 block text-sm font-medium text-[#263247]"
             >
-              Company Name
+              Company *
             </label>
 
             <input
@@ -153,26 +192,32 @@ export default function SpecialArticleRegistrationModal({
               value={formData.company}
               onChange={handleChange}
               placeholder="Enter your company name"
-              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778]"
+              autoComplete="organization"
+              required
+              disabled={isSubmitting}
+              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778] disabled:bg-gray-100"
             />
           </div>
 
           <div>
             <label
-              htmlFor="registration-designation"
+              htmlFor="registration-phone"
               className="mb-1.5 block text-sm font-medium text-[#263247]"
             >
-              Designation
+              Phone Number *
             </label>
 
             <input
-              id="registration-designation"
-              type="text"
-              name="designation"
-              value={formData.designation}
+              id="registration-phone"
+              type="tel"
+              name="phone"
+              value={formData.phone}
               onChange={handleChange}
-              placeholder="Enter your designation"
-              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778]"
+              placeholder="Enter your phone number"
+              autoComplete="tel"
+              required
+              disabled={isSubmitting}
+              className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#315778] disabled:bg-gray-100"
             />
           </div>
 
@@ -184,9 +229,10 @@ export default function SpecialArticleRegistrationModal({
 
           <button
             type="submit"
-            className="w-full rounded-md bg-[#315778] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#263247]"
+            disabled={isSubmitting}
+            className="w-full rounded-md bg-[#315778] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#263247] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Submit & Access Article
+            {isSubmitting ? "Please wait..." : "Submit & Access Article"}
           </button>
         </form>
       </div>

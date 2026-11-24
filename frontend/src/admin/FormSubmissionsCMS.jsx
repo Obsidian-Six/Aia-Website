@@ -25,6 +25,7 @@ const FORM_TYPES = [
   { value: "contact-us", label: "Contact Us" },
   { value: "aia-membership", label: "AIA Membership" },
   { value: "brochure-enquiry", label: "Brochure Enquiry" },
+  { value: "article-reader", label: "Article Reader Registration" },
 ];
 
 const STATUSES = [
@@ -408,7 +409,7 @@ export default function FormSubmissionsCMS() {
                       </td>
 
                       <td className="px-5 py-4 text-sm text-slate-600">
-                        {item.data?.companyName || "—"}
+                        {item.data?.companyName || item.data?.company || "—"}
                       </td>
 
                       <td className="px-5 py-4 text-xs text-slate-500 whitespace-nowrap">
