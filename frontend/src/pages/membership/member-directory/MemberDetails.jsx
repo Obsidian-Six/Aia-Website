@@ -350,7 +350,7 @@ export default function MemberDetails() {
             About
           </h2>
 
-          <p className="text-sm leading-[1.7] text-gray-600 sm:text-base">
+          <p className="whitespace-pre-line text-sm leading-[1.7] text-gray-600 sm:text-base">
             {member.about}
           </p>
         </section>

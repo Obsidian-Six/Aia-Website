@@ -41,6 +41,8 @@ import AdminLoginRoute from "./admin/AdminLoginRoute.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import AllEntriesPage from "./pages/publication/AllEntriesPage.jsx";
+import SamarthCommunity from "./pages/SamarthCommunity.jsx";
+import ManufacturersSelfAssessment from "./pages/ManufacturersSelfAssessment.jsx";
 
 // Helper to scroll to top automatically on route changes
 function ScrollToTop() {
@@ -403,6 +405,14 @@ export default function App() {
           }
         />
 
+        <Route
+  path="/samarth-community"
+  element={<SamarthCommunity />}
+/>
+<Route
+  path="/manufacturers-self-assessment"
+  element={<ManufacturersSelfAssessment />}
+/>
         {/* Admin CMS Routes */}
         {/* <Route path="/admin" element={<AdminLayout />} />
         <Route path="/admin/:tab" element={<AdminLayout />} /> */}

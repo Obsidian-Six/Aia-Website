@@ -164,6 +164,7 @@
 
 import React from "react";
 import { Linkedin, ChevronUp } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const footerLinks = [
   {
@@ -273,14 +274,14 @@ export default function Footer() {
             </h3>
 
             <div className="flex flex-col items-start gap-4 lg:items-start">
-              <a
-                href="https://www.iafsm.in/"
+              <Link
+                to={"/samarth-community"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[14px] font-semibold text-white underline underline-offset-2 transition-opacity hover:opacity-70"
               >
                 Join Samarth Community
-              </a>
+              </Link>
 
               <a
                 href="/request-form/membership"

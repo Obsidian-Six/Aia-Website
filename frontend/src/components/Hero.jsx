@@ -494,8 +494,251 @@
 
 
 
+// import React, { useEffect, useRef, useState } from "react";
+// import { Link } from "react-router-dom";
+
+// const API_URL = (
+//   import.meta.env.VITE_API_URL || "http://localhost:5000/api"
+// ).replace(/\/+$/, "");
+
+// const BACKEND_URL = API_URL.replace(/\/api$/i, "");
+
+// // Convert old localhost and relative upload URLs to production backend URLs
+// const getMediaUrl = (mediaPath) => {
+//   if (!mediaPath) return "";
+
+//   try {
+//     if (/^https?:\/\//i.test(mediaPath)) {
+//       const url = new URL(mediaPath);
+
+//       if (
+//         url.hostname === "localhost" ||
+//         url.hostname === "127.0.0.1"
+//       ) {
+//         return `${BACKEND_URL}${url.pathname}${url.search}${url.hash}`;
+//       }
+
+//       return mediaPath;
+//     }
+
+//     return `${BACKEND_URL}/${mediaPath.replace(/^\/+/, "")}`;
+//   } catch (error) {
+//     console.error("Invalid media URL:", mediaPath, error);
+//     return "";
+//   }
+// };
+
+// const FALLBACK_HERO = {
+//   title: "Building the automation backbone of India's factories.",
+//   description:
+//     "Empowering manufacturers to build and sustain solutions based on Industrial Automation, Robotics, Industry 4.0, AI and Collaborative Innovation.",
+//   videoUrl: "",
+//   youtubeUrl: "https://www.youtube.com/watch?v=VIDEO_ID",
+//   ctaPrimaryText: "Connect with us",
+//   ctaPrimaryUrl: "#membership",
+//   ctaSecondaryText: "Explore Smart Factory",
+//   ctaSecondaryUrl: "/learn-more",
+// };
+
+// export default function Hero({ onBecomeMemberClick }) {
+//   const videoRef = useRef(null);
+
+//   const [hero, setHero] = useState(FALLBACK_HERO);
+//   const [videoFailed, setVideoFailed] = useState(false);
+//   const [videoLoaded, setVideoLoaded] = useState(false);
+
+//   // Resolve background video URL
+//   const heroVideoUrl = getMediaUrl(hero.videoUrl);
+
+//   // Fetch home hero data
+//   useEffect(() => {
+//     const controller = new AbortController();
+
+//     const fetchHero = async () => {
+//       try {
+//         const response = await fetch(`${API_URL}/banners`, {
+//           signal: controller.signal,
+//         });
+
+//         const result = await response.json();
+
+//         if (!response.ok || !result.success) {
+//           throw new Error(result.message || "Unable to load hero.");
+//         }
+
+//         const activeHero = result.data?.find(
+//           (item) => item.isActive && (item.videoUrl || item.youtubeUrl)
+//         );
+
+//         if (activeHero) {
+//           setHero({
+//             ...FALLBACK_HERO,
+//             ...activeHero,
+//           });
+
+//           setVideoFailed(false);
+//           setVideoLoaded(false);
+//         }
+//       } catch (error) {
+//         if (error.name !== "AbortError") {
+//           console.error("Home hero API error:", error);
+//         }
+//       }
+//     };
+
+//     fetchHero();
+
+//     return () => controller.abort();
+//   }, []);
+
+//   // Automatically play background video
+//   useEffect(() => {
+//     const video = videoRef.current;
+
+//     if (!video || !heroVideoUrl || videoFailed) return;
+
+//     video.muted = true;
+//     video.defaultMuted = true;
+//     video.playsInline = true;
+
+//     video.setAttribute("muted", "");
+//     video.setAttribute("playsinline", "");
+//     video.setAttribute("webkit-playsinline", "");
+
+//     const playVideo = async () => {
+//       try {
+//         await video.play();
+//       } catch (error) {
+//         console.warn(
+//           "Browser blocked automatic hero video playback:",
+//           error
+//         );
+//       }
+//     };
+
+//     if (video.readyState >= 2) {
+//       playVideo();
+//     } else {
+//       video.addEventListener("loadeddata", playVideo, {
+//         once: true,
+//       });
+//     }
+
+//     return () => {
+//       video.removeEventListener("loadeddata", playVideo);
+//     };
+//   }, [heroVideoUrl, videoFailed]);
+
+//   // Video loaded
+//   const handleVideoLoaded = () => {
+//     setVideoLoaded(true);
+//     setVideoFailed(false);
+//   };
+
+//   // Video error
+//   const handleVideoError = () => {
+//     setVideoFailed(true);
+//     setVideoLoaded(false);
+
+//     console.error("Hero video could not be loaded:", heroVideoUrl);
+//   };
+
+//   return (
+//     <section
+//       id="home"
+//       className="relative isolate flex min-h-[390px] w-full items-center overflow-hidden bg-[#111] font-sans text-white sm:min-h-[460px] lg:min-h-[540px]"
+//     >
+//       {/* Background video */}
+//       {heroVideoUrl && !videoFailed && (
+//         <video
+//           ref={videoRef}
+//           key={heroVideoUrl}
+//           src={heroVideoUrl}
+//           muted
+//           loop
+//           playsInline
+//           autoPlay
+//           preload="auto"
+//           controls={false}
+//           onLoadedData={handleVideoLoaded}
+//           onError={handleVideoError}
+//           className="absolute inset-0 z-0 block h-full w-full object-cover"
+//         />
+//       )}
+
+//       {/* Video loading fallback */}
+//       {heroVideoUrl && !videoLoaded && !videoFailed && (
+//         <div className="absolute inset-0 z-0 bg-[#111]" />
+//       )}
+
+//       {/* Dark overlay */}
+//       <div className="pointer-events-none absolute inset-0 z-10 bg-black/60" />
+
+//       <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/70 via-black/35 to-black/20" />
+
+//       {/* Hero content */}
+//       <div className="pointer-events-none relative z-20 mx-auto flex w-full max-w-[1440px] items-center px-5 py-14 sm:px-8 sm:py-16 lg:px-[8.5%] lg:py-20">
+//         <div className="max-w-[660px]">
+//           <h1 className="max-w-[650px] whitespace-pre-line text-[30px] font-semibold leading-[1.12] tracking-[-0.035em] drop-shadow-md sm:text-[38px] lg:text-[48px]">
+//             {hero.title || FALLBACK_HERO.title}
+//           </h1>
+
+//           <p className="mt-4 max-w-[490px] text-[12px] leading-[1.6] text-white/85 sm:mt-5 sm:text-sm">
+//             {hero.description || FALLBACK_HERO.description}
+//           </p>
+
+//           <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-6 sm:gap-3">
+//             {hero.ctaPrimaryText && (
+//               <Link
+//                 to="/membership"
+//                 className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] bg-[#f15d4e] px-3.5 py-2 text-[10px] font-semibold text-white transition hover:bg-[#dc493b] sm:text-[11px]"
+//               >
+//                 {hero.ctaPrimaryText}
+//               </Link>
+//             )}
+
+//             {hero.ctaSecondaryText && (
+//               <a
+//                 href={hero.ctaSecondaryUrl || "#build-factory"}
+//                 className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] border border-white/75 bg-black/10 px-3.5 py-2 text-[10px] font-medium text-white transition hover:bg-white/15 sm:text-[11px]"
+//               >
+//                 {hero.ctaSecondaryText}
+//               </a>
+//             )}
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* Watch on YouTube button */}
+//       {hero.youtubeUrl && (
+//         <a
+//           href={hero.youtubeUrl}
+//           target="_blank"
+//           rel="noopener noreferrer"
+//           className="absolute bottom-5 right-5 z-30 inline-flex min-h-10 items-center justify-center rounded-[4px] border border-white/50 bg-[#e86b5e] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:scale-105 hover:bg-[#d95649] sm:bottom-7 sm:right-7"
+//           aria-label="Watch video on YouTube"
+//         >
+//           Watch on YouTube
+//         </a>
+//       )}
+//     </section>
+//   );
+// }
+
+
+
+
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  X,
+  Play,
+  ArrowLeft,
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+  ClipboardList,
+} from "lucide-react";
 
 const API_URL = (
   import.meta.env.VITE_API_URL || "http://localhost:5000/api"
@@ -503,7 +746,6 @@ const API_URL = (
 
 const BACKEND_URL = API_URL.replace(/\/api$/i, "");
 
-// Convert old localhost and relative upload URLs to production backend URLs
 const getMediaUrl = (mediaPath) => {
   if (!mediaPath) return "";
 
@@ -533,24 +775,71 @@ const FALLBACK_HERO = {
   description:
     "Empowering manufacturers to build and sustain solutions based on Industrial Automation, Robotics, Industry 4.0, AI and Collaborative Innovation.",
   videoUrl: "",
-  youtubeUrl: "https://www.youtube.com/watch?v=VIDEO_ID",
+  youtubeUrl: "",
   ctaPrimaryText: "Connect with us",
   ctaPrimaryUrl: "#membership",
   ctaSecondaryText: "Explore Smart Factory",
   ctaSecondaryUrl: "/learn-more",
 };
 
+// Extract YouTube video ID from supported URL formats
+const getYouTubeVideoId = (url = "") => {
+  try {
+    const parsedUrl = new URL(url);
+    const hostname = parsedUrl.hostname.replace(/^www\./, "");
+
+    if (hostname === "youtu.be") {
+      return parsedUrl.pathname.split("/")[1] || "";
+    }
+
+    if (
+      hostname === "youtube.com" ||
+      hostname === "m.youtube.com" ||
+      hostname === "youtube-nocookie.com"
+    ) {
+      if (parsedUrl.pathname === "/watch") {
+        return parsedUrl.searchParams.get("v") || "";
+      }
+
+      const match = parsedUrl.pathname.match(
+        /^\/(embed|shorts|live)\/([^/?]+)/
+      );
+
+      return match?.[2] || "";
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
+};
+
+const getYouTubeEmbedUrl = (url) => {
+  const videoId = getYouTubeVideoId(url);
+
+  return videoId
+    ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`
+    : "";
+};
+
 export default function Hero({ onBecomeMemberClick }) {
+  const navigate = useNavigate();
   const videoRef = useRef(null);
 
   const [hero, setHero] = useState(FALLBACK_HERO);
   const [videoFailed, setVideoFailed] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
-  // Resolve background video URL
+  // Smart Factory popup states
+  const [showSmartFactory, setShowSmartFactory] = useState(false);
+  const [smartFactoryVideos, setSmartFactoryVideos] = useState([]);
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [videosLoading, setVideosLoading] = useState(false);
+  const [videosError, setVideosError] = useState("");
+
   const heroVideoUrl = getMediaUrl(hero.videoUrl);
 
-  // Fetch home hero data
+  // Fetch existing Home Hero
   useEffect(() => {
     const controller = new AbortController();
 
@@ -609,19 +898,14 @@ export default function Hero({ onBecomeMemberClick }) {
       try {
         await video.play();
       } catch (error) {
-        console.warn(
-          "Browser blocked automatic hero video playback:",
-          error
-        );
+        console.warn("Browser blocked automatic hero video playback:", error);
       }
     };
 
     if (video.readyState >= 2) {
       playVideo();
     } else {
-      video.addEventListener("loadeddata", playVideo, {
-        once: true,
-      });
+      video.addEventListener("loadeddata", playVideo, { once: true });
     }
 
     return () => {
@@ -629,98 +913,367 @@ export default function Hero({ onBecomeMemberClick }) {
     };
   }, [heroVideoUrl, videoFailed]);
 
-  // Video loaded
+  // Fetch Smart Factory videos when popup opens
+  useEffect(() => {
+    if (!showSmartFactory) return;
+
+    const controller = new AbortController();
+
+    const fetchSmartFactoryVideos = async () => {
+      setVideosLoading(true);
+      setVideosError("");
+
+      try {
+        const response = await fetch(
+          `${API_URL}/smart-factory-videos`,
+          { signal: controller.signal }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(
+            result.message || "Unable to load Smart Factory videos."
+          );
+        }
+
+        const videos = Array.isArray(result.data) ? result.data : [];
+
+        const activeVideos = videos.filter(
+          (item) => item.isActive !== false && item.youtubeUrl
+        );
+
+        setSmartFactoryVideos(activeVideos);
+      } catch (error) {
+        if (error.name !== "AbortError") {
+          console.error("Smart Factory videos:", error);
+          setVideosError(error.message);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setVideosLoading(false);
+        }
+      }
+    };
+
+    fetchSmartFactoryVideos();
+
+    return () => controller.abort();
+  }, [showSmartFactory]);
+
+  // Stop video and close popup with Escape
+  useEffect(() => {
+    if (!showSmartFactory) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setShowSmartFactory(false);
+        setSelectedVideo(null);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [showSmartFactory]);
+
   const handleVideoLoaded = () => {
     setVideoLoaded(true);
     setVideoFailed(false);
   };
 
-  // Video error
   const handleVideoError = () => {
     setVideoFailed(true);
     setVideoLoaded(false);
-
     console.error("Hero video could not be loaded:", heroVideoUrl);
   };
 
+  const closeSmartFactory = () => {
+    setShowSmartFactory(false);
+    setSelectedVideo(null);
+  };
+
+  const startAssessment = (video) => {
+    const params = new URLSearchParams({
+      videoId: String(video._id),
+      videoTitle: video.title || "",
+    });
+
+    closeSmartFactory();
+
+    navigate(`/manufacturers-self-assessment?${params.toString()}`);
+  };
+
+  const isExploreSmartFactory =
+    hero.ctaSecondaryText?.trim().toLowerCase() ===
+    "explore smart factory";
+
   return (
-    <section
-      id="home"
-      className="relative isolate flex min-h-[390px] w-full items-center overflow-hidden bg-[#111] font-sans text-white sm:min-h-[460px] lg:min-h-[540px]"
-    >
-      {/* Background video */}
-      {heroVideoUrl && !videoFailed && (
-        <video
-          ref={videoRef}
-          key={heroVideoUrl}
-          src={heroVideoUrl}
-          muted
-          loop
-          playsInline
-          autoPlay
-          preload="auto"
-          controls={false}
-          onLoadedData={handleVideoLoaded}
-          onError={handleVideoError}
-          className="absolute inset-0 z-0 block h-full w-full object-cover"
-        />
-      )}
+    <>
+      <section
+        id="home"
+        className="relative isolate flex min-h-[390px] w-full items-center overflow-hidden bg-[#111] font-sans text-white sm:min-h-[460px] lg:min-h-[540px]"
+      >
+        {/* Existing background video - unchanged */}
+        {heroVideoUrl && !videoFailed && (
+          <video
+            ref={videoRef}
+            key={heroVideoUrl}
+            src={heroVideoUrl}
+            muted
+            loop
+            playsInline
+            autoPlay
+            preload="auto"
+            controls={false}
+            onLoadedData={handleVideoLoaded}
+            onError={handleVideoError}
+            className="absolute inset-0 z-0 block h-full w-full object-cover"
+          />
+        )}
 
-      {/* Video loading fallback */}
-      {heroVideoUrl && !videoLoaded && !videoFailed && (
-        <div className="absolute inset-0 z-0 bg-[#111]" />
-      )}
+        {heroVideoUrl && !videoLoaded && !videoFailed && (
+          <div className="absolute inset-0 z-0 bg-[#111]" />
+        )}
 
-      {/* Dark overlay */}
-      <div className="pointer-events-none absolute inset-0 z-10 bg-black/60" />
+        <div className="pointer-events-none absolute inset-0 z-10 bg-black/60" />
 
-      <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/70 via-black/35 to-black/20" />
+        <div className="pointer-events-none absolute inset-0 z-10 bg-gradient-to-r from-black/70 via-black/35 to-black/20" />
 
-      {/* Hero content */}
-      <div className="pointer-events-none relative z-20 mx-auto flex w-full max-w-[1440px] items-center px-5 py-14 sm:px-8 sm:py-16 lg:px-[8.5%] lg:py-20">
-        <div className="max-w-[660px]">
-          <h1 className="max-w-[650px] whitespace-pre-line text-[30px] font-semibold leading-[1.12] tracking-[-0.035em] drop-shadow-md sm:text-[38px] lg:text-[48px]">
-            {hero.title || FALLBACK_HERO.title}
-          </h1>
+        {/* Hero content */}
+        <div className="pointer-events-none relative z-20 mx-auto flex w-full max-w-[1440px] items-center px-5 py-14 sm:px-8 sm:py-16 lg:px-[8.5%] lg:py-20">
+          <div className="max-w-[660px]">
+            <h1 className="max-w-[650px] whitespace-pre-line text-[30px] font-semibold leading-[1.12] tracking-[-0.035em] drop-shadow-md sm:text-[38px] lg:text-[48px]">
+              {hero.title || FALLBACK_HERO.title}
+            </h1>
 
-          <p className="mt-4 max-w-[490px] text-[12px] leading-[1.6] text-white/85 sm:mt-5 sm:text-sm">
-            {hero.description || FALLBACK_HERO.description}
-          </p>
+            <p className="mt-4 max-w-[490px] text-[12px] leading-[1.6] text-white/85 sm:mt-5 sm:text-sm">
+              {hero.description || FALLBACK_HERO.description}
+            </p>
 
-          <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-6 sm:gap-3">
-            {hero.ctaPrimaryText && (
-              <Link
-                to="/membership"
-                className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] bg-[#f15d4e] px-3.5 py-2 text-[10px] font-semibold text-white transition hover:bg-[#dc493b] sm:text-[11px]"
-              >
-                {hero.ctaPrimaryText}
-              </Link>
-            )}
+            <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-6 sm:gap-3">
+              {hero.ctaPrimaryText && (
+                <Link
+                  to="/membership"
+                  className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] bg-[#f15d4e] px-3.5 py-2 text-[10px] font-semibold text-white transition hover:bg-[#dc493b] sm:text-[11px]"
+                >
+                  {hero.ctaPrimaryText}
+                </Link>
+              )}
 
-            {hero.ctaSecondaryText && (
-              <a
-                href={hero.ctaSecondaryUrl || "#build-factory"}
-                className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] border border-white/75 bg-black/10 px-3.5 py-2 text-[10px] font-medium text-white transition hover:bg-white/15 sm:text-[11px]"
-              >
-                {hero.ctaSecondaryText}
-              </a>
-            )}
+              {hero.ctaSecondaryText && (
+                isExploreSmartFactory ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowSmartFactory(true)}
+                    className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] border border-white/75 bg-black/10 px-3.5 py-2 text-[10px] font-medium text-white transition hover:bg-white/15 sm:text-[11px]"
+                  >
+                    {hero.ctaSecondaryText}
+                  </button>
+                ) : (
+                  <a
+                    href={hero.ctaSecondaryUrl || "#build-factory"}
+                    className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] border border-white/75 bg-black/10 px-3.5 py-2 text-[10px] font-medium text-white transition hover:bg-white/15 sm:text-[11px]"
+                  >
+                    {hero.ctaSecondaryText}
+                  </a>
+                )
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Watch on YouTube button */}
-      {hero.youtubeUrl && (
-        <a
-          href={hero.youtubeUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute bottom-5 right-5 z-30 inline-flex min-h-10 items-center justify-center rounded-[4px] border border-white/50 bg-[#e86b5e] px-5 py-2.5 text-sm font-semibold text-white shadow-lg transition hover:scale-105 hover:bg-[#d95649] sm:bottom-7 sm:right-7"
-          aria-label="Watch video on YouTube"
+      {/* Smart Factory Popup */}
+      {showSmartFactory && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 p-3 backdrop-blur-sm sm:p-6"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeSmartFactory();
+            }
+          }}
         >
-          Watch on YouTube
-        </a>
+          <div className="relative max-h-[92vh] w-full max-w-6xl overflow-y-auto rounded-xl bg-white text-slate-900 shadow-2xl">
+            <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4 sm:px-7">
+              <div>
+                <h2 className="text-lg font-bold sm:text-2xl">
+                  Explore Smart Factory
+                </h2>
+                <p className="mt-1 text-xs text-slate-500 sm:text-sm">
+                  Explore automation and smart manufacturing.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={closeSmartFactory}
+                aria-label="Close popup"
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-700 transition hover:bg-slate-200"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-5 sm:p-7">
+              {videosLoading ? (
+                <div className="flex min-h-60 items-center justify-center gap-3 text-slate-500">
+                  <Loader2 className="animate-spin" size={24} />
+                  Loading Smart Factory videos...
+                </div>
+              ) : videosError ? (
+                <div className="flex min-h-48 flex-col items-center justify-center gap-3 text-center">
+                  <AlertCircle className="text-red-500" size={30} />
+                  <p className="text-sm text-red-600">{videosError}</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowSmartFactory(false);
+                      setTimeout(() => setShowSmartFactory(true), 0);
+                    }}
+                    className="rounded-md bg-slate-900 px-4 py-2 text-sm text-white"
+                  >
+                    Try Again
+                  </button>
+                </div>
+              ) : smartFactoryVideos.length === 0 ? (
+                <div className="flex min-h-48 flex-col items-center justify-center text-center">
+                  <Play size={34} className="mb-3 text-slate-300" />
+                  <h3 className="font-semibold">Videos coming soon</h3>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Smart Factory videos will be available here.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid gap-6 lg:grid-cols-[1fr_0.9fr]">
+                  {/* Video list */}
+                  <div>
+                    <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-500">
+                      Available Videos
+                    </h3>
+
+                    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+                      {smartFactoryVideos.map((video) => {
+                        const thumbnail = getMediaUrl(
+                          video.thumbnailUrl || video.thumbnail
+                        );
+
+                        const isSelected =
+                          selectedVideo?._id === video._id;
+
+                        return (
+                          <button
+                            key={video._id}
+                            type="button"
+                            onClick={() => setSelectedVideo(video)}
+                            className={`group flex w-full gap-3 rounded-lg border p-2 text-left transition ${
+                              isSelected
+                                ? "border-[#ed654f] bg-orange-50"
+                                : "border-slate-200 hover:border-slate-400"
+                            }`}
+                          >
+                            <div className="relative aspect-video w-36 shrink-0 overflow-hidden rounded-md bg-slate-100 sm:w-44">
+                              {thumbnail ? (
+                                <img
+                                  src={thumbnail}
+                                  alt={video.title}
+                                  className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+                                />
+                              ) : (
+                                <div className="flex h-full items-center justify-center">
+                                  <Play className="text-slate-400" />
+                                </div>
+                              )}
+
+                              <span className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white/90 text-[#e85f4d]">
+                                  <Play size={17} fill="currentColor" />
+                                </span>
+                              </span>
+                            </div>
+
+                            <div className="min-w-0 flex-1 py-1">
+                              <h4 className="line-clamp-2 text-sm font-semibold text-slate-900">
+                                {video.title}
+                              </h4>
+                              <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">
+                                {video.description}
+                              </p>
+                              <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-[#e85f4d]">
+                                Watch video <ArrowRight size={13} />
+                              </span>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Selected video player */}
+                  <div>
+                    <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-500">
+                      {selectedVideo ? "Now Playing" : "Select a video"}
+                    </h3>
+
+                    {selectedVideo ? (
+                      <div>
+                        <div className="aspect-video overflow-hidden rounded-lg bg-black">
+                          {getYouTubeEmbedUrl(selectedVideo.youtubeUrl) ? (
+                            <iframe
+                              key={selectedVideo._id}
+                              src={getYouTubeEmbedUrl(selectedVideo.youtubeUrl)}
+                              title={selectedVideo.title || "Smart Factory video"}
+                              className="h-full w-full"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                              allowFullScreen
+                              referrerPolicy="strict-origin-when-cross-origin"
+                            />
+                          ) : (
+                            <div className="flex h-full items-center justify-center p-5 text-center text-sm text-white">
+                              Invalid YouTube URL. Please contact the administrator.
+                            </div>
+                          )}
+                        </div>
+
+                        <h3 className="mt-4 text-lg font-bold">
+                          {selectedVideo.title}
+                        </h3>
+
+                        <p className="mt-2 text-sm leading-6 text-slate-600">
+                          {selectedVideo.description}
+                        </p>
+
+                        <button
+                          type="button"
+                          onClick={() => startAssessment(selectedVideo)}
+                          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-md bg-[#ed654f] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#d9503c]"
+                        >
+                          <ClipboardList size={17} />
+                          Start Self-Assessment
+                          <ArrowRight size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex aspect-video flex-col items-center justify-center rounded-lg bg-slate-100 p-6 text-center">
+                        <Play size={38} className="mb-3 text-slate-300" />
+                        <p className="text-sm font-medium text-slate-600">
+                          Select any video to start watching
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
       )}
-    </section>
+    </>
   );
 }

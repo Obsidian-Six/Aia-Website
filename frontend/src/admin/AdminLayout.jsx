@@ -1333,7 +1333,6 @@
 //   );
 // }
 
-
 // import React, { useState, useEffect } from "react";
 // import {
 //   Cpu,
@@ -1405,8 +1404,6 @@
 // const handleViewWebsite = () => {
 //   navigate("/", { replace: true });
 // };
-
-
 
 //   const { tab: urlTab } = useParams();
 //   const [currentTab, setCurrentTab] = useState(urlTab || "dashboard");
@@ -1504,7 +1501,6 @@
 //   const [talentConnectMenuOpen, setTalentConnectMenuOpen] = useState(true);
 //   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 //   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
-  
 
 //   // const handleNavigate = (tab) => {
 //   //   setCurrentTab(tab);
@@ -2821,8 +2817,6 @@
 //   );
 // }
 
-
-
 import React, { useState, useEffect } from "react";
 import {
   Cpu,
@@ -2889,10 +2883,14 @@ import FormSubmissionsCMS from "./FormSubmissionsCMS.jsx";
 import AddMember from "./AddMember.jsx";
 import AllMembers from "./AllMembers.jsx";
 import AllEntries from "./AllEntries.jsx";
+import AddSmartFactoryVideo from "./AddSmartFactoryVideo";
+import AllSmartFactoryVideos from "./AllSmartFactoryVideos";
 
 // Conversations CMS
 import AddConversation from "./AddConversation.jsx";
 import AllConversations from "./AllConversations.jsx";
+import AllSelfAssessmentSubmissions from "./AllSelfAssessmentSubmissions.jsx";
+import ManageSelfAssessment from "./ManageSelfAssessment.jsx";
 
 export default function AdminLayout({ onExitAdmin }) {
   const navigate = useNavigate();
@@ -2925,6 +2923,8 @@ export default function AdminLayout({ onExitAdmin }) {
   const [industryInsightMenuOpen, setIndustryInsightMenuOpen] = useState(true);
   const [talentConnectMenuOpen, setTalentConnectMenuOpen] = useState(true);
   // const [aimsObjectiveMenuOpen, setAimsObjectiveMenuOpen] = useState(true);
+  const [selectedSmartFactoryVideo, setSelectedSmartFactoryVideo] =
+    useState(null);
 
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -2961,6 +2961,8 @@ export default function AdminLayout({ onExitAdmin }) {
         "home-features-cms",
         "iafsm-features-cms",
         "home-why-join-cms",
+         "manage-self-assessment",
+    "all-self-assessment-submissions",
       ].includes(urlTab)
     ) {
       setHomeMenuOpen(true);
@@ -3066,6 +3068,10 @@ export default function AdminLayout({ onExitAdmin }) {
   const handleNavigate = (tab, item = null) => {
     setCurrentTab(tab);
 
+    if (tab === "add-smart-factory-video") {
+      setSelectedSmartFactoryVideo(item || null);
+    }
+
     // Event edit
     setSelectedEventForEdit(tab === "add-event" ? item : null);
 
@@ -3079,9 +3085,7 @@ export default function AdminLayout({ onExitAdmin }) {
     setEditingMember(tab === "add-member" ? item : null);
 
     // Conversation edit
-    setSelectedConversation(
-      tab === "add-conversation" ? item : null
-    );
+    setSelectedConversation(tab === "add-conversation" ? item : null);
 
     // Home section
     if (
@@ -3095,6 +3099,8 @@ export default function AdminLayout({ onExitAdmin }) {
         "home-features-cms",
         "iafsm-features-cms",
         "home-why-join-cms",
+         "manage-self-assessment",
+    "all-self-assessment-submissions",
       ].includes(tab)
     ) {
       setHomeMenuOpen(true);
@@ -3165,9 +3171,7 @@ export default function AdminLayout({ onExitAdmin }) {
       setMembershipDirectoryOpen(true);
     }
 
-    if (
-      ["membership-slider-cms", "membership-why-join-cms"].includes(tab)
-    ) {
+    if (["membership-slider-cms", "membership-why-join-cms"].includes(tab)) {
       setMembershipMenuOpen(true);
     }
 
@@ -3214,7 +3218,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans text-left">
-
       {/* ==========================================
           1. LEFT SIDEBAR NAVIGATION
       ========================================== */}
@@ -3227,7 +3230,6 @@ export default function AdminLayout({ onExitAdmin }) {
         }`}
       >
         <div className="p-4 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
-
           {/* Brand Header */}
           <div className="flex items-center justify-between pb-4 border-b border-white/10 relative">
             <div className="flex items-center gap-3 overflow-hidden">
@@ -3267,7 +3269,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
           {/* Navigation Items */}
           <div className="space-y-1.5">
-
             {!sidebarCollapsed && (
               <div className="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider px-3 mb-2">
                 NAVIGATION
@@ -3348,7 +3349,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
               {homeMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <button
                     onClick={() => handleNavigate("add-banner")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
@@ -3369,6 +3369,51 @@ export default function AdminLayout({ onExitAdmin }) {
                     }`}
                   >
                     All Banner Images
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate("all-smart-factory-videos")}
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
+                      currentTab === "all-smart-factory-videos"
+                        ? "text-[#FF6B55] font-bold bg-white/10"
+                        : "text-gray-400 hover:text-[#FF6B55]"
+                    }`}
+                  >
+                    Smart Factory Videos
+                  </button>
+                  {/* Manufacturers Self-Assessment CMS */}
+
+                  <div className="pt-2 mt-2 border-t border-white/10">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider pl-1">
+                      Manufacturers Self-Assessment
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => handleNavigate("manage-self-assessment")}
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
+                      currentTab === "manage-self-assessment"
+                        ? "text-[#FF6B55] font-bold bg-white/10"
+                        : "text-gray-400 hover:text-[#FF6B55]"
+                    }`}
+                  >
+                    Manage Assessment
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleNavigate("all-self-assessment-submissions")
+                    }
+                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
+                      currentTab === "all-self-assessment-submissions"
+                        ? "text-[#FF6B55] font-bold bg-white/10"
+                        : "text-gray-400 hover:text-[#FF6B55]"
+                    }`}
+                  >
+                    All Submissions
                   </button>
 
                   <button
@@ -3416,15 +3461,15 @@ export default function AdminLayout({ onExitAdmin }) {
                   </button>
 
                   <button
-                     onClick={() => handleNavigate("slider-cms")}
-                     className={`w-full rounded-lg px-2.5 py-1.5 text-left text-xs transition ${
-                       currentTab === "slider-cms"
-                         ? "bg-white/10 font-bold text-[#FF6B55]"
-                         : "text-gray-400 hover:text-[#FF6B55]"
-                     }`}
-                   >
-                     Slider CMS
-                   </button>
+                    onClick={() => handleNavigate("slider-cms")}
+                    className={`w-full rounded-lg px-2.5 py-1.5 text-left text-xs transition ${
+                      currentTab === "slider-cms"
+                        ? "bg-white/10 font-bold text-[#FF6B55]"
+                        : "text-gray-400 hover:text-[#FF6B55]"
+                    }`}
+                  >
+                    Slider CMS
+                  </button>
 
                   <button
                     onClick={() => handleNavigate("home-why-join-cms")}
@@ -3476,7 +3521,6 @@ export default function AdminLayout({ onExitAdmin }) {
                     : "text-gray-500 hover:bg-white/5 hover:text-[#FF6B55]"
                 }`}
               >
-                
                 <div className="flex items-center gap-3">
                   <Users className="w-4 h-4 shrink-0" />
                   {!sidebarCollapsed && <span>Membership</span>}
@@ -3488,13 +3532,10 @@ export default function AdminLayout({ onExitAdmin }) {
                   ) : (
                     <ChevronDown className="w-3.5 h-3.5 text-gray-400" />
                   ))}
-
               </button>
-
 
               {membershipMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <div>
                     <button
                       type="button"
@@ -3518,7 +3559,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
                     {membershipDirectoryOpen && (
                       <div className="ml-3 mt-1 pl-3 space-y-1 border-l border-white/10">
-
                         <button
                           onClick={() => handleNavigate("add-member")}
                           className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
@@ -3569,8 +3609,7 @@ export default function AdminLayout({ onExitAdmin }) {
               )}
             </div>
 
-
-             {/* <button
+            {/* <button
                 onClick={() => setAimsObjectiveMenuOpen(!aimsObjectiveMenuOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                   [
@@ -3605,7 +3644,6 @@ export default function AdminLayout({ onExitAdmin }) {
                    </button>
                  </div>
                )} */}
-
 
             {/* ==========================================
                 INDUSTRY INSIGHT SECTION
@@ -3643,7 +3681,6 @@ export default function AdminLayout({ onExitAdmin }) {
               {/* All Industry Insight submenu items are inside this block */}
               {industryInsightMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <button
                     onClick={() =>
                       handleNavigate("industry-insight-slider-cms")
@@ -3659,9 +3696,7 @@ export default function AdminLayout({ onExitAdmin }) {
 
                   <button
                     type="button"
-                    onClick={() =>
-                      handleNavigate("sticky-stack-industry-cms")
-                    }
+                    onClick={() => handleNavigate("sticky-stack-industry-cms")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
                       currentTab === "sticky-stack-industry-cms"
                         ? "text-[#FF6B55] font-bold bg-white/10"
@@ -3714,9 +3749,7 @@ export default function AdminLayout({ onExitAdmin }) {
 
             <div>
               <button
-                onClick={() =>
-                  setTalentConnectMenuOpen(!talentConnectMenuOpen)
-                }
+                onClick={() => setTalentConnectMenuOpen(!talentConnectMenuOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                   currentTab === "talent-connect-slider-cms"
                     ? "text-[#FF6B55] bg-white/5"
@@ -3739,9 +3772,7 @@ export default function AdminLayout({ onExitAdmin }) {
               {talentConnectMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
                   <button
-                    onClick={() =>
-                      handleNavigate("talent-connect-slider-cms")
-                    }
+                    onClick={() => handleNavigate("talent-connect-slider-cms")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
                       currentTab === "talent-connect-slider-cms"
                         ? "text-[#FF6B55] font-bold bg-white/10"
@@ -3794,7 +3825,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
               {aboutMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <button
                     onClick={() => handleNavigate("about-aia-slider-cms")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
@@ -3972,7 +4002,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
               {eventMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <button
                     onClick={() => handleNavigate("add-event")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
@@ -4004,9 +4033,7 @@ export default function AdminLayout({ onExitAdmin }) {
 
             <div>
               <button
-                onClick={() =>
-                  setInitiativeMenuOpen(!initiativeMenuOpen)
-                }
+                onClick={() => setInitiativeMenuOpen(!initiativeMenuOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                   ["add-initiative", "all-initiatives"].includes(currentTab)
                     ? "text-[#FF6B55] bg-white/5"
@@ -4028,7 +4055,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
               {initiativeMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <button
                     onClick={() => handleNavigate("add-initiative")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
@@ -4060,9 +4086,7 @@ export default function AdminLayout({ onExitAdmin }) {
 
             <div>
               <button
-                onClick={() =>
-                  setCampusConnectMenuOpen(!campusConnectMenuOpen)
-                }
+                onClick={() => setCampusConnectMenuOpen(!campusConnectMenuOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                   [
                     "add-campus-event",
@@ -4089,7 +4113,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
               {campusConnectMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <button
                     onClick={() => handleNavigate("add-campus-event")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
@@ -4149,9 +4172,7 @@ export default function AdminLayout({ onExitAdmin }) {
 
             <div>
               <button
-                onClick={() =>
-                  setPublicationMenuOpen(!publicationMenuOpen)
-                }
+                onClick={() => setPublicationMenuOpen(!publicationMenuOpen)}
                 className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                   [
                     "add-publication",
@@ -4181,7 +4202,6 @@ export default function AdminLayout({ onExitAdmin }) {
 
               {publicationMenuOpen && !sidebarCollapsed && (
                 <div className="pl-9 pr-2 py-1 space-y-1 border-l border-white/10 ml-5 my-1">
-
                   <button
                     onClick={() => handleNavigate("add-publication")}
                     className={`w-full text-left px-2.5 py-1.5 rounded-lg text-xs transition ${
@@ -4297,10 +4317,8 @@ export default function AdminLayout({ onExitAdmin }) {
       <div
         className={`flex-1 flex flex-col min-h-screen ${contentMarginClass} transition-all duration-300`}
       >
-
         {/* Top Header Bar */}
         <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30 shadow-xs">
-
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileSidebarOpen(!mobileSidebarOpen)}
@@ -4346,7 +4364,6 @@ export default function AdminLayout({ onExitAdmin }) {
         {/* Dynamic CMS Page View */}
         <main className="flex-1 p-4 sm:p-6 lg:p-10 bg-[#F8FAFC]">
           <div className="w-full max-w-6xl mx-auto">
-
             {/* Dashboard */}
             {currentTab === "dashboard" && (
               <AdminDashboard onNavigate={handleNavigate} />
@@ -4360,8 +4377,28 @@ export default function AdminLayout({ onExitAdmin }) {
               <AddHomeBanner onNavigate={handleNavigate} />
             )}
 
+            {currentTab === "manage-self-assessment" && (
+              <ManageSelfAssessment />
+            )}
+
+            {currentTab === "all-self-assessment-submissions" && (
+              <AllSelfAssessmentSubmissions />
+            )}
+
             {currentTab === "all-banners" && (
               <AllBanners onNavigate={handleNavigate} />
+            )}
+            {/* Add-smart-factory-video */}
+
+            {currentTab === "add-smart-factory-video" && (
+              <AddSmartFactoryVideo
+                onNavigate={handleNavigate}
+                videoToEdit={selectedSmartFactoryVideo}
+              />
+            )}
+
+            {currentTab === "all-smart-factory-videos" && (
+              <AllSmartFactoryVideos onNavigate={handleNavigate} />
             )}
 
             {/* Services */}
@@ -4381,13 +4418,13 @@ export default function AdminLayout({ onExitAdmin }) {
             {currentTab === "all-what-aia" && (
               <AllWhatAIADoes onNavigate={handleNavigate} />
             )}
-              {currentTab === "slider-cms" && (
-               <ManageSliderCMS
-                 key="home-slider-cms"
-                 defaultPageKey="home"
-                 defaultSectionKey="home-slider"
-               />
-             )}
+            {currentTab === "slider-cms" && (
+              <ManageSliderCMS
+                key="home-slider-cms"
+                defaultPageKey="home"
+                defaultSectionKey="home-slider"
+              />
+            )}
 
             {/* Membership Directory */}
             {currentTab === "add-member" && (
@@ -4461,13 +4498,13 @@ export default function AdminLayout({ onExitAdmin }) {
                 defaultSectionKey="about-slider"
               />
             )}
-             {currentTab === "aims-objectives-slider-cms" && (
-               <ManageSliderCMS
-                 key="aims-objectives-slider-cms"
-                 defaultPageKey="aims-objectives"
-                 defaultSectionKey="aims-slider"
-               />
-             )}
+            {currentTab === "aims-objectives-slider-cms" && (
+              <ManageSliderCMS
+                key="aims-objectives-slider-cms"
+                defaultPageKey="aims-objectives"
+                defaultSectionKey="aims-slider"
+              />
+            )}
 
             {currentTab === "about-aia-slider-2-cms" && (
               <ManageSliderCMS
@@ -4496,17 +4533,11 @@ export default function AdminLayout({ onExitAdmin }) {
 
             {/* Home Features */}
             {currentTab === "home-features-cms" && (
-              <ManageHomeFeatures
-                key="home-features"
-                pageKey="home"
-              />
+              <ManageHomeFeatures key="home-features" pageKey="home" />
             )}
 
             {currentTab === "iafsm-features-cms" && (
-              <ManageHomeFeatures
-                key="iafsm-features"
-                pageKey="iafsm"
-              />
+              <ManageHomeFeatures key="iafsm-features" pageKey="iafsm" />
             )}
 
             {/* About AIA */}
@@ -4514,8 +4545,7 @@ export default function AdminLayout({ onExitAdmin }) {
               <AddAboutContent onNavigate={handleNavigate} />
             )}
 
-            {(currentTab === "all-about" ||
-              currentTab === "all-about-aia") && (
+            {(currentTab === "all-about" || currentTab === "all-about-aia") && (
               <AllAboutAIA onNavigate={handleNavigate} />
             )}
 
@@ -4626,9 +4656,7 @@ export default function AdminLayout({ onExitAdmin }) {
             )}
 
             {/* Form Submissions */}
-            {currentTab === "form-submissions" && (
-              <FormSubmissionsCMS />
-            )}
+            {currentTab === "form-submissions" && <FormSubmissionsCMS />}
 
             {/* ==========================================
                 CONVERSATIONS CMS
@@ -4645,7 +4673,6 @@ export default function AdminLayout({ onExitAdmin }) {
             {currentTab === "all-conversations" && (
               <AllConversations onNavigate={handleNavigate} />
             )}
-
           </div>
         </main>
       </div>

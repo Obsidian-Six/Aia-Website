@@ -116,7 +116,7 @@ export default function SliderContentCard({
           )}
 
           {hasDescription && (
-            <p className="mt-2 line-clamp-3 max-w-[390px] text-sm leading-relaxed text-[#17202B] sm:mt-5 sm:text-[13px] lg:mt-2">
+            <p className="mt-2 line-clamp-5 max-w-full text-sm leading-relaxed text-[#17202B] sm:mt-5 sm:text-[13px] lg:mt-2">
               {description}
             </p>
           )}

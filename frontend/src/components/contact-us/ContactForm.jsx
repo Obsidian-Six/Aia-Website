@@ -452,7 +452,7 @@ const ACADEMIA_SUBJECT_OPTIONS = [
 ];
 
 const INQUIRY_OPTIONS = [
-  "Procurement",
+  "Procurement Advice",
   "Membership",
   "Partnership",
   "Training & Certification",
@@ -517,7 +517,7 @@ export default function ContactForm({ onSubmit }) {
     };
   }, []);
 
-  const isProcurement = form.inquiry === "Procurement";
+  const isProcurement = form.inquiry === "Procurement Advice";
   const isAcademia = form.inquiry === "Academia-Industry Collaboration";
 
   // ==========================================

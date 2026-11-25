@@ -27,7 +27,8 @@ import searchRouter from './searchRoutes.js';
 import conversationRoutes from "./conversationRoutes.js";
 import brochureEnquiryRoutes from "./brochureEnquiryRoutes.js";
 import sampleRouter from './sampleRoutes.js';
-
+import smartFactoryVideoRoutes from "./smartFactoryVideoRoutes.js";
+import selfAssessmentRoutes from "./selfAssessmentRoutes.js";
 
 
 const apiRouter = Router();
@@ -61,5 +62,7 @@ apiRouter.use("/search", searchRouter);
 apiRouter.use("/conversations", conversationRoutes);
 apiRouter.use("/brochure-enquiries", brochureEnquiryRoutes);
 apiRouter.use("/samples", sampleRouter);
+apiRouter.use("/smart-factory-videos", smartFactoryVideoRoutes);
+apiRouter.use("/self-assessment", selfAssessmentRoutes);
 
 export default apiRouter;
