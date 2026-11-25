@@ -410,21 +410,26 @@ export const createBrochureEnquiry = async (req, res) => {
     }
 
     // Save enquiry
-    const submission = await FormSubmission.create({
-      formType: "brochure-enquiry",
-      sourcePage: resourceType,
-      data: {
-        name: normalizedName,
-        phone: normalizedPhone,
-        email: normalizedEmail,
-        message: normalizedMessage,
-        resourceType,
-        resourceId: normalizedResourceId,
-        resourceTitle,
-      },
-      status: "new",
-      isRead: false,
-    });
+   const submission = await FormSubmission.create({
+  formType: "brochure-enquiry",
+  sourcePage: resourceType,
+  data: {
+    name: normalizedName,
+    phone: normalizedPhone,
+    email: normalizedEmail,
+    message: normalizedMessage,
+    resourceType,
+    resourceId: normalizedResourceId,
+    resourceTitle,
+  },
+  status: "new",
+  isRead: false,
+  googleSheetsSync: {
+    status: "pending",
+    attempts: 0,
+    nextRetryAt: new Date(),
+  },
+});
 
     // Grant shared access only after successful save
     setBrochureAccessCookie(res);

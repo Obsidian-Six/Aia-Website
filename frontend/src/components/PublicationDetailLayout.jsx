@@ -178,9 +178,15 @@
 //   );
 // }
 
+
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { FileDown, Loader2, MessageSquare, Mail } from "lucide-react";
+import {
+  FileDown,
+  Loader2,
+  MessageSquare,
+  Mail,
+} from "lucide-react";
 
 import SplitFeatureCard from "./learn-more/SplitFeatureCard";
 import ArticleBody from "./publication/ArticleBody";
@@ -200,6 +206,7 @@ export default function PublicationDetailLayout({
 
   // Show feedback only on Article Details Page
   showArticleFeedback = false,
+  readerRegistered = false,
 
   // Article access
   accessGranted = true,
@@ -223,6 +230,7 @@ export default function PublicationDetailLayout({
   const [helpful, setHelpful] = useState(null);
   const [comment, setComment] = useState("");
   const [wantsToContribute, setWantsToContribute] = useState(null);
+
   const [feedbackLoading, setFeedbackLoading] = useState(false);
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [feedbackError, setFeedbackError] = useState("");
@@ -242,6 +250,7 @@ export default function PublicationDetailLayout({
     segmentNumber,
     accessGranted,
     showReaderAction,
+    readerRegistered,
   });
 
   const canDownloadPdf = accessGranted;
@@ -279,7 +288,7 @@ export default function PublicationDetailLayout({
 
       setFeedbackError(
         error.response?.data?.message ||
-          "Unable to submit feedback. Please try again.",
+          "Unable to submit feedback. Please try again."
       );
     } finally {
       setFeedbackLoading(false);
@@ -292,7 +301,7 @@ export default function PublicationDetailLayout({
 
   const contributionMailto = contributionEmail
     ? `mailto:${contributionEmail}?subject=${encodeURIComponent(
-        `Contribution for: ${publication.title || "AIA Article"}`,
+        `Contribution for: ${publication.title || "AIA Article"}`
       )}&body=${encodeURIComponent(
         `Hello AIA Team,
 
@@ -300,7 +309,7 @@ I would like to share additional information, pointers or suggestions regarding 
 
 My contribution:
 
-`,
+`
       )}`
     : "";
 
@@ -422,28 +431,43 @@ My contribution:
 
         <section className="bg-[#FCFCFD]">
           <div className="mx-auto w-full max-w-[1100px] px-5 py-8 sm:px-8 sm:py-10">
-            <ArticleBody
+            {/* <ArticleBody
               introductionTitle={publication.introductionTitle}
-              introductionParagraphs={publication.introductionParagraphs || []}
+              introductionParagraphs={
+                publication.introductionParagraphs || []
+              }
               contentBlocks={publication.contentBlocks || []}
               closingTitle={publication.closingTitle}
               closingParagraphs={publication.closingParagraphs || []}
               closingBullets={publication.closingBullets || []}
               author={publication.author}
-            />
+            /> */}
+            <ArticleBody
+  introductionTitle={publication.introductionTitle}
+  introductionParagraphs={
+    publication.introductionParagraphs || []
+  }
+  contentBlocks={publication.contentBlocks || []}
+  closingTitle={publication.closingTitle}
+  closingParagraphs={publication.closingParagraphs || []}
+  closingBullets={publication.closingBullets || []}
+  author={publication.author}
+  showReadMore={showReaderAction}
+  onReadMore={onReadMore}
+  loadingNextSegment={loadingNextSegment}
+  registrationLoading={registrationLoading}
+/>
           </div>
         </section>
       </div>
 
       {/* READ MORE / REGISTRATION ACTION */}
 
-      {showReaderAction && (
+      {/* {showReaderAction && (
         <section className="no-print bg-[#FCFCFD] px-5 pb-10 sm:px-8">
           <div className="mx-auto max-w-[850px] border-t border-gray-200 pt-8 text-center">
             <p className="mb-4 text-sm text-gray-600">
-              {segmentNumber === 1
-                ? "Continue reading the next 500 words."
-                : "Register to unlock the complete article."}
+              {segmentNumber === 1 ? "" : ""}
             </p>
 
             <button
@@ -457,8 +481,6 @@ My contribution:
                   <Loader2 size={17} className="animate-spin" />
                   Loading...
                 </>
-              ) : segmentNumber === 2 ? (
-                "Register to Read More"
               ) : (
                 "Read More"
               )}
@@ -471,15 +493,18 @@ My contribution:
             </p>
           </div>
         </section>
-      )}
+      )} */}
 
-      {/* ARTICLE FEEDBACK - ONLY FOR ARTICLES */}
+      {/* ARTICLE FEEDBACK - ONLY AFTER SUCCESSFUL REGISTRATION */}
 
-      {showArticleFeedback && (
+      {showArticleFeedback && readerRegistered && (
         <section className="no-print bg-white px-5 py-12 sm:px-8">
           <div className="mx-auto max-w-[850px] rounded-lg border border-gray-200 bg-[#FCFCFD] p-6 sm:p-8">
             <div className="mb-5 flex items-center gap-3">
-              <MessageSquare size={21} className="text-[#315778]" />
+              <MessageSquare
+                size={21}
+                className="text-[#315778]"
+              />
 
               <h2 className="text-lg font-bold text-[#263247]">
                 Was this article helpful?
@@ -543,7 +568,10 @@ My contribution:
                 </div>
 
                 {feedbackError && (
-                  <p className="mt-3 text-sm text-red-600" role="alert">
+                  <p
+                    className="mt-3 text-sm text-red-600"
+                    role="alert"
+                  >
                     {feedbackError}
                   </p>
                 )}
@@ -552,12 +580,18 @@ My contribution:
 
                 <button
                   type="submit"
-                  disabled={feedbackLoading || typeof helpful !== "boolean"}
+                  disabled={
+                    feedbackLoading ||
+                    typeof helpful !== "boolean"
+                  }
                   className="mt-5 inline-flex items-center justify-center gap-2 rounded-md bg-[#315778] px-7 py-3 text-sm font-semibold text-white transition hover:bg-[#263247] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   {feedbackLoading ? (
                     <>
-                      <Loader2 size={16} className="animate-spin" />
+                      <Loader2
+                        size={16}
+                        className="animate-spin"
+                      />
                       Submitting...
                     </>
                   ) : (
@@ -613,9 +647,9 @@ My contribution:
                     {wantsToContribute === true && (
                       <div className="mt-5">
                         <p className="mb-3 text-sm leading-6 text-gray-600">
-                          Thank you for your interest! You can share additional
-                          information, pointers or suggestions with the AIA Team
-                          using the email link below.
+                          Thank you for your interest! You can share
+                          additional information, pointers or suggestions
+                          with the AIA Team using the email link below.
                         </p>
 
                         <a
@@ -649,7 +683,7 @@ My contribution:
 
       {/* ARTICLE NAVIGATION */}
 
-      <div className="no-print">
+      <div className="no-print mx-auto w-full max-w-[1100px] px-5 py-8 sm:px-8 sm:py-10">
         <ArticleNavigation
           previousArticle={previousArticle}
           nextArticle={nextArticle}

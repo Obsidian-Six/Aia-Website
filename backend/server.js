@@ -421,6 +421,7 @@ import { Publication } from "./models/Publication.js";
 
 import { uploadsDir } from "./config/uploadPaths.js";
 import { AUDIO_UPLOAD_DIR } from "./config/audioStorage.js";
+import { startGoogleSheetsWorker } from "./utils/googleSheetsWorker.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -892,6 +893,9 @@ connectDB()
     console.error("[Database Connection Error]:", error.message);
   });
 
+
+
+startGoogleSheetsWorker();
 // ==========================================
 // SERVER START
 // ==========================================

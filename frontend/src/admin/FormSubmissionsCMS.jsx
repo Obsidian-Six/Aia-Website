@@ -1,4 +1,3 @@
-
 import React, { useCallback, useEffect, useState } from "react";
 import {
   Search,
@@ -92,6 +91,16 @@ const getDisplayName = (submission) => {
   );
 };
 
+const getFieldLabel = (key) => {
+  const labels = {
+    companyName: "Company Name / Institution Name",
+    company: "Company Name / Institution Name",
+    website: "Website Link",
+  };
+
+  return labels[key] || key.replace(/([A-Z])/g, " $1");
+};
+
 export default function FormSubmissionsCMS() {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -124,7 +133,7 @@ export default function FormSubmissionsCMS() {
       if (status) params.set("status", status);
 
       const result = await adminRequest(
-        `/form-submissions?${params.toString()}`
+        `/form-submissions?${params.toString()}`,
       );
 
       setSubmissions(result.data || []);
@@ -186,8 +195,8 @@ export default function FormSubmissionsCMS() {
   const deleteSubmission = async (submission) => {
     const confirmed = window.confirm(
       `Are you sure you want to delete the submission from ${getDisplayName(
-        submission
-      )}? This action cannot be undone.`
+        submission,
+      )}? This action cannot be undone.`,
     );
 
     if (!confirmed) return;
@@ -245,9 +254,7 @@ export default function FormSubmissionsCMS() {
           disabled={loading}
           className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 disabled:opacity-50"
         >
-          <RefreshCw
-            className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-          />
+          <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
           Refresh
         </button>
       </div>
@@ -256,23 +263,22 @@ export default function FormSubmissionsCMS() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white border border-slate-200 rounded-2xl p-5">
           <p className="text-sm text-slate-500">Filtered Submissions</p>
-          <p className="text-3xl font-black text-slate-800 mt-2">
-            {total}
-          </p>
+          <p className="text-3xl font-black text-slate-800 mt-2">{total}</p>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl p-5">
           <p className="text-sm text-slate-500">Current Page</p>
           <p className="text-3xl font-black text-slate-800 mt-2">
-            {page} <span className="text-base text-slate-400">/ {totalPages}</span>
+            {page}{" "}
+            <span className="text-base text-slate-400">/ {totalPages}</span>
           </p>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-2xl p-5">
           <p className="text-sm text-slate-500">Forms Supported</p>
           <p className="text-3xl font-black text-slate-800 mt-2">
-  {FORM_TYPES.length}
-</p>
+            {FORM_TYPES.length}
+          </p>
         </div>
       </div>
 
@@ -296,9 +302,7 @@ export default function FormSubmissionsCMS() {
 
             <select
               value={formType}
-              onChange={(e) =>
-                handleFilterChange(setFormType, e.target.value)
-              }
+              onChange={(e) => handleFilterChange(setFormType, e.target.value)}
               className="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-200 text-sm outline-none focus:border-[#E25238] bg-white"
             >
               <option value="">All Form Types</option>
@@ -312,9 +316,7 @@ export default function FormSubmissionsCMS() {
 
           <select
             value={status}
-            onChange={(e) =>
-              handleFilterChange(setStatus, e.target.value)
-            }
+            onChange={(e) => handleFilterChange(setStatus, e.target.value)}
             className="w-full h-11 px-4 rounded-xl border border-slate-200 text-sm outline-none focus:border-[#E25238] bg-white"
           >
             <option value="">All Statuses</option>
@@ -341,9 +343,7 @@ export default function FormSubmissionsCMS() {
       <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden">
         <div className="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
           <h3 className="font-bold text-slate-800">All Submissions</h3>
-          <span className="text-xs text-slate-500">
-            {total} result(s)
-          </span>
+          <span className="text-xs text-slate-500">{total} result(s)</span>
         </div>
 
         {loading ? (
@@ -354,9 +354,7 @@ export default function FormSubmissionsCMS() {
         ) : submissions.length === 0 ? (
           <div className="py-16 flex flex-col items-center justify-center text-center px-4">
             <Inbox className="w-10 h-10 text-slate-300 mb-3" />
-            <h3 className="font-bold text-slate-700">
-              No submissions found
-            </h3>
+            <h3 className="font-bold text-slate-700">No submissions found</h3>
             <p className="text-sm text-slate-500 mt-1">
               Website form submissions will appear here.
             </p>
@@ -369,7 +367,9 @@ export default function FormSubmissionsCMS() {
                   <tr className="text-[11px] uppercase tracking-wider text-slate-500">
                     <th className="px-5 py-4 font-bold">Submitted By</th>
                     <th className="px-5 py-4 font-bold">Form Type</th>
-                    <th className="px-5 py-4 font-bold">Company</th>
+                    <th className="px-5 py-4 font-bold">
+                      Company Name / Institution Name
+                    </th>
                     <th className="px-5 py-4 font-bold">Date</th>
                     <th className="px-5 py-4 font-bold">Status</th>
                     <th className="px-5 py-4 font-bold text-right">Actions</th>
@@ -408,9 +408,11 @@ export default function FormSubmissionsCMS() {
                         </span>
                       </td>
 
-                      <td className="px-5 py-4 text-sm text-slate-600">
-                        {item.data?.companyName || item.data?.company || "—"}
-                      </td>
+                     <td className="px-5 py-4 text-sm text-slate-600">
+  {item.data?.companyName ||
+    item.data?.company ||
+    "—"}
+</td>
 
                       <td className="px-5 py-4 text-xs text-slate-500 whitespace-nowrap">
                         {formatDate(item.createdAt)}
@@ -419,7 +421,7 @@ export default function FormSubmissionsCMS() {
                       <td className="px-5 py-4">
                         <span
                           className={`inline-flex px-2.5 py-1 rounded-full border text-xs font-semibold capitalize ${getStatusStyle(
-                            item.status
+                            item.status,
                           )}`}
                         >
                           {item.status || "new"}
@@ -533,7 +535,7 @@ export default function FormSubmissionsCMS() {
 
                     <span
                       className={`inline-flex w-fit px-3 py-1.5 rounded-full border text-xs font-bold capitalize ${getStatusStyle(
-                        selectedSubmission.status
+                        selectedSubmission.status,
                       )}`}
                     >
                       {selectedSubmission.status || "new"}
@@ -578,8 +580,8 @@ export default function FormSubmissionsCMS() {
                           className="p-3.5 rounded-xl border border-slate-200 min-w-0"
                         >
                           <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wide mb-1.5">
-                            {key.replace(/([A-Z])/g, " $1")}
-                          </p>
+  {getFieldLabel(key)}
+</p>
 
                           <p className="text-sm text-slate-700 font-medium break-words whitespace-pre-wrap">
                             {formatValue(value)}
@@ -611,10 +613,7 @@ export default function FormSubmissionsCMS() {
                           selectedSubmission.status === item.value
                         }
                         onClick={() =>
-                          updateStatus(
-                            selectedSubmission._id,
-                            item.value
-                          )
+                          updateStatus(selectedSubmission._id, item.value)
                         }
                         className={`px-3 py-2 rounded-xl text-xs font-bold border transition disabled:opacity-40 ${
                           selectedSubmission.status === item.value

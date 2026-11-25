@@ -2091,6 +2091,7 @@ export const getNextArticleSegment = async (req, res) => {
 
 
 
+
 export const registerArticleReader = async (req, res) => {
   let reader = null;
 
@@ -2102,7 +2103,7 @@ export const registerArticleReader = async (req, res) => {
       });
     }
 
-    // Already registered reader
+    // Already authenticated reader
     const existingReader = getAuthenticatedReader(req);
 
     if (existingReader) {
@@ -2164,7 +2165,7 @@ export const registerArticleReader = async (req, res) => {
       phone,
     });
 
-    // Save registration in existing Form Submissions CMS
+    // Save registration in CMS + Google Sheets queue
     await FormSubmission.create({
       formType: "article-reader",
       sourcePage: String(
@@ -2175,6 +2176,11 @@ export const registerArticleReader = async (req, res) => {
         email,
         company,
         phone,
+      },
+      googleSheetsSync: {
+        status: "pending",
+        attempts: 0,
+        nextRetryAt: new Date(),
       },
     });
 
@@ -2188,10 +2194,12 @@ export const registerArticleReader = async (req, res) => {
         "Registration successful. All restricted articles are unlocked.",
     });
   } catch (error) {
-    // Roll back reader record if CMS submission fails
+    // Roll back reader if CMS submission fails
     if (reader?._id) {
       try {
-        await ArticleReader.deleteOne({ _id: reader._id });
+        await ArticleReader.deleteOne({
+          _id: reader._id,
+        });
       } catch (rollbackError) {
         console.error(
           "Article reader rollback error:",
@@ -2201,10 +2209,12 @@ export const registerArticleReader = async (req, res) => {
     }
 
     if (error.code === 11000) {
+      console.error("Duplicate ArticleReader index:", error.keyPattern);
+
       return res.status(409).json({
         success: false,
         message:
-          "This email is already registered. Please use the browser where you originally registered.",
+          "Registration conflict. Please try again.",
       });
     }
 
@@ -2221,9 +2231,11 @@ export const registerArticleReader = async (req, res) => {
 };
 
 
+
 // ==========================================
 // SUBMIT ARTICLE FEEDBACK
 // ==========================================
+
 
 
 export const submitArticleFeedback = async (req, res) => {
@@ -2242,7 +2254,7 @@ export const submitArticleFeedback = async (req, res) => {
       });
     }
 
-    // Only initial helpful Yes/No is required
+    // Validate helpful selection
     if (typeof helpful !== "boolean") {
       return res.status(400).json({
         success: false,
@@ -2250,11 +2262,11 @@ export const submitArticleFeedback = async (req, res) => {
       });
     }
 
-    // Verify article
+    // Fetch both title and slug
     const article = await Article.findOne({
       _id: articleId,
       isActive: { $ne: false },
-    }).select("title");
+    }).select("title slug");
 
     if (!article) {
       return res.status(404).json({
@@ -2263,14 +2275,37 @@ export const submitArticleFeedback = async (req, res) => {
       });
     }
 
-    // Save initial feedback.
-    // Contribution choice will be handled separately after submission.
+    const frontendUrl = (
+      process.env.FRONTEND_URL ||
+      "http://localhost:3000"
+    ).replace(/\/+$/, "");
+
+    const articleSlug = article.slug || "";
+
+    if (!articleSlug) {
+      return res.status(500).json({
+        success: false,
+        message: "Article slug is missing.",
+      });
+    }
+
+    const articleUrl =
+      `${frontendUrl}/publication/articles/${articleSlug}`;
+
+    // Save feedback and queue Google Sheets sync
     await ArticleFeedback.create({
       article: article._id,
       articleTitle: article.title,
+      articleSlug,
+      articleUrl,
       helpful,
-      comment: String(comment).trim(),
+      comment: String(comment || "").trim(),
       wantsToContribute: null,
+      googleSheetsSync: {
+        status: "pending",
+        attempts: 0,
+        nextRetryAt: new Date(),
+      },
     });
 
     return res.status(201).json({
@@ -2286,6 +2321,7 @@ export const submitArticleFeedback = async (req, res) => {
     });
   }
 };
+
 
 
 // ==========================================

@@ -1,4 +1,3 @@
-
 // import React, { useState } from "react";
 // import { LoaderCircle, ArrowUpRight } from "lucide-react";
 
@@ -350,7 +349,6 @@
 //   );
 // }
 
-
 import React, { useEffect, useRef, useState } from "react";
 import {
   LoaderCircle,
@@ -438,6 +436,20 @@ const SERVICE_STREAM_OPTIONS = [
   "Supply Chain Integration",
   "OTHER (Custom)",
 ];
+const ACADEMIA_SUBJECT_OPTIONS = [
+  "Automation and Robotics",
+  "Cloud Computing Systems",
+  "CNC Machining",
+  "Digital Twin Software",
+  "Electrical Systems Automation",
+  "Industrial Automation",
+  "Machine Learning Systems",
+  "Precision Motion Control",
+  "Process Automation",
+  "Robotics",
+  "Vision Sensing and Inspection",
+  "Welding Systems",
+];
 
 const INQUIRY_OPTIONS = [
   "Procurement",
@@ -445,13 +457,13 @@ const INQUIRY_OPTIONS = [
   "Partnership",
   "Training & Certification",
   "Events & Programs",
-  "Industry Collaboration",
+  "Academia-Industry Collaboration",
   "Other",
 ];
 
 const OTHER_OPTION = "OTHER (Custom)";
 const MAX_TECHNOLOGY_STREAMS = 5;
-const MAX_SERVICE_STREAMS = 3;
+const MAX_SERVICE_STREAMS = 5;
 
 const initialForm = {
   fullName: "",
@@ -467,15 +479,14 @@ const initialForm = {
   technologyStreamOther: "",
   serviceStream: [],
   serviceStreamOther: "",
+  academiaSubjects: [],
 };
 
 const SUCCESS_TITLE = "Thank You for Connecting with AIA!";
+
 const SUCCESS_DESCRIPTION =
   "Your details have been successfully submitted. Our team will review your submission and connect with you regarding the next steps.";
 
-
-
-  
 export default function ContactForm({ onSubmit }) {
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
@@ -484,29 +495,34 @@ export default function ContactForm({ onSubmit }) {
 
   const formRef = useRef(null);
 
-useEffect(() => {
-  const handleOutsideClick = (event) => {
-    const openDropdowns = formRef.current?.querySelectorAll(
-      'details[data-multi-select][open]'
-    );
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      const openDropdowns = formRef.current?.querySelectorAll(
+        "details[data-multi-select][open]",
+      );
 
-    openDropdowns?.forEach((dropdown) => {
-      if (!dropdown.contains(event.target)) {
-        dropdown.removeAttribute("open");
-      }
-    });
-  };
+      openDropdowns?.forEach((dropdown) => {
+        if (!dropdown.contains(event.target)) {
+          dropdown.removeAttribute("open");
+        }
+      });
+    };
 
-  document.addEventListener("mousedown", handleOutsideClick);
-  document.addEventListener("touchstart", handleOutsideClick);
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick);
 
-  return () => {
-    document.removeEventListener("mousedown", handleOutsideClick);
-    document.removeEventListener("touchstart", handleOutsideClick);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, []);
 
   const isProcurement = form.inquiry === "Procurement";
+  const isAcademia = form.inquiry === "Academia-Industry Collaboration";
+
+  // ==========================================
+  // VALIDATION
+  // ==========================================
 
   const validateForm = () => {
     const newErrors = {};
@@ -531,6 +547,33 @@ useEffect(() => {
       newErrors.inquiryOther = "Please specify your inquiry.";
     }
 
+    if (!form.companyName.trim()) {
+      newErrors.companyName = "Company Name / Institution Name is required.";
+    }
+
+    // Website is now mandatory
+    if (!form.website.trim()) {
+      newErrors.website = "Website link is required.";
+    } else {
+      try {
+        const websiteValue = /^https?:\/\//i.test(form.website.trim())
+          ? form.website.trim()
+          : `https://${form.website.trim()}`;
+
+        const url = new URL(websiteValue);
+
+        if (
+          !url.hostname.includes(".") ||
+          !url.hostname.includes(".") ||
+          !/^[a-zA-Z0-9.-]+$/.test(url.hostname)
+        ) {
+          newErrors.website = "Please enter a valid website URL.";
+        }
+      } catch {
+        newErrors.website = "Please enter a valid website URL.";
+      }
+    }
+
     if (!form.phone.trim()) {
       newErrors.phone = "Phone number is required.";
     } else if (
@@ -540,28 +583,13 @@ useEffect(() => {
       newErrors.phone = "Please enter a valid phone number.";
     }
 
-    if (form.website.trim()) {
-      try {
-        const url = new URL(
-          /^https?:\/\//i.test(form.website)
-            ? form.website
-            : `https://${form.website}`,
-        );
-
-        if (!url.hostname.includes(".")) {
-          newErrors.website = "Please enter a valid website URL.";
-        }
-      } catch {
-        newErrors.website = "Please enter a valid website URL.";
-      }
-    }
-
     if (!form.message.trim()) {
       newErrors.message = "Please enter your message.";
     } else if (form.message.trim().length < 10) {
       newErrors.message = "Message must contain at least 10 characters.";
     }
 
+    // Procurement validation
     if (isProcurement) {
       if (!form.industrySegment) {
         newErrors.industrySegment = "Please select an industry segment.";
@@ -570,6 +598,10 @@ useEffect(() => {
       if (form.technologyStream.length === 0) {
         newErrors.technologyStream =
           "Please select at least one technology stream.";
+      }
+
+      if (form.technologyStream.length > MAX_TECHNOLOGY_STREAMS) {
+        newErrors.technologyStream = `You can select a maximum of ${MAX_TECHNOLOGY_STREAMS} technology streams.`;
       }
 
       if (
@@ -584,26 +616,43 @@ useEffect(() => {
         newErrors.serviceStream = "Please select at least one service stream.";
       }
 
+      if (form.serviceStream.length > MAX_SERVICE_STREAMS) {
+        newErrors.serviceStream = `You can select a maximum of ${MAX_SERVICE_STREAMS} service streams.`;
+      }
+
       if (
         form.serviceStream.includes(OTHER_OPTION) &&
         !form.serviceStreamOther.trim()
       ) {
-        newErrors.serviceStreamOther =
-          "Please specify your service stream.";
+        newErrors.serviceStreamOther = "Please specify your service stream.";
       }
+    }
+    // Academia validation
+    if (isAcademia && form.academiaSubjects.length === 0) {
+      newErrors.academiaSubjects =
+        "Please select at least one subject / stream with lab.";
     }
 
     return newErrors;
   };
 
+  // ==========================================
+  // INPUT CHANGE
+  // ==========================================
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
     setForm((previous) => {
-      const updated = { ...previous, [name]: value };
+      const updated = {
+        ...previous,
+        [name]: value,
+      };
 
       if (name === "inquiry") {
-        if (value !== "Other") updated.inquiryOther = "";
+        if (value !== "Other") {
+          updated.inquiryOther = "";
+        }
 
         if (value !== "Procurement") {
           updated.industrySegment = "";
@@ -628,6 +677,10 @@ useEffect(() => {
         updated.serviceStreamOther = "";
       }
 
+      if (value !== "Academia-Industry Collaboration") {
+  updated.academiaSubjects = [];
+}
+
       return updated;
     });
 
@@ -637,6 +690,10 @@ useEffect(() => {
       submit: "",
     }));
   };
+
+  // ==========================================
+  // MULTI SELECT
+  // ==========================================
 
   const handleMultiSelect = (field, option, limit) => {
     setForm((previous) => {
@@ -673,6 +730,30 @@ useEffect(() => {
     }));
   };
 
+  const handleAcademiaSelect = (option) => {
+  setForm((previous) => {
+    const selected = previous.academiaSubjects;
+
+    const nextSelected = selected.includes(option)
+      ? selected.filter((item) => item !== option)
+      : [...selected, option];
+
+    return {
+      ...previous,
+      academiaSubjects: nextSelected,
+    };
+  });
+
+  setErrors((previous) => ({
+    ...previous,
+    academiaSubjects: "",
+    submit: "",
+  }));
+};
+  // ==========================================
+  // FORM SUBMISSION
+  // ==========================================
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -681,7 +762,20 @@ useEffect(() => {
 
     if (Object.keys(validationErrors).length > 0) {
       const firstError = Object.keys(validationErrors)[0];
-      document.querySelector(`[name="${firstError}"]`)?.focus();
+
+      const errorElement = formRef.current?.querySelector(
+        `[name="${firstError}"]`,
+      );
+
+      errorElement?.focus();
+
+      if (!errorElement) {
+        formRef.current
+          ?.querySelector("details[data-multi-select]")
+          ?.querySelector("summary")
+          ?.focus();
+      }
+
       return;
     }
 
@@ -695,34 +789,57 @@ useEffect(() => {
     try {
       setSubmitting(true);
 
-      const payload = {
-        ...form,
-        fullName: form.fullName.trim(),
-        email: form.email.trim(),
-        inquiryOther:
-          form.inquiry === "Other" ? form.inquiryOther.trim() : "",
-        companyName: form.companyName.trim(),
-        website: form.website.trim()
-          ? /^https?:\/\//i.test(form.website.trim())
-            ? form.website.trim()
-            : `https://${form.website.trim()}`
-          : "",
-        phone: form.phone.trim(),
-        message: form.message.trim(),
-        industrySegment: isProcurement ? form.industrySegment : "",
-        technologyStream: isProcurement ? form.technologyStream : [],
-        technologyStreamOther: isProcurement
-          ? form.technologyStreamOther.trim()
-          : "",
-        serviceStream: isProcurement ? form.serviceStream : [],
-        serviceStreamOther: isProcurement
-          ? form.serviceStreamOther.trim()
-          : "",
-      };
+      const websiteValue = form.website.trim();
+
+     const payload = {
+  ...form,
+  fullName: form.fullName.trim(),
+  email: form.email.trim(),
+  inquiryOther:
+    form.inquiry === "Other"
+      ? form.inquiryOther.trim()
+      : "",
+  companyName: form.companyName.trim(),
+  website: /^https?:\/\//i.test(websiteValue)
+    ? websiteValue
+    : `https://${websiteValue}`,
+  phone: form.phone.trim(),
+  message: form.message.trim(),
+
+  industrySegment: isProcurement
+    ? form.industrySegment
+    : "",
+
+  technologyStream: isProcurement
+    ? form.technologyStream
+    : [],
+
+  technologyStreamOther: isProcurement
+    ? form.technologyStreamOther.trim()
+    : "",
+
+  serviceStream: isProcurement
+    ? form.serviceStream
+    : [],
+
+  serviceStreamOther: isProcurement
+    ? form.serviceStreamOther.trim()
+    : "",
+
+  // Academia subjects
+  academiaSubjects: isAcademia
+    ? form.academiaSubjects
+    : [],
+};
 
       await onSubmit(payload);
 
-      setForm({ ...initialForm, technologyStream: [], serviceStream: [] });
+      setForm({
+        ...initialForm,
+        technologyStream: [],
+        serviceStream: [],
+      });
+
       setErrors({});
       setShowSuccessModal(true);
     } catch (error) {
@@ -736,6 +853,10 @@ useEffect(() => {
       setSubmitting(false);
     }
   };
+
+  // ==========================================
+  // STYLES AND HELPERS
+  // ==========================================
 
   const inputClass = (field) =>
     `h-[42px] w-full rounded-md border bg-white px-3 text-[12px] text-[#252D3A] outline-none transition-all placeholder:text-gray-400 focus:border-[#E66F61] focus:ring-2 focus:ring-[#E66F61]/10 ${
@@ -756,6 +877,7 @@ useEffect(() => {
       <label className={labelClass} htmlFor={field}>
         {label} <span className="text-red-500">*</span>
       </label>
+
       <input
         id={field}
         name={field}
@@ -765,7 +887,9 @@ useEffect(() => {
         placeholder={placeholder}
         className={inputClass(field)}
         aria-invalid={!!errors[field]}
+        required
       />
+
       {renderError(field)}
     </div>
   );
@@ -781,6 +905,8 @@ useEffect(() => {
 
         <details data-multi-select className="group relative">
           <summary
+            tabIndex={0}
+            aria-invalid={!!errors[field]}
             className={`${inputClass(field)} flex cursor-pointer list-none items-center justify-between ${
               errors[field] ? "border-red-400" : ""
             }`}
@@ -790,6 +916,7 @@ useEffect(() => {
                 ? `${selectedOptions.length} selected`
                 : "Select options"}
             </span>
+
             <ChevronDown
               size={15}
               className="shrink-0 text-gray-500 transition-transform group-open:rotate-180"
@@ -817,6 +944,7 @@ useEffect(() => {
                     onChange={() => handleMultiSelect(field, option, limit)}
                     className="h-4 w-4 accent-[#E87565]"
                   />
+
                   <span
                     className={!checked && limitReached ? "text-gray-400" : ""}
                   >
@@ -849,32 +977,95 @@ useEffect(() => {
     );
   };
 
+  const renderAcademiaMultiSelect = () => {
+  const selectedOptions = form.academiaSubjects;
+
+  return (
+    <div className="md:col-span-2 lg:col-span-3">
+      <label className={labelClass}>
+        Subjects / Streams with Labs{" "}
+        <span className="text-red-500">*</span>
+      </label>
+
+      <details data-multi-select className="group relative">
+        <summary
+          tabIndex={0}
+          aria-invalid={!!errors.academiaSubjects}
+          className={`${inputClass(
+            "academiaSubjects"
+          )} flex cursor-pointer list-none items-center justify-between`}
+        >
+          <span className="truncate">
+            {selectedOptions.length
+              ? `${selectedOptions.length} selected`
+              : "Select subjects / streams"}
+          </span>
+
+          <ChevronDown
+            size={15}
+            className="shrink-0 text-gray-500 transition-transform group-open:rotate-180"
+          />
+        </summary>
+
+        <div className="absolute left-0 top-full z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-md border border-[#DDE1E7] bg-white p-3 shadow-lg">
+          <p className="mb-2 text-[10px] text-gray-500">
+            Select all applicable options.
+          </p>
+
+          {ACADEMIA_SUBJECT_OPTIONS.map((option) => (
+            <label
+              key={option}
+              className="flex cursor-pointer items-center gap-2 py-2 text-xs text-[#252D3A]"
+            >
+              <input
+                type="checkbox"
+                checked={selectedOptions.includes(option)}
+                onChange={() => handleAcademiaSelect(option)}
+                className="h-4 w-4 accent-[#E87565]"
+              />
+
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
+      </details>
+
+      {renderError("academiaSubjects")}
+    </div>
+  );
+};
   return (
     <>
       <form ref={formRef} onSubmit={handleSubmit} noValidate>
         <div className="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-2 lg:grid-cols-3">
+          {/* FULL NAME */}
           <div>
             <label className={labelClass} htmlFor="fullName">
               Full Name <span className="text-red-500">*</span>
             </label>
+
             <input
               id="fullName"
               name="fullName"
               type="text"
               autoComplete="name"
-              placeholder="Type"
+              placeholder="Full Name"
               value={form.fullName}
               onChange={handleChange}
               className={inputClass("fullName")}
               aria-invalid={!!errors.fullName}
+              required
             />
+
             {renderError("fullName")}
           </div>
 
+          {/* EMAIL */}
           <div>
             <label className={labelClass} htmlFor="email">
               Email <span className="text-red-500">*</span>
             </label>
+
             <input
               id="email"
               name="email"
@@ -885,14 +1076,18 @@ useEffect(() => {
               onChange={handleChange}
               className={inputClass("email")}
               aria-invalid={!!errors.email}
+              required
             />
+
             {renderError("email")}
           </div>
 
+          {/* AREA OF INQUIRY */}
           <div>
             <label className={labelClass} htmlFor="inquiry">
               Area of Inquiry <span className="text-red-500">*</span>
             </label>
+
             <select
               id="inquiry"
               name="inquiry"
@@ -900,14 +1095,17 @@ useEffect(() => {
               onChange={handleChange}
               className={`${inputClass("inquiry")} appearance-none`}
               aria-invalid={!!errors.inquiry}
+              required
             >
               <option value="">Select</option>
+
               {INQUIRY_OPTIONS.map((option) => (
                 <option key={option} value={option}>
                   {option}
                 </option>
               ))}
             </select>
+
             {renderError("inquiry")}
 
             {form.inquiry === "Other" &&
@@ -918,44 +1116,58 @@ useEffect(() => {
               )}
           </div>
 
+          {/* COMPANY NAME */}
           <div>
             <label className={labelClass} htmlFor="companyName">
-              Company Name
+              Company Name / Institution Name{" "}
+              <span className="text-red-500">*</span>
             </label>
+
             <input
               id="companyName"
               name="companyName"
               type="text"
               autoComplete="organization"
-              placeholder="Type"
+              placeholder="Company Name / Institution Name"
               value={form.companyName}
               onChange={handleChange}
               className={inputClass("companyName")}
+              aria-invalid={!!errors.companyName}
+              required
             />
+
+            {renderError("companyName")}
           </div>
 
+          {/* WEBSITE LINK */}
           <div>
             <label className={labelClass} htmlFor="website">
-              Website
+              Website Link <span className="text-red-500">*</span>
             </label>
+
             <input
               id="website"
               name="website"
               type="text"
               inputMode="url"
+              autoComplete="url"
               placeholder="www.company.com"
               value={form.website}
               onChange={handleChange}
               className={inputClass("website")}
               aria-invalid={!!errors.website}
+              required
             />
+
             {renderError("website")}
           </div>
 
+          {/* PHONE */}
           <div>
             <label className={labelClass} htmlFor="phone">
-              Phone number <span className="text-red-500">*</span>
+              Phone Number <span className="text-red-500">*</span>
             </label>
+
             <input
               id="phone"
               name="phone"
@@ -967,11 +1179,14 @@ useEffect(() => {
               onChange={handleChange}
               className={inputClass("phone")}
               aria-invalid={!!errors.phone}
+              required
             />
+
             {renderError("phone")}
           </div>
         </div>
 
+        {/* PROCUREMENT DETAILS */}
         {isProcurement && (
           <div className="mt-6 rounded-lg border border-[#E6E9EE] bg-[#FAFBFC] p-4 sm:p-5">
             <h3 className="mb-4 text-sm font-semibold text-[#263142]">
@@ -979,10 +1194,12 @@ useEffect(() => {
             </h3>
 
             <div className="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-2 lg:grid-cols-3">
+              {/* INDUSTRY SEGMENT */}
               <div>
                 <label className={labelClass} htmlFor="industrySegment">
                   Industry Segment <span className="text-red-500">*</span>
                 </label>
+
                 <select
                   id="industrySegment"
                   name="industrySegment"
@@ -990,17 +1207,21 @@ useEffect(() => {
                   onChange={handleChange}
                   className={`${inputClass("industrySegment")} appearance-none`}
                   aria-invalid={!!errors.industrySegment}
+                  required
                 >
                   <option value="">Select Industry Segment</option>
+
                   {INDUSTRY_SEGMENT_OPTIONS.map((option) => (
                     <option key={option} value={option}>
                       {option}
                     </option>
                   ))}
                 </select>
+
                 {renderError("industrySegment")}
               </div>
 
+              {/* TECHNOLOGY STREAM */}
               {renderMultiSelect(
                 "technologyStream",
                 "Technology Stream (Maximum 5)",
@@ -1008,9 +1229,10 @@ useEffect(() => {
                 MAX_TECHNOLOGY_STREAMS,
               )}
 
+              {/* SERVICE STREAM */}
               {renderMultiSelect(
                 "serviceStream",
-                "Service Stream (Maximum 3)",
+                "Service Stream (Maximum 5)",
                 SERVICE_STREAM_OPTIONS,
                 MAX_SERVICE_STREAMS,
               )}
@@ -1018,10 +1240,25 @@ useEffect(() => {
           </div>
         )}
 
+        {/* ACADEMIA DETAILS */}
+{isAcademia && (
+  <div className="mt-6 rounded-lg border border-[#E6E9EE] bg-[#FAFBFC] p-4 sm:p-5">
+    <h3 className="mb-4 text-sm font-semibold text-[#263142]">
+      Academia-Industry Collaboration Details
+    </h3>
+
+    <div className="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-2 lg:grid-cols-3">
+      {renderAcademiaMultiSelect()}
+    </div>
+  </div>
+)}
+
+        {/* MESSAGE */}
         <div className="mt-5">
           <label className={labelClass} htmlFor="message">
             Message <span className="text-red-500">*</span>
           </label>
+
           <textarea
             id="message"
             name="message"
@@ -1033,10 +1270,13 @@ useEffect(() => {
               errors.message ? "border-red-400" : "border-[#DDE1E7]"
             }`}
             aria-invalid={!!errors.message}
+            required
           />
+
           {renderError("message")}
         </div>
 
+        {/* SUBMISSION ERROR */}
         {errors.submit && (
           <div
             role="alert"
@@ -1046,6 +1286,7 @@ useEffect(() => {
           </div>
         )}
 
+        {/* SUBMIT BUTTON */}
         <button
           type="submit"
           disabled={submitting}
@@ -1065,6 +1306,7 @@ useEffect(() => {
         </button>
       </form>
 
+      {/* SUCCESS MODAL */}
       {showSuccessModal && (
         <div
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 px-4 py-6"

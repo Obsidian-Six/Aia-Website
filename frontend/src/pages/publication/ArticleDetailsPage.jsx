@@ -351,6 +351,7 @@
 
 
 
+
 import React, {
   useCallback,
   useEffect,
@@ -379,6 +380,8 @@ export default function ArticleDetailsPage() {
   const [notFound, setNotFound] = useState(false);
 
   const [accessGranted, setAccessGranted] = useState(false);
+  const [readerRegistered, setReaderRegistered] = useState(false);
+
   const [totalWords, setTotalWords] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [currentSegment, setCurrentSegment] = useState("full");
@@ -387,26 +390,26 @@ export default function ArticleDetailsPage() {
   const [registrationOpen, setRegistrationOpen] = useState(false);
   const [registrationLoading, setRegistrationLoading] = useState(false);
 
-const applyArticleResponse = useCallback((response) => {
-  if (!response?.article) {
-    setArticle(null);
-    return;
-  }
+  const applyArticleResponse = useCallback((response) => {
+    if (!response?.article) {
+      setArticle(null);
+      return;
+    }
 
-  setArticle(response.article);
-  setAccessGranted(Boolean(response.accessGranted));
+    setArticle(response.article);
+    setAccessGranted(Boolean(response.accessGranted));
 
-  const words = Number(response.totalWords || 0);
+    const words = Number(response.totalWords || 0);
 
-  setTotalWords(words);
-  setHasMore(Boolean(response.hasMore));
+    setTotalWords(words);
+    setHasMore(Boolean(response.hasMore));
 
-  setCurrentSegment(
-    response.accessGranted
-      ? "full"
-      : Number(response.currentSegment) || (words > 500 ? 1 : "full")
-  );
-}, []);
+    setCurrentSegment(
+      response.accessGranted
+        ? "full"
+        : Number(response.currentSegment) || (words > 500 ? 1 : "full")
+    );
+  }, []);
 
   // ==========================================
   // LOAD ARTICLE
@@ -418,6 +421,9 @@ const applyArticleResponse = useCallback((response) => {
     const loadArticle = async () => {
       setLoading(true);
       setNotFound(false);
+
+      // Reset registration state when opening another article.
+      setReaderRegistered(false);
 
       try {
         const [articleResponse, allArticles] = await Promise.all([
@@ -459,17 +465,17 @@ const applyArticleResponse = useCallback((response) => {
   // ==========================================
 
   const handleReadMore = async () => {
-   if (loadingNextSegment || accessGranted || totalWords <= 500) {
-  return;
-}
+    if (loadingNextSegment || accessGranted || totalWords <= 500) {
+      return;
+    }
 
     // After 1000 words, ask the reader to register.
     if (Number(currentSegment) >= 2) {
-  if (totalWords > 1000) {
-    setRegistrationOpen(true);
-  }
-  return;
-}
+      if (totalWords > 1000) {
+        setRegistrationOpen(true);
+      }
+      return;
+    }
 
     try {
       setLoadingNextSegment(true);
@@ -483,6 +489,7 @@ const applyArticleResponse = useCallback((response) => {
       applyArticleResponse(response);
     } catch (error) {
       console.error("Next article segment error:", error);
+
       alert(
         error.response?.data?.message ||
           error.message ||
@@ -520,6 +527,10 @@ const applyArticleResponse = useCallback((response) => {
       }
 
       applyArticleResponse(response);
+
+      // Show feedback only after successful registration.
+      setReaderRegistered(true);
+
       setRegistrationOpen(false);
 
       return true;
@@ -587,6 +598,7 @@ const applyArticleResponse = useCallback((response) => {
         basePath="/industry-insight/articles"
 
         showArticleFeedback={true}
+        readerRegistered={readerRegistered}
 
         // Article access
         accessGranted={accessGranted}

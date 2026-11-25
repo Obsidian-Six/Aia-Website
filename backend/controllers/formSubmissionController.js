@@ -730,12 +730,14 @@ const validateSubmission = (formType, data) => {
 
   const requiredFields = {
     "contact-us": [
-      "fullName",
-      "email",
-      "inquiry",
-      "phone",
-      "message",
-    ],
+  "fullName",
+  "email",
+  "inquiry",
+  "companyName",
+  "website",
+  "phone",
+  "message",
+],
 
     "general-inquiry": [
       "category",
@@ -800,6 +802,7 @@ const validateSubmission = (formType, data) => {
 };
 
 // PUBLIC: Create regular form submission
+// PUBLIC: Create regular form submission
 export const createFormSubmission = async (req, res) => {
   try {
     const { formType, sourcePage = "", data } = req.body;
@@ -811,8 +814,7 @@ export const createFormSubmission = async (req, res) => {
       });
     }
 
-    // Brochure enquiries must use the dedicated endpoint
-    // because that endpoint also grants shared brochure access.
+    // Brochure enquiries must use the dedicated endpoint.
     if (formType === "brochure-enquiry") {
       return res.status(400).json({
         success: false,
@@ -829,10 +831,28 @@ export const createFormSubmission = async (req, res) => {
       });
     }
 
+    // Only the selected form types are synced to Google Sheets.
+    const syncEnabledForms = [
+      "contact-us",
+      "aia-membership",
+      "article-reader",
+    ];
+
     const submission = await FormSubmission.create({
       formType,
       sourcePage: String(sourcePage || "").trim(),
       data,
+
+      ...(syncEnabledForms.includes(formType) && {
+        googleSheetsSync: {
+          status: "pending",
+          attempts: 0,
+          nextRetryAt: null,
+          lastAttemptAt: null,
+          syncedAt: null,
+          lastError: "",
+        },
+      }),
     });
 
     return res.status(201).json({
@@ -850,13 +870,10 @@ export const createFormSubmission = async (req, res) => {
   }
 };
 
+
 // PUBLIC: Create brochure enquiry and grant shared brochure access
 export const createBrochureEnquiry = async (req, res) => {
   try {
-    // Supports both:
-    // { name, phone, email, message, sourcePage }
-    // and:
-    // { data: { name, phone, email, message }, sourcePage }
     const submittedData =
       req.body?.data &&
       typeof req.body.data === "object" &&
@@ -867,7 +884,9 @@ export const createBrochureEnquiry = async (req, res) => {
     const data = {
       name: String(submittedData?.name || "").trim(),
       phone: String(submittedData?.phone || "").trim(),
-      email: String(submittedData?.email || "").trim().toLowerCase(),
+      email: String(submittedData?.email || "")
+        .trim()
+        .toLowerCase(),
       message: String(submittedData?.message || "").trim(),
     };
 
@@ -887,14 +906,20 @@ export const createBrochureEnquiry = async (req, res) => {
       req.body?.sourcePage || submittedData?.sourcePage || ""
     ).trim();
 
-    // Save enquiry first.
     const submission = await FormSubmission.create({
       formType: "brochure-enquiry",
       sourcePage,
       data,
+      googleSheetsSync: {
+        status: "pending",
+        attempts: 0,
+        nextRetryAt: null,
+        lastAttemptAt: null,
+        syncedAt: null,
+        lastError: "",
+      },
     });
 
-    // Grant shared access only after successful database save.
     setBrochureAccessCookie(res);
 
     return res.status(201).json({
