@@ -29,7 +29,7 @@ import brochureEnquiryRoutes from "./brochureEnquiryRoutes.js";
 import sampleRouter from './sampleRoutes.js';
 import smartFactoryVideoRoutes from "./smartFactoryVideoRoutes.js";
 import selfAssessmentRoutes from "./selfAssessmentRoutes.js";
-
+import featuredCompanyHighlightRoutes from "./featuredCompanyHighlightRoutes.js";
 
 const apiRouter = Router();
 
@@ -64,5 +64,7 @@ apiRouter.use("/brochure-enquiries", brochureEnquiryRoutes);
 apiRouter.use("/samples", sampleRouter);
 apiRouter.use("/smart-factory-videos", smartFactoryVideoRoutes);
 apiRouter.use("/self-assessment", selfAssessmentRoutes);
+// Existing route registrations ke saath
+apiRouter.use("/featured-highlights", featuredCompanyHighlightRoutes);
 
 export default apiRouter;

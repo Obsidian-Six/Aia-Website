@@ -2637,3 +2637,28 @@ export const getMemberFilterOptions = async ({ admin = false, signal } = {}) => 
 
 export const saveMemberFilterOptions = async (options) =>
   (await api.put("/members/admin/filter-options", options)).data;
+
+
+
+//featureHighlight
+export const getFeaturedHighlights = async ({ admin = false, signal } = {}) => {
+  const path = admin ? "/featured-highlights/admin" : "/featured-highlights";
+  const response = await api.get(path, { signal });
+  return response.data.items || [];
+};
+
+export const saveFeaturedHighlight = async (id, body) => {
+  const response = id
+    ? await api.put(`/featured-highlights/${encodeURIComponent(id)}`, body)
+    : await api.post("/featured-highlights", body);
+
+  return response.data;
+};
+
+export const deleteFeaturedHighlight = async (id) => {
+  const response = await api.delete(
+    `/featured-highlights/${encodeURIComponent(id)}`,
+  );
+
+  return response.data;
+};

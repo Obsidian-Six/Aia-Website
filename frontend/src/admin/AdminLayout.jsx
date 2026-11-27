@@ -2891,6 +2891,7 @@ import AddConversation from "./AddConversation.jsx";
 import AllConversations from "./AllConversations.jsx";
 import AllSelfAssessmentSubmissions from "./AllSelfAssessmentSubmissions.jsx";
 import ManageSelfAssessment from "./ManageSelfAssessment.jsx";
+import ManageFeaturedCompanyHighlights from "./ManageFeaturedCompanyHighlights.jsx";
 
 export default function AdminLayout({ onExitAdmin }) {
   const navigate = useNavigate();
@@ -3488,6 +3489,18 @@ export default function AdminLayout({ onExitAdmin }) {
                   >
                     Home Features CMS
                   </button>
+
+                  <button
+  type="button"
+  onClick={() => handleNavigate("featured-highlights-cms")}
+  className={`w-full rounded-lg px-2.5 py-1.5 text-left text-xs transition ${
+    currentTab === "featured-highlights-cms"
+      ? "bg-white/10 font-bold text-[#FF6B55]"
+      : "text-gray-400 hover:text-[#FF6B55]"
+  }`}
+>
+  Featured Highlights CMS
+</button>
 
                   <button
                     onClick={() => handleNavigate("iafsm-features-cms")}
@@ -4425,6 +4438,10 @@ export default function AdminLayout({ onExitAdmin }) {
                 defaultSectionKey="home-slider"
               />
             )}
+
+            {currentTab === "featured-highlights-cms" && (
+  <ManageFeaturedCompanyHighlights />
+)}
 
             {/* Membership Directory */}
             {currentTab === "add-member" && (
