@@ -354,6 +354,33 @@ export const createBrochureEnquiry = async (req, res) => {
       normalizedResourceId = resourceId;
     }
 
+
+    else if (resourceType === "event-download") {
+  if (!mongoose.isValidObjectId(resourceId)) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid event.",
+    });
+  }
+
+  const event = await Event.findOne({
+    _id: resourceId,
+    isActive: true,
+  })
+    .select("title")
+    .lean();
+
+  if (!event) {
+    return res.status(404).json({
+      success: false,
+      message: "Event is unavailable.",
+    });
+  }
+
+  resourceTitle = event.title || "";
+  normalizedResourceId = String(event._id);
+}
+
     // EVENT OR PILLAR FOOTPRINT RESOURCE
     else if (
       ["event", "pillar-footprint"].includes(resourceType)

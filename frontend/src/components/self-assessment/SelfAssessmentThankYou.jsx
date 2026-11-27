@@ -1,6 +1,6 @@
-
 import React from "react";
 import { ArrowRight, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SelfAssessmentThankYou = ({ onBackHome }) => {
   return (
@@ -31,14 +31,24 @@ const SelfAssessmentThankYou = ({ onBackHome }) => {
           manufacturing and automation capabilities.
         </p>
 
-        <button
-          type="button"
-          onClick={onBackHome}
-          className="mt-9 inline-flex items-center justify-center gap-3 rounded-lg bg-[#E25238] px-8 py-3.5 text-sm font-bold text-white transition hover:bg-[#C9442D] focus:outline-none focus:ring-4 focus:ring-[#E25238]/20"
-        >
-          Back to Home
-          <ArrowRight size={17} />
-        </button>
+        <div className="mt-9 flex flex-col justify-center gap-3 sm:flex-row">
+          {/* <button
+            type="button"
+            onClick={onBackHome}
+            className="inline-flex items-center justify-center gap-3 rounded-lg bg-[#E25238] px-8 py-3.5 text-sm font-bold text-white transition hover:bg-[#C9442D] focus:outline-none focus:ring-4 focus:ring-[#E25238]/20"
+          >
+            Back to Home
+            <ArrowRight size={17} aria-hidden="true" />
+          </button> */}
+
+          <Link
+            to="/membership/member-directory"
+            className="inline-flex items-center justify-center gap-3 rounded-lg border border-[#E25238] px-8 py-3.5 text-sm font-bold text-[#fff] transition bg-[#E25238] hover:bg-[#E25238]/10 hover:text-[#E25238] focus:outline-none focus:ring-4 focus:ring-[#E25238]/20"
+          >
+            Explore AIA Members
+            <ArrowRight size={17} aria-hidden="true" />
+          </Link>
+        </div>
       </div>
     </div>
   );

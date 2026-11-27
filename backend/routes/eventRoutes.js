@@ -113,10 +113,62 @@
 
 
 
+// import express from "express";
+// import { adminAuth } from "../middleware/adminAuth.js";
+// import {
+//   getEvents,
+//   getAdminEvents,
+//   getEventBySlug,
+//   createEvent,
+//   updateEvent,
+//   deleteEvent,
+//   downloadEventBrochure,
+// } from "../controllers/eventController.js";
+// import { eventUpload } from "../config/eventUpload.js";
+
+// export const eventRouter = express.Router();
+
+// eventRouter.get("/", getEvents);
+// eventRouter.get("/slug/:slug", getEventBySlug);
+// eventRouter.get("/:id/brochure/download", downloadEventBrochure);
+// eventRouter.get("/admin", adminAuth, getAdminEvents);
+// eventRouter.post("/", adminAuth, eventUpload, createEvent);
+// eventRouter.put("/:id", adminAuth, eventUpload, updateEvent);
+// eventRouter.delete("/:id", adminAuth, deleteEvent);
+
+// export default eventRouter;
+
+
+// import express from "express";
+// import { adminAuth } from "../middleware/adminAuth.js";
+// import {
+//   getEvents,
+//   getAdminEvents,
+//   getEventBySlug,
+//   createEvent,
+//   updateEvent,
+//   deleteEvent,
+//   downloadEventBrochure,
+//   downloadEventContent,
+// } from "../controllers/eventController.js";
+// import { eventUpload } from "../config/eventUpload.js";
+
+// export const eventRouter = express.Router();
+
+// eventRouter.get("/", getEvents);
+// eventRouter.get("/slug/:slug", getEventBySlug);
+// eventRouter.get("/:id/brochure/download", downloadEventBrochure);
+// eventRouter.get("/:id/downloads/:document", downloadEventContent);
+// eventRouter.get("/admin", adminAuth, getAdminEvents);
+// eventRouter.post("/", adminAuth, eventUpload, createEvent);
+// eventRouter.put("/:id", adminAuth, eventUpload, updateEvent);
+// eventRouter.delete("/:id", adminAuth, deleteEvent);
+
+// export default eventRouter;
+
 
 import express from "express";
 import { adminAuth } from "../middleware/adminAuth.js";
-
 import {
   getEvents,
   getAdminEvents,
@@ -125,27 +177,22 @@ import {
   updateEvent,
   deleteEvent,
   downloadEventBrochure,
+  downloadEventContent,
+  getEventDownloadAccess,
 } from "../controllers/eventController.js";
-
 import { eventUpload } from "../config/eventUpload.js";
 
 export const eventRouter = express.Router();
 
-// Public event routes
 eventRouter.get("/", getEvents);
 eventRouter.get("/slug/:slug", getEventBySlug);
-
-// Public brochure download route
-// Access is verified using the shared brochure-access cookie.
 eventRouter.get("/:id/brochure/download", downloadEventBrochure);
+eventRouter.get("/downloads/access", getEventDownloadAccess);
+eventRouter.get("/:id/downloads/:document", downloadEventContent);
 
-// Protected admin routes
 eventRouter.get("/admin", adminAuth, getAdminEvents);
-
 eventRouter.post("/", adminAuth, eventUpload, createEvent);
-
 eventRouter.put("/:id", adminAuth, eventUpload, updateEvent);
-
 eventRouter.delete("/:id", adminAuth, deleteEvent);
 
 export default eventRouter;

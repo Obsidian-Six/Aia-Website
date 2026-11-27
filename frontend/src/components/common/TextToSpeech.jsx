@@ -178,7 +178,8 @@ export default function TextToSpeech({
   return (
     <section
       data-tts-ignore
-      className="sticky top-[16%] md:top-[17.5%] lg:top-[17.5%] xl:top-[19.5%]  z-[10] w-full border-b border-gray-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur-md sm:px-8"
+      // sticky top-[16%]
+      className="md:top-[17.5%] lg:top-[17.5%] xl:top-[19.5%]  z-[10] w-full border-b border-gray-200 bg-white/95 px-4 py-3 shadow-sm backdrop-blur-md sm:px-8"
     >
       <div className="mx-auto flex max-w-[1440px] flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 

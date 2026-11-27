@@ -16,6 +16,7 @@
     "express": "^5.2.1",
     "googleapis": "^178.0.0",
     "jsonwebtoken": "^9.0.3",
+    "jszip": "^3.10.2",
     "mongoose": "^9.9.4",
     "multer": "^2.2.0",
     "nodemailer": "^10.6.0"

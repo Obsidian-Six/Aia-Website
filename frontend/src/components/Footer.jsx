@@ -215,7 +215,7 @@ export default function Footer() {
   return (
     <footer
       id="footer"
-      className="relative z-10 overflow-hidden bg-[#20466C] text-white"
+      className="relative z-10 overflow-hidden bg-[#20466C] text-white print:hidden"
     >
       {/* Background Gradient */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(104,160,211,0.55)_0%,transparent_48%),linear-gradient(115deg,#1C3E60_0%,#234B72_55%,#24496D_100%)]" />

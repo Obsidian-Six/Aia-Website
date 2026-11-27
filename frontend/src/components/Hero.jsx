@@ -1058,14 +1058,14 @@ export default function Hero({ onBecomeMemberClick }) {
             </p>
 
             <div className="mt-5 flex flex-wrap items-center gap-2 sm:mt-6 sm:gap-3">
-              {hero.ctaPrimaryText && (
+              {/* {hero.ctaPrimaryText && (
                 <Link
                   to="/membership"
                   className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] bg-[#f15d4e] px-3.5 py-2 text-[10px] font-semibold text-white transition hover:bg-[#dc493b] sm:text-[11px]"
                 >
                   {hero.ctaPrimaryText}
                 </Link>
-              )}
+              )} */}
 
               {hero.ctaSecondaryText && (
                 isExploreSmartFactory ? (

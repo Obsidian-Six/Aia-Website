@@ -1,7 +1,5 @@
-
 // import React from "react";
 // import { CalendarDays,Clock3, MapPin, Mail, Phone, Globe } from "lucide-react";
-
 
 // const defaultSections = [
 //   {
@@ -70,8 +68,6 @@
 //     </div>
 //   );
 // }
-
-
 
 // function EventInformation({ event }) {
 //   return (
@@ -149,8 +145,6 @@
 //     </div>
 //   );
 // }
-
-
 
 // function PartnerCard({ partners }) {
 //   return (
@@ -322,11 +316,522 @@
 //   );
 // }
 
+// import React from "react";
+// import {
+//   CalendarDays,
+//   Clock3,
+//   MapPin,
+//   Mail,
+//   Phone,
+//   Globe,
+// } from "lucide-react";
 
+// const defaultSections = [];
+
+// const defaultPartners = [
+//   { name: "INDXO", logo: "/images/events/partners/indxo.png" },
+//   { name: "Yantra247", logo: "/images/events/partners/yantra247.png" },
+//   { name: "Renata", logo: "/images/events/partners/renata.png" },
+//   { name: "JTN", logo: "/images/events/partners/jtn.png" },
+// ];
+
+// function SidebarCard({ title, children }) {
+//   return (
+//     <div className="rounded-[9px] border border-[#F16B5C] bg-[#FFFBFA] p-5 shadow-[0_8px_25px_rgba(231,107,92,0.06)] sm:p-7">
+//       <h3 className="mb-4 text-sm font-semibold text-[#E87565] sm:text-base">
+//         {title}
+//       </h3>
+//       {children}
+//     </div>
+//   );
+// }
+
+// // Google Calendar expects YYYYMMDDTHHmmss format.
+// // datetime-local values are interpreted in Asia/Kolkata.
+// function formatGoogleCalendarDate(value) {
+//   if (!value) return "";
+
+//   const date = new Date(value);
+
+//   if (Number.isNaN(date.getTime())) return "";
+
+//   const parts = new Intl.DateTimeFormat("en-GB", {
+//     timeZone: "Asia/Kolkata",
+//     year: "numeric",
+//     month: "2-digit",
+//     day: "2-digit",
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     second: "2-digit",
+//     hourCycle: "h23",
+//   }).formatToParts(date);
+
+//   const values = {};
+
+//   parts.forEach((part) => {
+//     values[part.type] = part.value;
+//   });
+
+//   return (
+//     `${values.year}${values.month}${values.day}` +
+//     `T${values.hour}${values.minute}${values.second}`
+//   );
+// }
+
+// function getGoogleCalendarLink(event = {}) {
+//   if (!event.startDateTime || !event.endDateTime) {
+//     return "";
+//   }
+
+//   const start = formatGoogleCalendarDate(event.startDateTime);
+//   const end = formatGoogleCalendarDate(event.endDateTime);
+
+//   if (!start || !end) return "";
+
+//   const params = new URLSearchParams({
+//     action: "TEMPLATE",
+//     text: event.title || "AIA Event",
+//     dates: `${start}/${end}`,
+//     details: event.description || "",
+//     location: event.venue || "",
+//     ctz: "Asia/Kolkata",
+//   });
+
+//   return `https://calendar.google.com/calendar/render?${params.toString()}`;
+// }
+
+// function getGoogleMapsLink(event = {}) {
+//   if (event.locationLink) {
+//     return event.locationLink;
+//   }
+
+//   if (event.venue) {
+//     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+//       event.venue
+//     )}`;
+//   }
+
+//   return "";
+// }
+
+// function EventInformation({ event = {} }) {
+//   const hasInfo =
+//     event.date ||
+//     event.venue ||
+//     event.time ||
+//     event.registrationLink ||
+//     event.locationLink ||
+//     (event.startDateTime && event.endDateTime);
+
+//   if (!hasInfo) return null;
+
+//   const calendarLink = getGoogleCalendarLink(event);
+//   const mapsLink = getGoogleMapsLink(event);
+
+//   return (
+//     <div className="rounded-[9px] border border-[#F16B5C] bg-[#FFFBFA] p-5 shadow-[0_8px_25px_rgba(231,107,92,0.06)] sm:p-7">
+//       {event.date && (
+//         <h2 className="mb-6 text-xl font-semibold leading-tight text-[#E87565]">
+//           {event.date}
+//         </h2>
+//       )}
+
+//       {event.venue && (
+//         <div className="mb-5 flex items-start gap-4">
+//           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#D92315] to-[#F16B5C] text-white">
+//             <MapPin size={16} />
+//           </div>
+
+//           <p className="pt-0.5 text-sm leading-relaxed text-[#263247]">
+//             {event.venue}
+//           </p>
+//         </div>
+//       )}
+
+//       {event.time && (
+//         <div className="mb-6 flex items-center gap-4">
+//           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#D92315] to-[#F16B5C] text-white">
+//             <Clock3 size={19} />
+//           </div>
+
+//           <p className="text-sm text-[#263247]">
+//             {event.time}
+//           </p>
+//         </div>
+//       )}
+
+//       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+//         {calendarLink && (
+//           <a
+//             href={calendarLink}
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             className="flex min-h-[44px] items-center justify-center rounded-[9px] border border-[#F5C8C1] bg-white px-2 py-2 text-center text-sm font-medium text-[#E87565] transition hover:bg-[#FFF1EE]"
+//           >
+//             <CalendarDays size={15} className="mr-2 shrink-0" />
+//             Save The Date
+//           </a>
+//         )}
+
+//         {event.registrationLink && (
+//           <a
+//             href={event.registrationLink}
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             className="flex min-h-[44px] items-center justify-center rounded-[9px] bg-gradient-to-r from-[#D92315] via-[#E43C2D] to-[#F17B6D] px-2 py-2 text-center text-sm font-medium text-white transition hover:brightness-95"
+//           >
+//             Register Now
+//           </a>
+//         )}
+//       </div>
+
+//       {mapsLink && (
+//         <a
+//           href={mapsLink}
+//           target="_blank"
+//           rel="noopener noreferrer"
+//           className="mt-5 flex min-h-[44px] w-full items-center justify-center rounded-[9px] border border-[#F5C8C1] bg-white px-3 py-2 text-center text-sm font-medium text-[#E87565] transition hover:bg-[#FFF1EE]"
+//         >
+//           <MapPin size={15} className="mr-2 shrink-0" />
+//           Directions to reach the venue
+//         </a>
+//       )}
+//     </div>
+//   );
+// }
+
+// function PartnerCard({ partners = [] }) {
+//   const validPartners = partners.filter(
+//     (partner) =>
+//       partner &&
+//       (partner.logo || partner.logoUrl || partner.imageUrl)
+//   );
+
+//   if (!validPartners.length) return null;
+
+//   return (
+//     <SidebarCard title="Contributing Partners">
+//       <div className="grid grid-cols-2 gap-3">
+//         {validPartners.map((partner, index) => {
+//           const logo =
+//             partner.logo ||
+//             partner.logoUrl ||
+//             partner.imageUrl;
+
+//           return (
+//             <div
+//               key={partner._id || partner.name || index}
+//               className="flex aspect-[1.4/1] items-center justify-center overflow-hidden border border-gray-100 bg-white p-2 shadow-lg"
+//             >
+//               <img
+//                 src={logo}
+//                 alt={partner.name || "Partner"}
+//                 loading="lazy"
+//                 decoding="async"
+//                 className="max-h-full max-w-full object-contain"
+//               />
+//             </div>
+//           );
+//         })}
+//       </div>
+//     </SidebarCard>
+//   );
+// }
+
+// function SupportedByCard({ supporters = [], contact = {} }) {
+//   const validSupporters = supporters.filter(
+//     (item) =>
+//       item &&
+//       (item.logo || item.logoUrl || item.imageUrl)
+//   );
+
+//   const hasSupporters = validSupporters.length > 0;
+
+//   const hasContact =
+//     contact.email ||
+//     contact.phone ||
+//     contact.website;
+
+//   if (!hasSupporters && !hasContact) return null;
+
+//   return (
+//     <SidebarCard title="Supported by">
+//       {hasSupporters && (
+//         <div className="flex flex-wrap items-center gap-3">
+//           {validSupporters.map((supporter, index) => {
+//             const logo =
+//               supporter.logo ||
+//               supporter.logoUrl ||
+//               supporter.imageUrl;
+
+//             return (
+//               <img
+//                 key={supporter._id || supporter.name || index}
+//                 src={logo}
+//                 alt={supporter.name || "Supporter"}
+//                 loading="lazy"
+//                 decoding="async"
+//                 className="max-h-12 max-w-[150px] object-contain"
+//               />
+//             );
+//           })}
+//         </div>
+//       )}
+
+//       {/* {hasContact && ( */}
+//         <>
+//           <p className="mb-3 mt-4 text-xs font-semibold text-[#E87565]">
+//             Contact us for more info
+//           </p>
+
+//           <div className="flex items-center gap-4 text-[#263247]">
+//             {contact.email && (
+//               <a
+//                 href={`mailto:${contact.email}`}
+//                 aria-label={`Email ${contact.email}`}
+//                 className="transition hover:text-[#E87565]"
+//               >
+//                 {/* <Mail size={17} /> */}
+//               <img src="/logo-gmail.webp" alt="" className="h-10 cursor-pointer" />
+//               </a>
+//             )}
+
+//             {contact.phone && (
+//   <a
+//     href={`https://wa.me/${contact.phone.replace(/\D/g, "")}`}
+//     target="_blank"
+//     rel="noopener noreferrer"
+//     aria-label={`Chat on WhatsApp with ${contact.phone}`}
+//     className="transition hover:text-[#E87565]"
+//     >
+//     {/* <Phone size={17} /> */}
+//     <img src="/WhatsApp-logo.webp" alt="" className="h-10 cursor-pointer" />
+//   </a>
+// )}
+
+//             {contact.website && (
+//               <a
+//                 href={contact.website}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 aria-label="Website"
+//                 className="transition hover:text-[#E87565]"
+//               >
+//                 <img src="/linkedin-logo-png.webp" alt="" className="h-10 cursor-pointer" />
+//                 {/* <Globe size={17} /> */}
+//               </a>
+//             )}
+//           </div>
+//         </>
+//       {/* )} */}
+//     </SidebarCard>
+//   );
+// }
+
+// function LegacySections({ sections = [] }) {
+//   if (!sections.length) return null;
+
+//   return (
+//     <div className="space-y-7">
+//       {sections.map((section, index) => (
+//         <section key={section._id || section.id || index}>
+//           {section.heading && (
+//             <h2 className="mb-3 text-xs font-semibold leading-relaxed text-[#E87565] sm:text-sm">
+//               {section.heading}
+//             </h2>
+//           )}
+
+//           {section.paragraphs?.length > 0 && (
+//             <div className="space-y-3">
+//               {section.paragraphs.map((paragraph, paragraphIndex) => (
+//                 <p
+//                   key={paragraphIndex}
+//                   className="text-[13px] leading-[1.8] text-[#344054] sm:text-sm sm:leading-[1.85]"
+//                 >
+//                   {paragraph}
+//                 </p>
+//               ))}
+//             </div>
+//           )}
+
+//           {section.bullets?.length > 0 && (
+//             <ul className="my-4 space-y-3 pl-5">
+//               {section.bullets.map((bullet, bulletIndex) => (
+//                 <li
+//                   key={bulletIndex}
+//                   className="list-disc text-[13px] leading-[1.8] text-[#344054] marker:text-[#E87565] sm:text-sm"
+//                 >
+//                   {bullet}
+//                 </li>
+//               ))}
+//             </ul>
+//           )}
+//         </section>
+//       ))}
+//     </div>
+//   );
+// }
+
+// function IntroductionBlocks({ blocks = [] }) {
+//   if (!blocks.length) return null;
+
+//   return (
+//     <div className="space-y-7">
+//       {blocks.map((block, index) => {
+//         const image = block.imageUrl || block.image;
+//         const type = block.type || "paragraph";
+
+//         if (type === "heading") {
+//           return (
+//             <h2
+//               key={block._key || block._id || index}
+//               className="text-lg font-semibold leading-relaxed text-[#E87565] sm:text-xl"
+//             >
+//               {block.text || block.heading}
+//             </h2>
+//           );
+//         }
+
+//         if (
+//           type === "list" ||
+//           type === "bullet" ||
+//           type === "bullets"
+//         ) {
+//           const items = Array.isArray(block.items)
+//             ? block.items
+//             : [];
+
+//           return (
+//             <ul
+//               key={block._key || block._id || index}
+//               className="space-y-3 pl-5"
+//             >
+//               {items.filter(Boolean).map((item, itemIndex) => (
+//                 <li
+//                   key={itemIndex}
+//                   className="list-disc text-[13px] leading-[1.8] text-[#344054] marker:text-[#E87565] sm:text-sm"
+//                 >
+//                   {typeof item === "string" ? item : item.text}
+//                 </li>
+//               ))}
+//             </ul>
+//           );
+//         }
+
+//         if (type === "image") {
+//           if (!image) return null;
+
+//           return (
+//             <figure
+//               key={block._key || block._id || index}
+//               className="space-y-2"
+//             >
+//               <img
+//                 src={image}
+//                 alt={block.imageAlt || block.caption || "Event image"}
+//                 loading="lazy"
+//                 decoding="async"
+//                 className={`max-h-[650px] w-full rounded-xl object-cover ${
+//                   block.imagePosition === "left"
+//                     ? "lg:mr-auto lg:w-3/4"
+//                     : block.imagePosition === "right"
+//                       ? "lg:ml-auto lg:w-3/4"
+//                       : ""
+//                 }`}
+//               />
+
+//               {block.caption && (
+//                 <figcaption className="text-xs text-gray-500">
+//                   {block.caption}
+//                 </figcaption>
+//               )}
+//             </figure>
+//           );
+//         }
+
+//         return block.text ? (
+//           <p
+//             key={block._key || block._id || index}
+//             className="text-[13px] leading-[1.8] text-[#344054] sm:text-sm sm:leading-[1.85]"
+//           >
+//             {block.text}
+//           </p>
+//         ) : null;
+//       })}
+//     </div>
+//   );
+// }
+
+// export default function EventIntroductionSection({
+//   title = "Introduction",
+//   eyebrow = "",
+//   description = "",
+//   blocks = [],
+//   sections = defaultSections,
+//   event = {},
+//   partners = defaultPartners,
+//   supporters = [],
+//   contact = {},
+//   className = "",
+// }) {
+//   const hasNewBlocks =
+//     Array.isArray(blocks) && blocks.length > 0;
+
+//   const hasLegacySections =
+//     Array.isArray(sections) && sections.length > 0;
+
+//   return (
+//     <section
+//       className={`bg-white px-5 py-10 font-sans sm:px-8 sm:py-14 lg:px-12 lg:py-16 ${className}`}
+//     >
+//       <div className="mx-auto grid max-w-[1250px] grid-cols-1 items-start gap-9 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_330px]">
+//         <article className="min-w-0">
+//           {eyebrow && (
+//             <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#E87565]">
+//               {eyebrow}
+//             </p>
+//           )}
+
+//           {title && (
+//             <h1 className="mb-6 text-2xl font-semibold tracking-tight text-[#263247] sm:text-3xl">
+//               {title}
+//             </h1>
+//           )}
+
+//           {description && (
+//             <p className="mb-7 text-[13px] leading-[1.8] text-[#344054] sm:text-sm">
+//               {description}
+//             </p>
+//           )}
+
+//           {hasNewBlocks ? (
+//             <IntroductionBlocks blocks={blocks} />
+//           ) : (
+//             <LegacySections
+//               sections={hasLegacySections ? sections : []}
+//             />
+//           )}
+//         </article>
+
+//         <aside className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:sticky lg:top-24 lg:grid-cols-1">
+//           <EventInformation event={event} />
+
+//           <PartnerCard partners={partners} />
+
+//           <SupportedByCard
+//             supporters={supporters}
+//             contact={contact}
+//           />
+//         </aside>
+//       </div>
+//     </section>
+//   );
+// }
 
 import React from "react";
 import {
   CalendarDays,
+  Download,
   Clock3,
   MapPin,
   Mail,
@@ -359,7 +864,9 @@ function SidebarCard({ title, children }) {
 function formatGoogleCalendarDate(value) {
   if (!value) return "";
 
-  const date = new Date(value);
+  const date = new Date(
+    /(?:Z|[+-]\d{2}:\d{2})$/i.test(value) ? value : `${value}+05:30`,
+  );
 
   if (Number.isNaN(date.getTime())) return "";
 
@@ -415,15 +922,16 @@ function getGoogleMapsLink(event = {}) {
 
   if (event.venue) {
     return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-      event.venue
+      event.venue,
     )}`;
   }
 
   return "";
 }
 
-function EventInformation({ event = {} }) {
+function EventInformation({ event = {}, onPrintInformation }) {
   const hasInfo =
+    // informationDownloadUrl ||
     event.date ||
     event.venue ||
     event.time ||
@@ -462,9 +970,7 @@ function EventInformation({ event = {} }) {
             <Clock3 size={19} />
           </div>
 
-          <p className="text-sm text-[#263247]">
-            {event.time}
-          </p>
+          <p className="text-sm text-[#263247]">{event.time}</p>
         </div>
       )}
 
@@ -493,6 +999,16 @@ function EventInformation({ event = {} }) {
         )}
       </div>
 
+      {onPrintInformation && (
+        <button
+          type="button"
+          onClick={onPrintInformation}
+          className="mt-5 flex min-h-11 w-full items-center justify-center rounded-lg border border-[#F5C8C1] bg-white px-3 text-sm font-medium text-[#C9452E] print:hidden"
+        >
+          Download Event Information
+        </button>
+      )}
+
       {mapsLink && (
         <a
           href={mapsLink}
@@ -511,8 +1027,7 @@ function EventInformation({ event = {} }) {
 function PartnerCard({ partners = [] }) {
   const validPartners = partners.filter(
     (partner) =>
-      partner &&
-      (partner.logo || partner.logoUrl || partner.imageUrl)
+      partner && (partner.logo || partner.logoUrl || partner.imageUrl),
   );
 
   if (!validPartners.length) return null;
@@ -521,10 +1036,7 @@ function PartnerCard({ partners = [] }) {
     <SidebarCard title="Contributing Partners">
       <div className="grid grid-cols-2 gap-3">
         {validPartners.map((partner, index) => {
-          const logo =
-            partner.logo ||
-            partner.logoUrl ||
-            partner.imageUrl;
+          const logo = partner.logo || partner.logoUrl || partner.imageUrl;
 
           return (
             <div
@@ -548,17 +1060,12 @@ function PartnerCard({ partners = [] }) {
 
 function SupportedByCard({ supporters = [], contact = {} }) {
   const validSupporters = supporters.filter(
-    (item) =>
-      item &&
-      (item.logo || item.logoUrl || item.imageUrl)
+    (item) => item && (item.logo || item.logoUrl || item.imageUrl),
   );
 
   const hasSupporters = validSupporters.length > 0;
 
-  const hasContact =
-    contact.email ||
-    contact.phone ||
-    contact.website;
+  const hasContact = contact.email || contact.phone || contact.website;
 
   if (!hasSupporters && !hasContact) return null;
 
@@ -568,9 +1075,7 @@ function SupportedByCard({ supporters = [], contact = {} }) {
         <div className="flex flex-wrap items-center gap-3">
           {validSupporters.map((supporter, index) => {
             const logo =
-              supporter.logo ||
-              supporter.logoUrl ||
-              supporter.imageUrl;
+              supporter.logo || supporter.logoUrl || supporter.imageUrl;
 
             return (
               <img
@@ -587,50 +1092,62 @@ function SupportedByCard({ supporters = [], contact = {} }) {
       )}
 
       {/* {hasContact && ( */}
-        <>
-          <p className="mb-3 mt-4 text-xs font-semibold text-[#E87565]">
-            Contact us for more info
-          </p>
+      <>
+        <p className="mb-3 mt-4 text-xs font-semibold text-[#E87565]">
+          Contact us for more info
+        </p>
 
-          <div className="flex items-center gap-4 text-[#263247]">
-            {contact.email && (
-              <a
-                href={`mailto:${contact.email}`}
-                aria-label={`Email ${contact.email}`}
-                className="transition hover:text-[#E87565]"
-              >
-                {/* <Mail size={17} /> */}
-              <img src="/logo-gmail.webp" alt="" className="h-10 cursor-pointer" />
-              </a>
-            )}
+        <div className="flex items-center gap-4 text-[#263247]">
+          {contact.email && (
+            <a
+              href={`mailto:${contact.email}`}
+              aria-label={`Email ${contact.email}`}
+              className="transition hover:text-[#E87565]"
+            >
+              {/* <Mail size={17} /> */}
+              <img
+                src="/logo-gmail.webp"
+                alt=""
+                className="h-10 cursor-pointer"
+              />
+            </a>
+          )}
 
-            {contact.phone && (
-  <a
-    href={`https://wa.me/${contact.phone.replace(/\D/g, "")}`}
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label={`Chat on WhatsApp with ${contact.phone}`}
-    className="transition hover:text-[#E87565]"
-    >
-    {/* <Phone size={17} /> */}
-    <img src="/WhatsApp-logo.webp" alt="" className="h-10 cursor-pointer" />
-  </a>
-)}
+          {contact.phone && (
+            <a
+              href={`https://wa.me/${contact.phone.replace(/\D/g, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Chat on WhatsApp with ${contact.phone}`}
+              className="transition hover:text-[#E87565]"
+            >
+              {/* <Phone size={17} /> */}
+              <img
+                src="/WhatsApp-logo.webp"
+                alt=""
+                className="h-10 cursor-pointer"
+              />
+            </a>
+          )}
 
-            {contact.website && (
-              <a
-                href={contact.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Website"
-                className="transition hover:text-[#E87565]"
-              >
-                <img src="/linkedin-logo-png.webp" alt="" className="h-10 cursor-pointer" />
-                {/* <Globe size={17} /> */}
-              </a>
-            )}
-          </div>
-        </>
+          {contact.website && (
+            <a
+              href={contact.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Website"
+              className="transition hover:text-[#E87565]"
+            >
+              <img
+                src="/linkedin-logo-png.webp"
+                alt=""
+                className="h-10 cursor-pointer"
+              />
+              {/* <Globe size={17} /> */}
+            </a>
+          )}
+        </div>
+      </>
       {/* )} */}
     </SidebarCard>
   );
@@ -700,14 +1217,8 @@ function IntroductionBlocks({ blocks = [] }) {
           );
         }
 
-        if (
-          type === "list" ||
-          type === "bullet" ||
-          type === "bullets"
-        ) {
-          const items = Array.isArray(block.items)
-            ? block.items
-            : [];
+        if (type === "list" || type === "bullet" || type === "bullets") {
+          const items = Array.isArray(block.items) ? block.items : [];
 
           return (
             <ul
@@ -777,16 +1288,16 @@ export default function EventIntroductionSection({
   blocks = [],
   sections = defaultSections,
   event = {},
+  showEventInformation = true,
+  onPrintInformation,
   partners = defaultPartners,
   supporters = [],
   contact = {},
   className = "",
 }) {
-  const hasNewBlocks =
-    Array.isArray(blocks) && blocks.length > 0;
+  const hasNewBlocks = Array.isArray(blocks) && blocks.length > 0;
 
-  const hasLegacySections =
-    Array.isArray(sections) && sections.length > 0;
+  const hasLegacySections = Array.isArray(sections) && sections.length > 0;
 
   return (
     <section
@@ -815,21 +1326,21 @@ export default function EventIntroductionSection({
           {hasNewBlocks ? (
             <IntroductionBlocks blocks={blocks} />
           ) : (
-            <LegacySections
-              sections={hasLegacySections ? sections : []}
-            />
+            <LegacySections sections={hasLegacySections ? sections : []} />
           )}
         </article>
 
         <aside className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:sticky lg:top-24 lg:grid-cols-1">
-          <EventInformation event={event} />
-
+          {/* {showEventInformation && <EventInformation event={event} informationDownloadUrl={informationDownloadUrl} />} */}
+          {showEventInformation && (
+            <EventInformation
+              event={event}
+    onPrintInformation={onPrintInformation}
+            />
+          )}
           <PartnerCard partners={partners} />
 
-          <SupportedByCard
-            supporters={supporters}
-            contact={contact}
-          />
+          <SupportedByCard supporters={supporters} contact={contact} />
         </aside>
       </div>
     </section>

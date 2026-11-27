@@ -121,14 +121,14 @@ export default function SpecialArticleRegistrationModal({
           Article Access
         </p>
 
-        <h2
+        {/* <h2
           id="article-registration-title"
           className="text-2xl font-bold text-[#263247]"
         >
           Register to Access
-        </h2>
+        </h2> */}
 
-        <p className="mt-2 text-sm leading-6 text-gray-500">
+        <p className="mt-2 text-sm md:text-lg leading-6 text-gray-500">
           Please provide your details to unlock the full article.
         </p>
 
