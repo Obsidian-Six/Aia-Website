@@ -14,6 +14,7 @@ import WhyJoinCmsSection from "../components/why-join/WhyJoinCmsSection.jsx";
 import HomeFeatureSection from "../components/home/HomeFeatureSection.jsx";
 import ResourceCenter from "../components/FactoryInsight.jsx";
 import RequestModal from "../components/RequestForms/RequestModal.jsx";
+import FeaturedCompanyHighlights from "../components/FeaturedCompanyHighlights.jsx";
 
 // import ReusableCardSlider from "../components/ReusableCardSlider.jsx";
 
@@ -100,6 +101,8 @@ export default function HomePage() {
       <IndustrySectors />
       <HomeFeatureSection page="home" />
       <ResourceCenter />
+
+      <FeaturedCompanyHighlights />
       {/* <HomeServices />
       <WhoAreYou />
       <ImpactDashboard />
