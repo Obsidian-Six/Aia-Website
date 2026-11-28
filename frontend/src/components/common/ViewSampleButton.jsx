@@ -258,7 +258,7 @@ export default function ViewSampleButton({
 
               <div>
                 <label className="mb-1.5 block text-sm font-medium text-gray-700">
-                  Phone Number *
+                  Mobile Number *
                 </label>
 
                 <input
@@ -266,7 +266,7 @@ export default function ViewSampleButton({
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="Enter your phone number"
+                  placeholder="Enter your mobile number"
                   required
                   minLength={7}
                   maxLength={20}

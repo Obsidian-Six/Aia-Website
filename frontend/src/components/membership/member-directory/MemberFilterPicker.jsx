@@ -6,7 +6,7 @@ export const filterLabels = {
   serviceStreams: "Service Stream",
 };
 
-export default function MemberFilterPicker({ label, options = [], values = [], limit = Infinity, onChange }) {
+export default function MemberFilterPicker({ label, options = [], values = [], limit = 3, onChange }) {
   const [search, setSearch] = useState("");
   const id = useId();
   const pickerRef = useRef(null);

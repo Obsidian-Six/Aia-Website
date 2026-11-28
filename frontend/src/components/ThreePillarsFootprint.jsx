@@ -458,7 +458,7 @@ export default function ThreePillarsFootprint() {
                   htmlFor="brochure-phone"
                   className="mb-2 block text-sm font-semibold text-[#17202B]"
                 >
-                  Phone Number <span className="text-[#E52B18]">*</span>
+                  Mobile Number <span className="text-[#E52B18]">*</span>
                 </label>
 
                 <input
@@ -467,7 +467,7 @@ export default function ThreePillarsFootprint() {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  placeholder="Enter your phone number"
+                  placeholder="Enter your mobile number"
                   autoComplete="tel"
                   required
                   className="w-full rounded-md border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-[#E52B18] focus:ring-1 focus:ring-[#E52B18]"

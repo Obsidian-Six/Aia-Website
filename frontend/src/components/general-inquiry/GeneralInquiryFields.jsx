@@ -354,9 +354,9 @@ export default function GeneralInquiryFields({
 
     const phone = form.phoneNumber.trim().replace(/[\s()-]/g, "");
     if (!phone) {
-      nextErrors.phoneNumber = "Phone number is required.";
+      nextErrors.phoneNumber = "Mobile number is required.";
     } else if (!/^\+?[1-9]\d{6,14}$/.test(phone)) {
-      nextErrors.phoneNumber = "Enter a valid phone number (7–15 digits).";
+      nextErrors.phoneNumber = "Enter a valid mobile number (7–15 digits).";
     }
 
     if (form.message.length > 2000) {
@@ -572,7 +572,7 @@ export default function GeneralInquiryFields({
         </div>
 
         <div>
-          <label className={labelClass}>Phone Number{requiredMark}</label>
+          <label className={labelClass}>Mobile Number{requiredMark}</label>
           <input
             type="tel"
             name="phoneNumber"

@@ -78,7 +78,7 @@ export default function PersonFields({
           type="tel"
           value={values[`${prefix}Phone`] || ""}
           onChange={onChange}
-          placeholder="Enter phone number"
+          placeholder="Enter mobile number"
         />
 
         <FormField

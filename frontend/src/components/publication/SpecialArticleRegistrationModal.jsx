@@ -59,7 +59,7 @@ export default function SpecialArticleRegistrationModal({
       phoneDigits.length < 10 ||
       phoneDigits.length > 15
     ) {
-      setError("Please enter a valid phone number.");
+      setError("Please enter a valid mobile number.");
       return;
     }
 
@@ -204,7 +204,7 @@ export default function SpecialArticleRegistrationModal({
               htmlFor="registration-phone"
               className="mb-1.5 block text-sm font-medium text-[#263247]"
             >
-              Phone Number *
+              Mobile Number *
             </label>
 
             <input
@@ -213,7 +213,7 @@ export default function SpecialArticleRegistrationModal({
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              placeholder="Enter your phone number"
+              placeholder="Enter your mobile number"
               autoComplete="tel"
               required
               disabled={isSubmitting}

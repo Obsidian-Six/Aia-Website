@@ -13,7 +13,7 @@ const contactDetails = [
   },
   {
     icon: Phone,
-    title: "Phone",
+    title: "Mobile",
     description: "Mon–Fri from 8am to 5pm.",
     value: "+91 011-41659981",
     href: "tel:+9101141659981",

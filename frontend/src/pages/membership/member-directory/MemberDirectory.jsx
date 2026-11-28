@@ -356,7 +356,7 @@ export default function MemberDirectory() {
   const selectionLimits = {
   manufacturingSectors: 1,
   technologyStreams: 3,
-  serviceStreams: Infinity,
+  serviceStreams: 3,
 };
   return (
     <main className="min-h-screen bg-white font-sans">
