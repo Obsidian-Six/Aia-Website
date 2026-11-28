@@ -276,7 +276,6 @@ export default function Footer() {
             <div className="flex flex-col items-start gap-4 lg:items-start">
               <Link
                 to={"/samarth-community"}
-                target="_blank"
                 rel="noopener noreferrer"
                 className="text-[14px] font-semibold text-white underline underline-offset-2 transition-opacity hover:opacity-70"
               >

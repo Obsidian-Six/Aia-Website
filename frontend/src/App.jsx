@@ -101,19 +101,17 @@ function ScrollToTop() {
 
 // Public Layout Wrapper with Header & Footer
 function PublicLayout({ children }) {
-
   const location = useLocation();
 
   const hideHeaderFooter =
-    location.pathname.replace(/\/+$/, "") ===
-    "/request-form/membership";
+    location.pathname.replace(/\/+$/, "") === "/request-form/membership";
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col font-sans selection:bg-[#0B1B2B] selection:text-white">
       {!hideHeaderFooter && <Navbar />}
       <div className="flex-1">{children}</div>
       {!hideHeaderFooter && <Footer />}
-       {/* General Inquiry Popup */}
+      {/* General Inquiry Popup */}
       {/* <GeneralInquiryPopup onSubmit={handleInquirySubmit} /> */}
     </div>
   );
@@ -278,13 +276,13 @@ export default function App() {
           }
         /> */}
         <Route
-  path="/industry-insight/all-entries"
-  element={
-    <PublicLayout>
-      <AllEntriesPage />
-    </PublicLayout>
-  }
-/>
+          path="/industry-insight/all-entries"
+          element={
+            <PublicLayout>
+              <AllEntriesPage />
+            </PublicLayout>
+          }
+        />
 
         <Route
           path="/industry-insight/articles"
@@ -333,14 +331,14 @@ export default function App() {
           }
         />
         {/* Global Website Search */}
-<Route
-  path="/search"
-  element={
-    <PublicLayout>
-      <SearchPage />
-    </PublicLayout>
-  }
-/>
+        <Route
+          path="/search"
+          element={
+            <PublicLayout>
+              <SearchPage />
+            </PublicLayout>
+          }
+        />
 
         {/* /membership-directory /membership-directory */}
 
@@ -405,14 +403,18 @@ export default function App() {
           }
         />
 
-        <Route
+       <Route
   path="/samarth-community"
-  element={<SamarthCommunity />}
+  element={
+    <PublicLayout>
+      <SamarthCommunity />
+    </PublicLayout>
+  }
 />
-<Route
-  path="/manufacturers-self-assessment"
-  element={<ManufacturersSelfAssessment />}
-/>
+        <Route
+          path="/manufacturers-self-assessment"
+          element={<ManufacturersSelfAssessment />}
+        />
         {/* Admin CMS Routes */}
         {/* <Route path="/admin" element={<AdminLayout />} />
         <Route path="/admin/:tab" element={<AdminLayout />} /> */}
@@ -422,18 +424,15 @@ export default function App() {
 
         {/* Protected Admin CMS */}
         <Route path="/admin" element={<ProtectedAdminRoute />}>
-        {/* <Route path="/admin/dashboard" element={<AdminLayout />} /> */}
-        <Route
-        index
-        element={<Navigate to="/admin/dashboard" replace />}
-        />
-        <Route path="/admin/:tab" element={<AdminLayout />} /></Route>
+          {/* <Route path="/admin/dashboard" element={<AdminLayout />} /> */}
+          <Route index element={<Navigate to="/admin/dashboard" replace />} />
+          <Route path="/admin/:tab" element={<AdminLayout />} />
+        </Route>
 
         {/* Fallback Catch-all Route */}
-         {/* <Route path=":tab" element={<AdminLayout />} /> */}
-         <Route path="*" element={<NotFound />} />
+        {/* <Route path=":tab" element={<AdminLayout />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
-    
   );
 }

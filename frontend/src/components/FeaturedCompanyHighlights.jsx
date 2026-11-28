@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { getFeaturedHighlights } from "../services/api";
+import { Link } from "react-router-dom";
 
 const arrowClass = "grid h-10 w-10 place-items-center rounded-full bg-white text-[#172033] shadow-md hover:bg-[#E25238] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
 
@@ -45,9 +46,9 @@ function CompanySlider({ companies, label }) {
           {company.description && <p className="mt-1 text-sm leading-relaxed text-slate-600">{company.description}</p>}
         </div>
         {company.linkUrl && (
-          <a href={company.linkUrl} className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-[#C9452E] hover:underline">
+          <Link to={company.linkUrl} target="_blank" className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-[#C9452E] hover:underline">
             Know More <ArrowRight size={15} aria-hidden="true" />
-          </a>
+          </Link>
         )}
       </div>
     </article>
