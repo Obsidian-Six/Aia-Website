@@ -58,6 +58,7 @@ export default function EventDownloadSections({
   event,
   isUpcoming,
   onPrintDetails = printPage,
+  onDownloadAllPdfs
 }) {
   if (!event) return null;
 
@@ -239,7 +240,7 @@ function VideoRecordingCard({ video }) {
             </span>
           </button>
 
-          {hasPdfs && (
+          {/* {hasPdfs && (
             <a
               className={button}
               href={eventDownloadUrl(event._id, "all-pdfs")}
@@ -253,7 +254,23 @@ function VideoRecordingCard({ video }) {
               </span>
               <Download size={18} aria-hidden="true" />
             </a>
-          )}
+          )} */}
+          {hasPdfs && (
+  <button
+    type="button"
+    className={button}
+    onClick={onDownloadAllPdfs}
+  >
+    <FileText size={22} aria-hidden="true" />
+    <span className="flex-1 text-left">
+      Presentations (All Sessions)
+      <span className="block text-xs font-normal text-slate-600">
+        ZIP · All PDFs
+      </span>
+    </span>
+    <Download size={18} aria-hidden="true" />
+  </button>
+)}
         </div>
       </Section>
         </div>

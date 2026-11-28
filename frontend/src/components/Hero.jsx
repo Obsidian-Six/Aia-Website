@@ -1072,7 +1072,7 @@ export default function Hero({ onBecomeMemberClick }) {
                   <button
                     type="button"
                     onClick={() => setShowSmartFactory(true)}
-                    className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] border border-white/75 bg-black/10 px-3.5 py-2 text-[10px] font-medium text-white transition hover:bg-white/15 sm:text-[11px]"
+                     className="pointer-events-auto inline-flex min-h-[34px] items-center justify-center rounded-[4px] bg-[#f15d4e] px-3.5 py-2 text-[10px] font-semibold text-white transition hover:bg-[#dc493b] sm:text-[11px]"
                   >
                     {hero.ctaSecondaryText}
                   </button>
